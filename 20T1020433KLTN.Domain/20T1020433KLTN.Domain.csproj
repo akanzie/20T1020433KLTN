@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>_20T1020433KLTN.Domain</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\CourseClass\" />
+    <Folder Include="Entities\Assignment\" />
+    <Folder Include="Entities\Lecturer\" />
+    <Folder Include="NewFolder\" />
+    <Folder Include="Entities\Submission\" />
+    <Folder Include="Entities\Student\" />
+  </ItemGroup>
+
+</Project>
