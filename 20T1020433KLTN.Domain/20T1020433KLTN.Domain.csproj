@@ -7,13 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Entities\CourseClass\" />
-    <Folder Include="Entities\Assignment\" />
-    <Folder Include="Entities\Lecturer\" />
-    <Folder Include="NewFolder\" />
-    <Folder Include="Entities\Submission\" />
-    <Folder Include="Entities\Student\" />
-  </ItemGroup>
-
 </Project>

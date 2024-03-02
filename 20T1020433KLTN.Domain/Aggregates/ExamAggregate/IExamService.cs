@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Infrastructure.Entities
+namespace _20T1020433KLTN.Domain.Aggregates.ExamAggregate
 {
-    public class Question: BaseEntity
+    public class IExamService
     {
     }
 }

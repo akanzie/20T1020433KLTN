@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace _20T1020433KLTN.Infrastructure.Entities
 {
-    public class CourseClass : BaseEntity
+    public class CourseClassDto : BaseEntity
     {
         public string CourseName { get; set; }
 
         public Guid LecturerId { get; set; }
-        public Lecturer Lecturer { get; set; }
+        public LecturerDto Lecturer { get; set; }
 
-        public ICollection<Student> Students { get; set; }
+        public ICollection<StudentDto> Students { get; set; }
         public ICollection<Submission> Submissions { get; set; }
     }
 }
