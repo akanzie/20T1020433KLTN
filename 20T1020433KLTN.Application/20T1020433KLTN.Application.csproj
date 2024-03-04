@@ -7,14 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\20T1020433KLTN.Domain\20T1020433KLTN.Domain.csproj" />
-    <ProjectReference Include="..\20T1020433KLTN.Infrastructure\20T1020433KLTN.Infrastructure.csproj" />
+    <Folder Include="Handlers\Exam\" />
+    <Folder Include="Handlers\Lecturer\" />
+    <Folder Include="Handlers\Student\Commands\" />
+    <Folder Include="Handlers\Student\Queries\" />
+    <Folder Include="Mapper\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Handlers\Exam\" />
-    <Folder Include="Handlers\Lecturer\" />
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\20T1020433KLTN.Domain\20T1020433KLTN.Domain.csproj" />
+    <ProjectReference Include="..\20T1020433KLTN.Infrastructure\20T1020433KLTN.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

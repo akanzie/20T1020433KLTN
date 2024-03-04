@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _20T1020433KLTN.Infrastructure.Repositories
 {
-    public class SubmissionRepository : 
+    public class SubmissionRepository  
     {
     }
 }
