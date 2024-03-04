@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Application.Commands
+namespace Handlers.Student.Commands
 {
     public class LoginStudentCommand : IRequest<string>
     {

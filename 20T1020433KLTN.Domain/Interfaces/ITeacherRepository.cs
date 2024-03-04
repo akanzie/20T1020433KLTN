@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Services
+namespace _20T1020433KLTN.Domain.Interfaces
 {
-    public class IAuthenticationService
+    public interface ITeacherRepository
     {
     }
 }

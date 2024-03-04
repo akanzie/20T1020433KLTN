@@ -1,6 +1,6 @@
-﻿using _20T1020433KLTN.Domain.Aggregates.StudentAggregate;
+﻿using _20T1020433KLTN.Domain.Entities;
+using _20T1020433KLTN.Domain.Interfaces;
 using _20T1020433KLTN.Infrastructure.Contexts;
-using _20T1020433KLTN.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +18,7 @@ namespace _20T1020433KLTN.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Student> GetByUsername(string username)
-        {
-            return await _context.Students.FirstOrDefaultAsync(s => s.Username == username);
-        }
+    
 
         // Implement other repository methods
     }

@@ -1,4 +1,6 @@
 ﻿using _20T1020433KLTN.Domain.Aggregates.Exam;
+using _20T1020433KLTN.Domain.Entities;
+using _20T1020433KLTN.Infrastructure.Configurations;
 using _20T1020433KLTN.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,19 +17,31 @@ namespace _20T1020433KLTN.Infrastructure.Contexts
         public DbSet<Student> Students { get; set; }
         public DbSet<CourseClass> CourseClasses { get; set; }
         public DbSet<Exam> Exams { get; set; }
-        // Các DbSet khác có thể được thêm vào tùy theo yêu cầu của ứng dụng
+        public DbSet<Lecturer> Lecturers { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
+
 
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
         {
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Cấu hình các quan hệ, chỉ mục, ràng buộc và các thuộc tính khác của các đối tượng entity
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-            // Gọi hàm base để hoàn thiện cấu hình
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new ExamConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseClassConfiguration());
+            modelBuilder.ApplyConfiguration(new StudentConfiguration());
+            modelBuilder.ApplyConfiguration(new SubmissionConfiguration());
+            modelBuilder.ApplyConfiguration(new LecturerConfiguration());
+
+            //modelBuilder.Entity<Role>()
+            //            .HasMany<User>(r => r.Users)
+            //            .WithOne(u => u.Role)
+            //            .HasForeignKey(u => u.RoleId)
+            //            .OnDelete(DeleteBehavior.Cascade);
+        }
+        public async Task<int> SaveChangesAsync()
+        {
+            return await base.SaveChangesAsync();
         }
     }
 }

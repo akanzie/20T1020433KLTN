@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\20T1020433KLTN.Application.csproj" />
+    <ProjectReference Include="..\20T1020433KLTN.Application\20T1020433KLTN.Application.csproj" />
+    <ProjectReference Include="..\20T1020433KLTN.Domain\20T1020433KLTN.Domain.csproj" />
+    <ProjectReference Include="..\20T1020433KLTN.Infrastructure\20T1020433KLTN.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

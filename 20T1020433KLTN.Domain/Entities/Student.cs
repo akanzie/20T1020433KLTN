@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using _20T1020433KLTN.Infrastructure.Entities;
 
-namespace _20T1020433KLTN.Infrastructure.Entities
+namespace _20T1020433KLTN.Domain.Entities
 {
+    [Table("Students")]
     public class Student : BaseEntity
     {
         public string StudentId { get; set; }

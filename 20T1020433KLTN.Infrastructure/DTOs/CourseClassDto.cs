@@ -1,4 +1,5 @@
-﻿using _20T1020433KLTN.Domain.Entities.Lecturer;
+﻿using _20T1020433KLTN.Domain.Entities;
+using _20T1020433KLTN.Domain.Entities.Lecturer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
