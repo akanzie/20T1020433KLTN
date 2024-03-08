@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewData["Title"] = "CreateExam";
+    Layout = "~/Views/Shared/Teacher/_Layout.cshtml";
+}
+<div class="container-fluid" style="padding-left: 0%; padding-right: 0%;">
+    <!-- Row 1 -->
+    <form>
+        <div class="row" style="border-top: #dadce0 1px solid;">
+            <div class="col-lg-9 mt-4">
+                <h1 class="ms-2">Tạo kỳ thi</h1>
+            </div>
+            <div class="col-lg-3 d-flex justify-content-center align-items-center mt-4">
+                <button type="submit" class="btn btn-primary" style="width: 150px;">Giao bài</button>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Cột trái -->
+            <div class="col-lg-8 mt-4" style="padding-left: 30px;">
+                <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
+                    <div class="mb-3 ms-3 mt-2 mx-3">
+                        <label for="title" class="form-label">Tiêu đề:</label>
+                        <input type="text" class="form-control" id="title" required>
+                    </div>
+                    <div class="mb-3 ms-3 mx-3">
+                        <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>
+                        <textarea class="form-control" id="instruction" rows="4"></textarea>
+                    </div>
+                    <div class="mb-3 form-check ms-3 mx-3">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Kiểm tra IP</label>
+                    </div>
+                    <div class="mb-3 form-check ms-3 mx-3">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Thi trên máy trường</label>
+                    </div>
+                </div>
+                <div class="col-lg" style="border: #dadce0 1px solid; border-radius: 15px;">
+                    <div class="mb-3 ms-3 mt-2 mx-3">
+                        <label for="upload-file" class="form-label">Upload file đề thi:</label>
+                        <input type="file" multiple class="form-control" id="upload-file">
+                    </div>
+                </div>
+            </div>
+            <!-- Cột phải -->
+            <div class="col-lg-4 mt-4" style="border: #dadce0 1px solid; padding-right: 30px; border-radius: 15px;">
+                <label for="audience" class="form-label mt-2">Dành cho:</label>
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="mb-3">
+                            <select class="form-select" id="audience">
+                                <option value="1">Tất cả sinh viên</option>
+                                <option value="2">Sinh viên hợp lệ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary" style="width: 100px">Xem</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="point" class="form-label">Điểm:</label>
+                    <input type="number" class="form-control" id="point" required>
+                </div>
+                <div class="mb-3">
+                    <label for="start-time" class="form-label">Thời gian bắt đầu:</label>
+                    <input type="datetime-local" class="form-control" id="start-time" required>
+                </div>
+                <div class="mb-3">
+                    <label for="deadline" class="form-label">Hạn nộp:</label>
+                    <input type="datetime-local" class="form-control" id="deadline" required>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Đóng tính năng nộp bài sau ngày đến hạn</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+

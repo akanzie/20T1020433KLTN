@@ -1,0 +1,135 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/Teacher/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="padding-left: 0%; padding-right: 0%;">
+    <div class="card w-100">
+        <div class="card-body p-4">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                            type="button" role="tab" aria-controls="nav-home" aria-selected="true">
+                        Thông tin
+                    </button>
+                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                            type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+                        Danh sách bài nộp
+                    </button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <!-- Row 1 -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <h1 class="fw-bold">Thi kết thúc học phần</h1>
+
+
+                                            <span class="text-dark">Kiệt Châu</span>
+                                            <span class="text-dark"> - </span>
+                                            <span class="text-dark">Hôm qua</span>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <!-- Biểu tượng ba chấm (ellipsis) -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="icon icon-tabler icon-tabler-dots-vertical" width="24" height="24"
+                                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                         stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                                        <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                                        <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                                    </svg>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <li><a class="dropdown-item" href="#">Lựa chọn 1</a></li>
+                                                    <li><a class="dropdown-item" href="#">Lựa chọn 2</a></li>
+                                                    <li><a class="dropdown-item" href="#">Lựa chọn 3</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" style="border-bottom: 1px solid grey;">
+                                        <div class="col-lg-8">
+                                            <p>10 điểm</p>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <p>Đến hạn 9g30 Hôm qua</p>
+                                        </div>
+                                    </div>
+                                    <p>Hướng dẫn</p>
+                                    <p>file</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div class="container">
+                        <div class="d-flex align-items-center mb-3">
+                            <button class="btn btn-outline-secondary ms-auto">Tải xuống tất cả</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <h1>Danh sách</h1>
+                                <select class="flect mb-3">
+                                    <option value="0" selected>Tất cả</option>
+                                    <option value="1">Đã nộp</option>
+                                    <option value="2">Đã nộp muộn</option>
+                                    <option value="3">Thiếu</option>
+                                    <!-- Additional students can be added here -->
+                                </select>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>Châu Anh Kiệt</div>
+                                    <span class="badge bg-secondary">____/10</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <h5 class="card-title">Châu Anh Kiệt</h5>
+                                                <span>Đã nộp muộn (8g24 ngày 08/03/2024)</span>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <h5 class="card-title">0/10</h5>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Tên file 1</span>
+                                                <span class="badge bg-success">Đã nộp</span>
+                                            </div>
+                                            <!-- Demo image -->
+                                            <img src="demo_image.jpg" alt="Demo Image" class="img-fluid mt-2">
+                                            <!-- Additional files can be added here -->
+                                        </div>
+                                        <!-- Show a message if no file is available -->
+                                        <p class="text-muted mt-3">Không có file</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+         
