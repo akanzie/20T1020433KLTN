@@ -177,50 +177,95 @@
       <div class="container-fluid">
         <!--  Row 1 -->
         <div class="d-flex align-items-stretch">
-          <div class="card w-100">
-            <div class="card-body p-4">
-              <div class="container mt-4">
-                <div class="row">
-                  <div class="col-md-8">
-                    <div class="card">
-                      <div class="card-header bg-primary text-white">
-                        Kiểm tra giữa kỳ
-                      </div>
-                      <div class="card-body">
-                        <p class="card-text">Nội dung hướng dẫn làm bài hoặc file đề thi</p>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header" style="background-color: white; border-bottom: 1px solid blue;">
+                  <h1 class="text-primary">Kiểm tra giữa kỳ</h1>
+                  <div class="d-flex ">
+                    <p class="card-text">Nguyễn Văn A</p>
+                    <p class="card-text ms-3">12 thg 1, 2023</p>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="card-text"><b>8</b>/10</p>
+                    <p class="card-text text-dark"><b>Đến hạn 15:30 19 thg 8, 2023</b></p>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <p class="card-text">- Bài giống nhau 0 điểm
+                    - Nộp trễ 1 phút trừ 1 điểm
+                    - SV nộp bài làm của mình trên classroom (1 file duy nhất)</p>
+                  <div class="row">
+                    <div class="col-lg-6 mb-3">
+                      <div class="p-2" style="border-radius: 10px; border: 1px solid #02080f33;">
+                        <a href="#" class="file-link text-dark d-block" data-file="deso1.jpg">
+                          <img src="../assets/images/logos/favicon.png" alt="Demo Image" width="60px" class="mx-2">
+                          deso1.jpg
+                        </a>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="card">
-                      <div class="card-header bg-success text-white">
-                        Bài nộp của bạn
-                        <p class="card-text">Đã giao</p>
-                        <p class="card-text">Điểm: 10</p>
-                        <p class="card-text">Trạng thái: Đã chấm</p>
+                    <div class="col-lg-6 mb-3">
+                      <div class="p-2" style="border-radius: 10px; border: 1px solid #02080f33;">
+                        <a href="#" class="file-link text-dark d-block" data-file="deso2.jpg">
+                          <img src="../assets/images/logos/favicon.png" alt="Demo Image" width="60px" class="mx-2">
+                          deso2.jpg
+                        </a>
                       </div>
-                      <div class="card-body">
-                        <!-- Hiển thị file bài nộp của sinh viên -->
-                        <div class="mb-3">
-                          <p>Danh sách file bài nộp</p>
-                          <!-- Placeholder for file list -->
-                        </div>
-                        <!-- Nút upload file -->
-                        <div class="mb-3">
-                          <input type="file" class="form-control" id="fileUpload">
-                          <button class="btn btn-primary mt-2">Nộp bài</button>
-                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <div class="p-2" style="border-radius: 10px; border: 1px solid #02080f33;">
+                        <a href="#" class="file-link text-dark d-block" data-file="deso3.jpg">
+                          <img src="../assets/images/logos/favicon.png" alt="Demo Image" width="60px" class="mx-2">
+                          deso3.jpg
+                        </a>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <div class="col-md-4">
+              <div class="card" style="box-shadow: 0 1px 2px 0 rgba(60,64,67,.3),0 2px 6px 2px rgba(60,64,67,.15) ">
+                <div class="card-header" style="background-color: white;  padding: 10px 20px;">
+                  <div class="d-flex justify-content-between align-items-center" >
+                    <h4 class="card-text">Bài nộp của bạn</h4>
+                    <p class="card-text text-dark">Đã chấm điểm</p>
+                  </div>
+                </div>
+                <div class="card-body" style="padding-top: 0%;">
+                  <!-- Hiển thị file bài nộp của sinh viên -->
+                  <div class="mb-3">
+                    <a href="#" class="file-link form-control border mb-3" data-file="bainop1.jpg">
+                      <img src="../assets/images/logos/favicon.png" width="50px" alt="Demo Image" class="mx-1">
+                      bainop1.jpg
+                    </a>
+                    <a href="#" class="file-link form-control border mb-3" data-file="bainop1.jpg">
+                      <img src="../assets/images/logos/favicon.png" width="50px" alt="Demo Image" class="mx-1">
+                      bainop1.jpg
+                    </a>
+                    <a href="#" class="file-link form-control border mb-3" data-file="bainop1.jpg">
+                      <img src="../assets/images/logos/favicon.png" width="50px" alt="Demo Image" class="mx-1">
+                      bainop1.jpg
+                    </a>
+                    <form action="" class="form-group">
+                      <input type="file" class="form-control mt-4" id="fileUpload" name="" multiple>
+                      <button class="btn btn-primary mt-4 form-control" type="submit">Gửi lại</button>
+                    </form>
+                    <!-- Placeholder for file list -->
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
+  </div>
+  </div>
+
+  </div>
   </div>
   <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
   <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

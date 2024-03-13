@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace _20T1020433KLTN.Infrastructure.Entities
 {
-    public class CourseClassDto : BaseEntity
-    {
+    public class CourseClassDto {  
         public string CourseName { get; set; }
 
         public Guid LecturerId { get; set; }

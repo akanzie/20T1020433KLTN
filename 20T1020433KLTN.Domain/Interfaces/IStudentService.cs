@@ -9,9 +9,11 @@ namespace _20T1020433KLTN.Domain.Interfaces
 {
     public interface IStudentService
     {
-        List<Exam> GetPendingExams(string studentId);
-        void SubmitExam(string studentId, Guid examId, Submission submissionDetails);
-        void UpdateSubmission(string studentId, Guid examId, Submission newSubmissionDetails);
-        void CancelSubmission(string studentId, Guid examId);
+        IList<Exam> GetListExams(string studentId);
+        IList<Exam> GetListExams(long courseId);
+        Exam GetExamById(long examId);
+        int SubmitExam(long examId, string studentId, string ipAddress, DateTime timeSubmit, List<SubmissionFile> submissionFiles);
+        int EditSubmision(long examId, string studentId, string ipAddress, DateTime timeSubmit, List<SubmissionFile> submissionFiles);
+        int DeleteSubmision(long submissionId, string studentId);
     }
 }

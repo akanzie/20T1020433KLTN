@@ -8,9 +8,9 @@ using System.Text;
 
 namespace _20T1020433KLTN.Infrastructure.Configurations
 {
-    public class LecturerConfiguration : IEntityTypeConfiguration<Lecturer>
+    public class LecturerConfiguration : IEntityTypeConfiguration<Teacher>
     {
-        public void Configure(EntityTypeBuilder<Lecturer> builder)
+        public void Configure(EntityTypeBuilder<Teacher> builder)
         {
         }
     }

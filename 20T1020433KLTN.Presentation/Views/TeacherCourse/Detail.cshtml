@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/Teacher/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="d-flex align-items-stretch">
+        <div class="card w-100">
+            <div class="card-body p-4">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="nav-detail-tab" data-bs-toggle="tab" data-bs-target="#nav-detail"
+                                type="button" role="tab" aria-controls="nav-detail" aria-selected="true">
+                            Thông tin về lớp học
+                            phần
+                        </button>
+                        <button class="nav-link" id="nav-exam-tab" data-bs-toggle="tab" data-bs-target="#nav-exam"
+                                type="button" role="tab" aria-controls="nav-exam" aria-selected="false">
+                            Kì thi của lớp
+                        </button>
+                        <button class="nav-link" id="nav-student-tab" data-bs-toggle="tab" data-bs-target="#nav-student"
+                                type="button" role="tab" aria-controls="nav-student" aria-selected="false">
+                            Danh sách sinh
+                            viên
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-detail" role="tabpanel" aria-labelledby="nav-detail-tab">
+                        <fieldset class="container-fluid form-horizontal hitec-fieldset">
+                            <legend>Thông tin chung</legend>
+
+                            <div class="row form-group hitec-border-bottom-dotted">
+                                <label class="control-label col-xs-3">Tên lớp học phần:</label>
+                                <div class="col-xs-9">
+                                    <p class="form-control-static">Nhập m&#244;n tr&#237; tuệ nh&#226;n tạo - Nh&#243;m 5</p>
+                                </div>
+                            </div>
+
+                            <div class="row form-group hitec-border-bottom-dotted">
+                                <label class="control-label col-xs-3">Mã lớp học phần:</label>
+                                <div class="col-xs-3">
+                                    <p class="form-control-static">2022-2023.2.TIN3113.005</p>
+                                </div>
+                                <label class="control-label col-xs-3">Số tín chỉ:</label>
+                                <div class="col-xs-3">
+                                    <p class="form-control-static">3</p>
+                                </div>
+                            </div>
+
+                            <div class="row form-group hitec-border-bottom-dotted">
+                                <label class="control-label col-xs-3">Giảng viên:</label>
+                                <div class="col-xs-9">
+                                    <p class="form-control-static">Đoàn Thị Hồng Phước,Nguyễn Ngọc Thủy (1990)</p>
+                                </div>
+                            </div>
+
+                            <div class="row form-group hitec-border-bottom-dotted">
+                                <label class="control-label col-xs-3">Đơn vị phụ trách:</label>
+                                <div class="col-xs-9">
+                                    <p class="form-control-static">Khoa C&#244;ng nghệ th&#244;ng tin</p>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+
+
+                        <fieldset class="container-fluid form-horizontal hitec-fieldset">
+                            <legend>Cách đánh giá điểm quá trình học, điểm thi kết thúc học phần (dự kiến)</legend>
+
+                            <div class="row form-group hitec-border-bottom-dotted">
+                                <label class="control-label col-xs-3">Điểm QTHT:</label>
+                                <div class="col-xs-9">
+                                    <p class="form-control-static"> Điểm CC x 10% + Điểm KT1 x 10% + Điểm KT2 x 20%</p>
+                                </div>
+                            </div>
+
+                            <div class="row form-group hitec-border-bottom-dotted">
+                                <label class="control-label col-xs-3">Điểm kết thúc học phần:</label>
+                                <div class="col-xs-9">
+                                    <p class="form-control-static">Điểm QTHT x 40% + Điểm thi x 60%</p>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="tab-pane fade" id="nav-exam" role="tabpanel" aria-labelledby="nav-exam-tab">
+                        <div id="examContent">
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-student" role="tabpanel" aria-labelledby="nav-student-tab">
+                        <div id="studentContent">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            // Load student list content when student tab is clicked
+            $("#nav-student-tab").click(function (e) {
+                e.preventDefault();
+                $("#studentContent").load("~/TeacherCourse/ListStudent");
+            });
+
+            $("#nav-exam-tab").click(function (e) {
+                e.preventDefault();
+                $("#examContent").load("~/TeacherCourse/ListExam");
+            });
+        });
+    </script>
+}

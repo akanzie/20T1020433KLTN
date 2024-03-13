@@ -1,30 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _20T1020433KLTN.Infrastructure.Entities;
 
 namespace _20T1020433KLTN.Domain.Entities
 {
     /// <summary>
-    /// Sinh viên
+    /// Sinh viên - Lớp học phần
     /// </summary>
-    public class Student 
+    public class StudentCourse
     {
         /// <summary>
         /// Mã sinh viên
         /// </summary>
         public string StudentId { get; set; }
         /// <summary>
-        /// Họ tên sinh viên
+        /// Mã lớp học phần
         /// </summary>
-        public string FullName { get; set; }
+        public string CourseId { get; set; }
         /// <summary>
-        /// Email của sinh viên
+        /// Đã thanh toán học phí chưa
         /// </summary>
-        public string Email { get; set; }
+        public bool isTuitionPaid { get; set; }
 
     }
 }

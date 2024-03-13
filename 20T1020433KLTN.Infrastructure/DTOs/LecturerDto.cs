@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace _20T1020433KLTN.Domain.Entities.Lecturer
 {
-    public class LecturerDto : BaseEntity
+    public class LecturerDto
     {
         private String FullName { get; set; }
         public string Email { get; set; }

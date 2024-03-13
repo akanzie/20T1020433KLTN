@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace _20T1020433KLTN.Infrastructure.Repositories
 {
-    public class StudentRepository : IStudentRepository
+    public class StudentRepository 
     {
         private readonly MyDbContext _context;
 

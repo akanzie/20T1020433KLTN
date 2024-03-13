@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Interfaces
+namespace _20T1020433KLTN.Domain.Entities
 {
-    public interface ITeacherRepository
+    public class ExamFile : File
     {
+        public long ExamId { get; set; }
     }
 }
