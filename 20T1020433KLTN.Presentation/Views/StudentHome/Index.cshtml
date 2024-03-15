@@ -1,8 +1,16 @@
 ﻿@{
     Layout = "~/Views/Shared/Student/_Layout.cshtml";
 }
-<div class="container-fluid">
+<div class="container-fluid" style="padding-bottom: 10px">
     <!--  Row 1 -->
+    <div class="d-sm-none d-inline">
+        <select class="form-select">
+            <option value="1">Học kỳ: 2, năm học: 2023-2024</option>
+            <option value="2">Học kỳ: 2, năm học: 2023-2024</option>
+            <option value="3">Học kỳ: 2, năm học: 2023-2024</option>
+            <option value="4">Học kỳ: 2, năm học: 2023-2024</option>
+        </select>
+    </div>
     <div class="d-flex align-items-stretch">
         <div class="card w-100">
             <div class="card-body p-4">
@@ -126,95 +134,167 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-6 col-xl-3">
-        <div class="card overflow-hidden rounded-2">
-            <div class="card-body pt-3 p-4" style="background-color: royalblue;">
-                <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="fw-semibold fs-4 mb-0" style="color: white;">
-                        Phước Đoàn Hồng Thị <span class="ms-2 fw-normal text-muted fs-3" style="color: white;"></span>
-                    </h6>
-
+<div class="container-fluid" style="padding-top: 10px">
+    <h5 class="card-title fw-semibold mb-4">Danh sách lớp học</h5>
+    <div class="row">
+        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
+            <div class="card overflow-hidden rounded-2" style="justify-content: center">
+                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
+                    <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0" style="color: white;">
+                            Phước Đoàn Hồng Thị
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="position-relative" style="background-color: white;">
-                <div class="container p-3" style="height: 250px;">
-                    <!-- Container content and buttons -->
-                    <b>Đến hạn hôm nay</b>
-                    <br>
-                    <span><a href="~/StudentExam/Detail" style="color: black;">9g30 - Thi kết thúc học phần</a> </span>
-                    <div class="float-end">
-                        <a class="btn btn-primary" href="~/StudentCourse/Detail">Xem</a>
+                <div class="position-relative" style="background-color: white;">
+                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
+                        <!-- Container content and buttons -->
+                        <div>
+                            <b>Đến hạn hôm nay</b>
+                            <br>
+                            <a href="~/StudentExam/Detail" style="color: black;">9g30 - Thi kết thúc học phần</a>
+                        </div>
+
+                        <div class="text-end">
+                            <a class="btn btn-primary" href="~/StudentCourse/Detail">Xem</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card overflow-hidden rounded-2">
-            <div class="card-body pt-3 p-4" style="background-color: royalblue;">
-                <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="fw-semibold fs-4 mb-0" style="color: white;">
-                        Phước Đoàn Hồng Thị <span class="ms-2 fw-normal text-muted fs-3" style="color: white;"></span>
-                    </h6>
-
+        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
+            <div class="card overflow-hidden rounded-2" style="justify-content: center">
+                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
+                    <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0" style="color: white;">
+                            Phước Đoàn Hồng Thị
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="position-relative" style="background-color: white;">
-                <div class="container p-3" style="height: 250px;">
-                    <!-- Container content and buttons -->
-                    <div class="float-end">
-                        <button class="btn btn-primary">Button 1</button>
-                        <button class="btn btn-secondary ms-2">Button 2</button>
+                <div class="position-relative" style="background-color: white;">
+                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
+                        <!-- Container content and buttons -->
+                        <div>
+                            <b>Đến hạn hôm nay</b>
+                            <br>
+                            <a href="~/StudentExam/Detail" style="color: black;">9g30 - Thi kết thúc học phần</a>
+                        </div>
+
+                        <div class="text-end">
+                            <a class="btn btn-primary" href="~/StudentCourse/Detail">Xem</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card overflow-hidden rounded-2">
-            <div class="card-body pt-3 p-4" style="background-color: royalblue;">
-                <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="fw-semibold fs-4 mb-0" style="color: white;">
-                        Phước Đoàn Hồng Thị <span class="ms-2 fw-normal text-muted fs-3" style="color: white;"></span>
-                    </h6>
-
+        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
+            <div class="card overflow-hidden rounded-2" style="justify-content: center">
+                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
+                    <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0" style="color: white;">
+                            Phước Đoàn Hồng Thị
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="position-relative" style="background-color: white;">
-                <div class="container p-3" style="height: 250px;">
-                    <!-- Container content and buttons -->
-                    <div class="float-end">
-                        <button class="btn btn-primary">Button 1</button>
-                        <button class="btn btn-secondary ms-2">Button 2</button>
+                <div class="position-relative" style="background-color: white;">
+                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
+                        <!-- Container content and buttons -->
+                        <div>
+                            <b>Đến hạn hôm nay</b>
+                            <br>
+                            <a href="~/StudentExam/Detail" style="color: black;">9g30 - Thi kết thúc học phần</a>
+                        </div>
+
+                        <div class="text-end">
+                            <a class="btn btn-primary" href="~/StudentCourse/Detail">Xem</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card overflow-hidden rounded-2">
-            <div class="card-body pt-3 p-4" style="background-color: royalblue;">
-                <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="fw-semibold fs-4 mb-0" style="color: white;">
-                        Phước Đoàn Hồng Thị <span class="ms-2 fw-normal text-muted fs-3" style="color: white;"></span>
-                    </h6>
+        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
+            <div class="card overflow-hidden rounded-2" style="justify-content: center">
+                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
+                    <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0" style="color: white;">
+                            Phước Đoàn Hồng Thị
+                        </p>
+                    </div>
+                </div>
+                <div class="position-relative" style="background-color: white;">
+                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
+                        <!-- Container content and buttons -->
+                        <div>
+                            <b>Đến hạn hôm nay</b>
+                            <br>
+                            <a href="~/StudentExam/Detail" style="color: black;">9g30 - Thi kết thúc học phần</a>
+                        </div>
 
+                        <div class="text-end">
+                            <a class="btn btn-primary" href="~/StudentCourse/Detail">Xem</a>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-            <div class="position-relative" style="background-color: white;">
-                <div class="container p-3" style="height: 250px;">
-                    <!-- Container content and buttons -->
-                    <div class="float-end">
-                        <button class="btn btn-primary">Button 1</button>
-                        <button class="btn btn-secondary ms-2">Button 2</button>
+        </div>
+        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
+            <div class="card overflow-hidden rounded-2" style="justify-content: center">
+                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
+                    <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0" style="color: white;">
+                            Phước Đoàn Hồng Thị
+                        </p>
+                    </div>
+                </div>
+                <div class="position-relative" style="background-color: white;">
+                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
+                        <!-- Container content and buttons -->
+                        <div>
+                            <b>Đến hạn hôm nay</b>
+                            <br>
+                            <a href="~/StudentExam/Detail" style="color: black;">9g30 - Thi kết thúc học phần</a>
+                        </div>
+
+                        <div class="text-end">
+                            <a class="btn btn-primary" href="~/StudentCourse/Detail">Xem</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
+            <div class="card overflow-hidden rounded-2" style="justify-content: center">
+                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
+                    <h6 class="fw-semibold fs-4" style="color: white;">Nhập môn trí tuệ nhân tạo</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <p class="mb-0" style="color: white;">
+                            Phước Đoàn Hồng Thị
+                        </p>
+                    </div>
+                </div>
+                <div class="position-relative" style="background-color: white;">
+                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
+                        <!-- Container content and buttons -->
+                        <div>
+                            <b>Đến hạn hôm nay</b>
+                            <br>
+                            <a href="~/StudentExam/Detail" style="color: black;">9g30 - Thi kết thúc học phần</a>
+                        </div>
+
+                        <div class="text-end">
+                            <a class="btn btn-primary" href="~/StudentCourse/Detail">Xem</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
