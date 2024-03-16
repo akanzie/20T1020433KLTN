@@ -16,7 +16,10 @@ namespace _20T1020433KLTN.Application.Controllers.Teacher
         {
             return View();
         }
-       
+        public IActionResult Submission(int submissionId = 0)
+        {
+            return View();
+        }
         public IActionResult Update()
         {
             return View();
