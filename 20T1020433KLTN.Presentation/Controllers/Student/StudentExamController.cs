@@ -16,5 +16,9 @@ namespace _20T1020433KLTN.Application.Controllers.Student
         {
             return View();
         }
+        public IActionResult ListExam()
+        {
+            return View();
+        }
     }
 }

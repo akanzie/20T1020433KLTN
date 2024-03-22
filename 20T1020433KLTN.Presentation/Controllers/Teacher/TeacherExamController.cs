@@ -12,7 +12,23 @@ namespace _20T1020433KLTN.Application.Controllers.Teacher
         {
             return View();
         }
-        public IActionResult Create()
+        public IActionResult CreateExam()
+        {
+            return View();
+        }
+        public IActionResult CreateTest()
+        {
+            return View();
+        }
+        public IActionResult ListExam()
+        {
+            return View();
+        }
+        public IActionResult SelectStudents()
+        {
+            return View();
+        }
+        public IActionResult SelectCourses()
         {
             return View();
         }
