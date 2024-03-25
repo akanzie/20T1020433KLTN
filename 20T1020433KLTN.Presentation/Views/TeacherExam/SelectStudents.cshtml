@@ -19,31 +19,38 @@
         <div class="col-md-6">
             <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
                 <div class="mb-3 mt-2 ms-3 mx-3">
-                    <h4>Lớp A</h4>
+                    <h4><strong>Lớp A </strong> <span>(3)</span> </h4>
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="selectAllClassA">
-                        <label class="form-check-label" for="selectAllClassA">
+                        <input class="form-check-input" type="checkbox" id="selectAllClass1">
+                        @* selectAllClass@(counter) *@
+                        <label class="form-check-label" for="selectAllClass1">
                             Chọn tất cả
                         </label>
                     </div>
-                    <div id="classAStudents">
+                    <div id="class1Students">
                         <span class="d-block">
                             <input type="checkbox" class="form-check-input" id="student1">
-                            <label class="form-check-label" for="student1">MSV1: Sinh viên 1</label>
+                            <label class="form-check-label" for="student1">
+                                <span class="badge text-primary">MSV1</span>
+                                <span class="badge text-secondary">Sinh viên 1</span>
+                            </label>
                         </span>
                         <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student2">
-                            <label class="form-check-label" for="student2">MSV2: Sinh viên 2</label>
+                            <input type="checkbox" class="form-check-input" id="student1">
+                            <label class="form-check-label" for="student1">
+                                <span class="badge text-primary">MSV2</span>
+                                <span class="badge text-secondary">Sinh viên 2</span>
+                            </label>
                         </span>
                     </div>
                 </div>
             </div>
             <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
                 <div class="mb-3 mt-2 ms-3 mx-3">
-                    <h4>Lớp A</h4>
+                    <h4>Lớp B</h4>
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="selectAllClassA">
-                        <label class="form-check-label" for="selectAllClassA">
+                        <input class="form-check-input" type="checkbox" id="selectAllClass2">
+                        <label class="form-check-label" for="selectAllClassB">
                             Chọn tất cả
                         </label>
                     </div>
@@ -108,5 +115,33 @@
     </div>
 </div>
 
+<script>
+    const selectAllCheckbox = document.getElementById('selectAllClass1');
+    const itemCheckboxes = document.querySelectorAll('#class1Students input[type="checkbox"]');
+    console.log(selectAllCheckbox);
+    console.log(itemCheckboxes);
+    // Xử lý sự kiện khi checkbox "Chọn tất cả" được thay đổi
+    selectAllCheckbox.addEventListener('change', function () {
+        // Lặp qua tất cả các checkbox phần tử và đặt trạng thái chọn dựa trên trạng thái của checkbox "Chọn tất cả"
+        console.log('a');
+        console.log(selectAllCheckbox);
+        console.log(itemCheckboxes);
+        itemCheckboxes.forEach(function (checkbox) {
+            checkbox.checked = selectAllCheckbox.checked;
+            console.log("b")
+        });
+    });
 
+    // Xử lý sự kiện khi một checkbox phần tử khác được thay đổi
+    itemCheckboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            console.log(a1)
+            // Kiểm tra nếu tất cả các checkbox phần tử đã được chọn thì đánh dấu checkbox "Chọn tất cả" là đã được chọn
+            selectAllCheckbox.checked = [...itemCheckboxes].every(function (item) {
+                console.log(b1)
+                return item.checked;
+            });
+        });
+    });
+</script>
 

@@ -21,7 +21,8 @@
                     </div>
                     <div class="mb-3 ms-3 mx-3">
                         <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>
-                        <textarea class="form-control" id="instruction" rows="4"></textarea>
+                        <div id="ukeditor" class="uk-editor" uk-editor="true"></div>
+                        <textarea name="instruction" id="instruction" cols="80" rows="5"></textarea>
                     </div>
                     <div class="mb-3 form-check ms-3 mx-3">
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -98,4 +99,16 @@
         </div>
     </form>
 </div>
+<script>
+    // Khởi tạo UKEditor khi tài liệu được tải
+    document.addEventListener('DOMContentLoaded', function () {
+        UIkit.util.on('#ukeditor', 'editor-ready', function () {
+            const editor = UIkit.editor('#ukeditor');
 
+            // Lắng nghe sự kiện khi nội dung thay đổi và cập nhật giá trị của input hidden
+            editor.on('input', function (content) {
+                document.getElementById('instruction').value = content;
+            });
+        });
+    });
+</script>
