@@ -19,7 +19,7 @@ namespace DataLayers.Interfaces
         /// <param name="pageSize">Số dòng trên mỗi trang (bằng 0 nếu không phân trang)</param>
         /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu lấy toàn bộ dữ liệu)</param>
         /// <returns></returns>
-        IList<T> List(int page = 1, int pageSize = 0, string searchValue = "");
+        IList<T> GetList(int page = 1, int pageSize = 0, string searchValue = "");
         /// <summary>
         /// Đếm số lượng dòng dữ liệu tìm được
         /// </summary>

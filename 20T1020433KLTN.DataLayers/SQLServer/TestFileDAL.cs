@@ -4,7 +4,7 @@ using System.Numerics;
 using Dapper;
 using Nhom2.DomainModels;
 
-namespace Nhom2.DataLayers.SQLServer
+namespace _20T1020433KLTN.DataLayers.SQLServer
 {
     public class TestFileDAL : _BaseDAL, ICommonDAL<Employee>
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataLayers.SQLServer
+namespace _20T1020433KLTN.DataLayers.SQLServer
 {
     /// <summary>
     /// Lớp cha của các lớp cài đặt các phép xử lý dữ liệu trên SQL Server

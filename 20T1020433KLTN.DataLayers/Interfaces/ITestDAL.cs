@@ -32,7 +32,7 @@ namespace _20T1020433KLTN.Domain.Interfaces
         /// <param name="fromTime"></param>
         /// <param name="toTime"></param>
         /// <returns></returns>
-        IList<Test> GetTestsByStudentId(int page = 1, int pageSize = 0,
+        IList<Test> GetTestsOfStudent(int page = 1, int pageSize = 0,
             string studentId = "", string searchValue = "", TestType testType = TestType.All,
             TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null);
         /// <summary>
@@ -47,7 +47,7 @@ namespace _20T1020433KLTN.Domain.Interfaces
         /// <param name="fromTime"></param>
         /// <param name="toTime"></param>
         /// <returns></returns>
-        IList<Test> GetTestsByTeacherId(int page = 1, int pageSize = 0,
+        IList<Test> GetTestsOfTeacher(int page = 1, int pageSize = 0,
            string teacherId = "", string searchValue = "", TestType testType = TestType.All,
            TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null);
         /// <summary>
@@ -91,21 +91,21 @@ namespace _20T1020433KLTN.Domain.Interfaces
         /// </summary>
         /// <param name="testId"></param>
         /// <returns></returns>
-        IList<TestFile> GetTestFiles(int testId);
+        IList<TestFile> GetFilesOfTest(int testId);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="testId"></param>
         /// <param name="fileId"></param>
         /// <returns></returns>
-        TestFile? GetFile(Guid fileId);
+        TestFile? GetTestFile(Guid fileId);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="studentId"></param>
         /// <param name="examId"></param>
         /// <returns></returns>
-        int AddStudentParticipantTest(string studentId, int testId);
+        bool AddStudentParticipantTest(string studentId, int testId);
         /// <summary>
         /// 
         /// </summary>
@@ -128,5 +128,7 @@ namespace _20T1020433KLTN.Domain.Interfaces
         Student? GetStudent(string studentId);
 
         bool IsUsed(int id);
+        bool CheckFileOwner(string teacherId, Guid fileId);
+
     }
 }

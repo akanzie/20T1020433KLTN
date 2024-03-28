@@ -4,10 +4,9 @@ using _20T1020433KLTN.Domain.Entities;
 using _20T1020433KLTN.Domain.Enum;
 using _20T1020433KLTN.Domain.Interfaces;
 using Dapper;
-using DataLayers.SQLServer;
 
 
-namespace Nhom2.DataLayers.SQLServer
+namespace _20T1020433KLTN.DataLayers.SQLServer
 {
     public class TestDAL : _BaseDAL, ITestDAL
     {
@@ -15,8 +14,9 @@ namespace Nhom2.DataLayers.SQLServer
         {
         }
 
-        public int AddStudentParticipantTest(string studentId, int testId)
+        public bool AddStudentParticipantTest(string studentId, int testId)
         {
+            bool result = false;
             using (var connection = OpenConnection())
             {
                 var sql = @"insert into Tests (studentId, testId) 
@@ -28,10 +28,10 @@ namespace Nhom2.DataLayers.SQLServer
                     TestId = testId,
 
                 };
-                connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+                result = connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
                 connection.Close();
             }
-            return 1;
+            return result;
         }
 
         public int AddTest(Test data)
@@ -77,8 +77,8 @@ namespace Nhom2.DataLayers.SQLServer
                 {
                     FileId = id,
                     FileName = file.FileName ?? "",
-                    FilePath = file.FilePath,
-                    MimeType = file.MimeType,
+                    FilePath = file.FilePath ?? "",
+                    MimeType = file.MimeType ?? "",
                     Size = file.Size,
                     TestId = file.TestId
 
@@ -109,7 +109,20 @@ namespace Nhom2.DataLayers.SQLServer
 
         public bool DeleteStudentParticipantTest(string studentId, int testId)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"delete from TestStudents where StudentId = @StudentId and TestID = @TestID";
+                var parameters = new
+                {
+                    StudentId = studentId,
+                    TestId = testId,
+
+                };
+                result = connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
+                connection.Close();
+            }
+            return result;
         }
 
         public bool DeleteTest(int testID)
@@ -162,7 +175,7 @@ namespace Nhom2.DataLayers.SQLServer
             return data;
         }
 
-        public TestFile? GetFile(Guid fileId)
+        public TestFile? GetTestFile(Guid fileId)
         {
             TestFile? data = null;
             using (var connection = OpenConnection())
@@ -206,17 +219,35 @@ namespace Nhom2.DataLayers.SQLServer
             return list;
         }
 
-        public IList<TestFile> GetTestFiles(int testId)
+        public IList<TestFile> GetFilesOfTest(int testId)
+        {
+            List<TestFile> list = new List<TestFile>();
+
+            using (var connection = OpenConnection())
+            {
+                var sql = @"select FileId, FileName, FilePath, MimeType, Size
+                            from TestFiles as tf
+                                join Tests as t on tf.testId = t.testId
+                            where ts.testId = @TestId";
+
+                var parameters = new
+                {
+                    TestId = testId,
+                };
+
+                list = connection.Query<TestFile>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
+
+                connection.Close();
+            }
+            return list;
+        }
+
+        public IList<Test> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType testType = TestType.All, TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
 
-        public IList<Test> GetTestsByStudentId(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType testType = TestType.All, TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IList<Test> GetTestsByTeacherId(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType testType = TestType.All, TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null)
+        public IList<Test> GetTestsOfTeacher(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType testType = TestType.All, TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
@@ -247,7 +278,44 @@ namespace Nhom2.DataLayers.SQLServer
 
         public bool UpdateTest(Test data)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"update Tests
+                            set Title = @Title,
+                                Instructions = @Instructions,
+                                StartTime = @StartTime,
+                                EndTime = @EndTime,
+                                Status = @Status,
+                                IsCheckIP = @IsCheckIP,
+                                IsConductedAtSchool = @IsConductedAtSchool,
+                                CreatedTime = @CreatedTime,
+                                LastUpdateTime = @LastUpdateTime,
+                                TestType = @TestType,
+                                TeacherId = @TeacherId
+                            where TestId = @TestId";
+
+                var parameters = new
+                {
+                    Title = data.Title ?? "",
+                    Instructions = data.Instructions ?? "",
+                    StartTime = data.StartTime,
+                    EndTime = data.EndTime,
+                    Status = data.Status.ToString(),
+                    IsCheckIP = data.IsCheckIP,
+                    IsConductedAtSchool = data.IsConductedAtSchool,
+                    CreatedTime = data.CreatedTime,
+                    LastUpdateTime = data.LastUpdateTime,
+                    TestType = data.TestType.ToString(),
+                    TeacherId = data.TeacherId,
+                    TestId = data.TestId
+                };
+
+                result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                connection.Close();
+            }
+
+            return result;
         }
     }
 }

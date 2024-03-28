@@ -5,7 +5,7 @@ using DataLayers.SQLServer;
 using _20T1020433KLTN.Domain.Entities;
 using DataLayers.Interfaces;
 
-namespace SQLServer
+namespace _20T1020433KLTN.DataLayers.SQLServer
 {
     public class StudentDAL : _BaseDAL, ICommonAPI<Student>
     {

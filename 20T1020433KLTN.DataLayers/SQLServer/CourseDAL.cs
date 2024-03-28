@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SQLServer
+namespace _20T1020433KLTN.DataLayers.SQLServer
 {
     public interface CourseDAL
     {

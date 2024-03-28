@@ -1,9 +1,8 @@
 ﻿using Dapper;
 using System.Data;
 using Microsoft.Data.SqlClient;
-using Nhom2.DomainModels;
 
-namespace Nhom2.DataLayers.SQLServer
+namespace _20T1020433KLTN.DataLayers.SQLServer
 {
     public class SubmissionFileDAL : _BaseDAL, ICommonDAL<Province>
     {

@@ -2,7 +2,6 @@
 using _20T1020433KLTN.Domain.Enum;
 using _20T1020433KLTN.Domain.Interfaces;
 using Microsoft.VisualBasic;
-using Nhom2.DataLayers.SQLServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
