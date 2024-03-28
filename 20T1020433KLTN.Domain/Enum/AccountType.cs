@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Entities
+namespace _20T1020433KLTN.Domain.Enum
 {
-    public class SubmissionFile : File
+    public enum AccountType
     {
-
-        public int SubmissionId { get; set; }
+        Teacher,
+        Student
     }
 }

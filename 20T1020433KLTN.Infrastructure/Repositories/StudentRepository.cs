@@ -1,6 +1,4 @@
-﻿using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Domain.Interfaces;
-using _20T1020433KLTN.Infrastructure.Contexts;
+﻿using _20T1020433KLTN.Infrastructure.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

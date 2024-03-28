@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Interfaces
+namespace _20T1020433KLTN.Domain.Entities
 {
-    internal class IFileRepository
+    public class TestFile : File
     {
+        public int TestId { get; set; }
     }
 }

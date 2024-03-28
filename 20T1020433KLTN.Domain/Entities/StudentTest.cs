@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace _20T1020433KLTN.Domain.Entities
 {
-    public class ExamFile : File
+    public class StudentTest
     {
-        public long ExamId { get; set; }
+        public string StudentId { get; set; }
+        public int TestId { get; set; }
+
     }
 }

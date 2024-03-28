@@ -16,7 +16,7 @@ namespace _20T1020433KLTN.Infrastructure.Contexts
     {
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> CourseClasses { get; set; }
-        public DbSet<Exam> Exams { get; set; }
+        public DbSet<Test> Exams { get; set; }
         public DbSet<Teacher> Lecturers { get; set; }
         public DbSet<Submission> Submissions { get; set; }
 

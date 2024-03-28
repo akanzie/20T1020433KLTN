@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace _20T1020433KLTN.Domain.Entities
 {
-    public abstract class File
+    public class File
     {
-        public long FileId { get; set; }
-        public string FileName { get; set; }
-        public string FilePath { get; set; }
-        public string FileType { get; set; }
+        public Guid FileId { get; set; }
+        public string FileName { get; set; } = "";    
+        public string FilePath { get; set; } = "";
+        public string MimeType { get; set; }
         public long Size { get; set; }
     }
 }

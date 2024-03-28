@@ -10,10 +10,11 @@ namespace _20T1020433KLTN.Domain.Enum
     /// Trạng thái của bài nộp
     /// </summary>
     public enum SubmissionStatus
-    {        
-        Submitted,              //Đã nộp    
-        Graded,                 //Đã chấm điểm
-        LateSubmission,         //Đã nộp muộn
-        PendingProcessing       //Đang chờ xử lý
+    {
+        NotSubmitted,           // Chưa nộp bài
+        Absent,                 // Thiếu (không nộp bài)
+        Submitted,              // Đã nộp    
+        LateSubmission,         // Đã nộp muộn
+        PendingProcessing       // Đang chờ xử lý
     }
 }

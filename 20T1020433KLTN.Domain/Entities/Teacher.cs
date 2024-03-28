@@ -13,18 +13,12 @@ namespace _20T1020433KLTN.Domain.Entities
     /// </summary>
     public class Teacher
     {
-        /// <summary>
-        /// Mã giảng viên
-        /// </summary>
+
+
         public string TeacherId { get; set; }
-        /// <summary>
-        /// Họ tên của giảng viên
-        /// </summary>
-        public string FullName { get; set; }
-        /// <summary>
-        /// Email của giảng viên
-        /// </summary>
-        public string Email { get; set; }
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
+        public string Email { get; set; } = "";
 
     }
 }

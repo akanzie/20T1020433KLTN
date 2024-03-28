@@ -14,33 +14,11 @@ namespace _20T1020433KLTN.Domain.Entities
     /// </summary>
     public class Submission 
     {
-        /// <summary>
-        /// Mã bài nộp
-        /// </summary>
-        public long SubmissionId { get; set; }
-        /// <summary>
-        /// Thời gian nộp
-        /// </summary>
+        public int SubmissionId { get; set; }
         public DateTime SubmitTime {  get; set; }
-        /// <summary>
-        /// Mã sinh viên
-        /// </summary>
         public string StudentId { get; set; }
-        /// <summary>
-        /// Mã kỳ thi
-        /// </summary>
-        public long ExamId { get; set; }
-        /// <summary>
-        /// Số điểm
-        /// </summary>
-        public double Score { get; set; }
-        /// <summary>
-        /// Địa chỉ IP nộp bài
-        /// </summary>
+        public long TestId { get; set; }
         public String IPAddress {  get; set; }
-        /// <summary>
-        /// Trạng thái
-        /// </summary>
         public SubmissionStatus Status { get; set; }
 
     }

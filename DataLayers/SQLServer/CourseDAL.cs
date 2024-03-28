@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Entities
+namespace SQLServer
 {
-    public class SubmissionFile : File
+    public interface CourseDAL
     {
-
-        public int SubmissionId { get; set; }
     }
 }

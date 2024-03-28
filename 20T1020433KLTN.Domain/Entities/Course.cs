@@ -11,19 +11,10 @@ namespace _20T1020433KLTN.Infrastructure.Entities
     /// <summary>
     /// Lớp học phần
     /// </summary>
-    public class Course 
-    {   
-        /// <summary>
-        /// Mã lớp học phần
-        /// </summary>
+    public class Course
+    {
         public string CourseId { get; set; }
-        /// <summary>
-        /// Tên lớp học phần
-        /// </summary>
-        public string CourseName { get; set; }
-        /// <summary>
-        /// Mã giáo viên giảng dạy
-        /// </summary>
+        public string CourseName { get; set; } = "";
         public string TeacherId { get; set; }
 
     }

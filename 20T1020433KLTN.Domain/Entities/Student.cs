@@ -11,20 +11,13 @@ namespace _20T1020433KLTN.Domain.Entities
     /// <summary>
     /// Sinh viên
     /// </summary>
-    public class Student 
+    public class Student
     {
-        /// <summary>
-        /// Mã sinh viên
-        /// </summary>
+
         public string StudentId { get; set; }
-        /// <summary>
-        /// Họ tên sinh viên
-        /// </summary>
-        public string FullName { get; set; }
-        /// <summary>
-        /// Email của sinh viên
-        /// </summary>
-        public string Email { get; set; }
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
+        public string Email { get; set; } = "";
 
     }
 }

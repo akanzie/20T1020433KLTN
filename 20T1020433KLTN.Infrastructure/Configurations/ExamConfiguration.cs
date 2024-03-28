@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Text;
 namespace _20T1020433KLTN.Infrastructure.Configurations
 {
-    public class ExamConfiguration : IEntityTypeConfiguration<Exam>
+    public class ExamConfiguration : IEntityTypeConfiguration<Test>
     {
-        public void Configure(EntityTypeBuilder<Exam> builder)
+        public void Configure(EntityTypeBuilder<Test> builder)
         {
             
         }

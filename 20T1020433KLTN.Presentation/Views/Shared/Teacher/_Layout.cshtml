@@ -20,9 +20,9 @@
         @Html.Partial("~/Views/Shared/Teacher/_SideBar.cshtml")
         <div class="body-wrapper">
             @Html.Partial("~/Views/Shared/Teacher/_Header.cshtml")
-            
-                @RenderBody()
-            
+
+            @RenderBody()
+
         </div>
     </div>
     <script src="~/Modernize-1.0.0/src/assets/libs/jquery/dist/jquery.min.js"></script>
@@ -32,11 +32,9 @@
     <script src="~/Modernize-1.0.0/src/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
     <script src="~/Modernize-1.0.0/src/assets/libs/simplebar/dist/simplebar.js"></script>
     <script src="~/Modernize-1.0.0/src/assets/js/dashboard.js"></script>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.7.0/js/uikit.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.7.0/js/uikit-icons.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
