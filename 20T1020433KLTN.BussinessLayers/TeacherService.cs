@@ -94,7 +94,14 @@ namespace _20T1020433KLTN.BussinessLayers
         }
         public static bool DeleteTest(int testId)
         {
-            return testDB.DeleteTest(testId);
+            var data = testDB.GetById(testId);
+            if (data == null)
+                return false;
+
+            if (data.Status == TestStatus.Upcoming
+            || data.Status == TestStatus.Cancelled)
+                return testDB.DeleteTest(testId);
+            return false;
         }
     }
 }

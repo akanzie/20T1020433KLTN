@@ -17,7 +17,7 @@ namespace _20T1020433KLTN.Domain.Entities
 
         public int TestId { get; set; }
         public string Title { get; set; } = "";
-        public string Instructions { get; set; } = "";
+        public string Instruction { get; set; } = "";
         public TestType TestType { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

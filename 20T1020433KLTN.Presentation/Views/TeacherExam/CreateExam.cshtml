@@ -17,27 +17,32 @@
                 <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
                     <div class="mb-3 ms-3 mt-2 mx-3">
                         <label for="title" class="form-label">Tiêu đề:</label>
-                        <input type="text" class="form-control" id="title" required>
+                        <input type="text" class="form-control" id="title" required name="Title">
                     </div>
                     <div class="mb-3 ms-3 mx-3">
                         <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>
-                        <div id="ukeditor" class="uk-editor" uk-editor="true"></div>
-                        <textarea name="instruction" id="instruction" cols="80" rows="5"></textarea>
+                        
+                        <textarea name="Instruction" id="instruction" cols="80" rows="5"></textarea>
                     </div>
                     <div class="mb-3 form-check ms-3 mx-3">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Kiểm tra IP</label>
+                        <input type="checkbox" class="form-check-input" id="isCheckIP" name="IsCheckIP">
+                        <label class="form-check-label" for="isCheckIP">Kiểm tra IP</label>
                     </div>
                     <div class="mb-3 form-check ms-3 mx-3">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Thi trên máy trường</label>
+                        <input type="checkbox" class="form-check-input" id="isConductedAtSchool" name="IsConductedAtSchool">
+                        <label class="form-check-label" for="isConductedAtSchool">Thi trên máy trường</label>
                     </div>
                 </div>
                 <div class="col-lg mb-4" style="border: #dadce0 1px solid; border-radius: 15px;">
-                    <div class="mb-3 ms-3 mt-2 mx-3">
-                        <label for="upload-file" class="form-label">Upload file đề thi:</label>
-                        <input type="file" multiple class="form-control" id="upload-file">
-                    </div>
+                    <form method="post" enctype="multipart/form-data" action="UploadTestFile">
+                        <div class="mb-3 ms-3 mt-2 mx-3">
+                            <label for="upload-file" class="form-label">Upload file đề thi:</label>
+                            <input type="file" name="file" class="form-control" id="upload-file">
+                        </div>
+                        <div class="mb-3 ms-3 mt-2 mx-3">
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <!-- Cột phải -->
@@ -83,11 +88,11 @@
                 <div class="col-lg" style="border: #dadce0 1px solid; border-radius: 15px;">
                     <div class="mb-3 mt-2 ms-3 mx-3 ">
                         <label for="start-time" class="form-label">Thời gian bắt đầu:</label>
-                        <input type="datetime-local" class="form-control" id="start-time" required>
+                        <input type="datetime-local" class="form-control" id="start-time" required name="StartTime">
                     </div>
                     <div class="mb-3 ms-3 mx-3 ">
                         <label for="deadline" class="form-label">Hạn nộp:</label>
-                        <input type="datetime-local" class="form-control" id="deadline" required>
+                        <input type="datetime-local" class="form-control" id="deadline" required name="EndTime">
                     </div>
 
                     <div class="mb-3 form-check ms-3 mx-3">
@@ -99,16 +104,3 @@
         </div>
     </form>
 </div>
-<script>
-    // Khởi tạo UKEditor khi tài liệu được tải
-    document.addEventListener('DOMContentLoaded', function () {
-        UIkit.util.on('#ukeditor', 'editor-ready', function () {
-            const editor = UIkit.editor('#ukeditor');
-
-            // Lắng nghe sự kiện khi nội dung thay đổi và cập nhật giá trị của input hidden
-            editor.on('input', function (content) {
-                document.getElementById('instruction').value = content;
-            });
-        });
-    });
-</script>

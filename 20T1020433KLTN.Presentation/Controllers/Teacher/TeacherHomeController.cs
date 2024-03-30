@@ -1,4 +1,7 @@
-using _20T1020433KLTN.Application.Models;
+﻿using _20T1020433KLTN.Application.Models;
+using _20T1020433KLTN.BussinessLayers;
+using _20T1020433KLTN.Domain.Entities;
+using _20T1020433KLTN.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -13,9 +16,12 @@ namespace _20T1020433KLTN.Application.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string teacherId)
         {
-            return View();
+            List<Course> courses = TeacherService.GetCourses(teacherId);
+
+            // Trả về danh sách các khóa học đó cho view
+            return View(courses);
         }
 
         public IActionResult Privacy()

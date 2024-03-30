@@ -1,4 +1,6 @@
-﻿@{
+﻿
+@model _20T1020433KLTN.DomainModels.Test
+@{
     ViewData["Title"] = "ListExam";
     Layout = "~/Views/Shared/Teacher/_Layout.cshtml";
 }
@@ -6,12 +8,7 @@
 <div class="container-fluid">
     <form class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex">
-            <select class="form-select filter-select me-2" style="width: 200px;">
-                <option value="">Tất cả</option>
-                <option value="ket-thuc-hoc-phan">Chưa bắt đầu</option>
-                <option value="kiem-tra-giua-ky">Đang diễn ra</option>
-                <option value="ki-thi">Đã qua</option>
-            </select>
+            @Html.DropDownListFor(m => m.TestStatus, SelectListHelper.GetTestStatus(), new { @class = "form-select filter-select me-2" })
             <select class="form-select filter-select me-2" style="width: 200px;">
                 <option value="">Thi/Bài kiểm tra</option>
                 <option value="ket-thuc-hoc-phan">Thi kết thúc học phần</option>

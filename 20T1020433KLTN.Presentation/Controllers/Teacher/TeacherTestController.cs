@@ -1,0 +1,185 @@
+﻿using _20T1020433KLTN.BussinessLayers;
+using _20T1020433KLTN.Domain.Entities;
+using _20T1020433KLTN.Domain.Enum;
+using Microsoft.AspNetCore.Mvc;
+
+namespace _20T1020433KLTN.Application.Controllers.Teacher
+{
+    public class TeacherTestController : Controller
+    {
+        public IActionResult Detail(int testId = 0)
+        {
+            var test = TeacherService.GetTest(testId);
+            if (test == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var files = TeacherService.GetFilesOfTest(testId);
+            var model = new TestModel()
+            {
+                Test = test,
+                Files = files
+            };
+
+            return View(model);
+
+        }
+        public IActionResult ListSubmission(int testId = 0)
+        {
+            var test = TeacherService.GetTest(testId);
+            if (test == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var model = TeacherService.GetSubmissionsOfTest(testId);
+            return View(model);
+        }
+        public IActionResult CreateQuiz()
+        {
+            ViewBag.Title = "Tạo bài kiểm tra";
+            ViewBag.IsEdit = false;
+            var model = new Test()
+            {
+                TestId = 0,
+                TestType = TestType.Quiz
+            };
+
+            return View("CreateExam", model);
+        }
+        public IActionResult CreateExam()
+        {
+            ViewBag.Title = "Tạo bài thi";
+            ViewBag.IsEdit = false;
+            var model = new Test()
+            {
+                TestId = 0,
+                TestType = TestType.Exam
+            };
+
+            return View("CreateExam", model);
+        }
+        public IActionResult ListTest()
+        {
+            return View();
+        }
+        public IActionResult SelectStudents()
+        {
+            return View();
+        }
+        public IActionResult SelectCourses()
+        {
+            return View();
+        }
+        public IActionResult Submission(int submissionId = 0)
+        {
+            return View();
+        }
+        public IActionResult Update()
+        {
+            return View();
+        }
+        public IActionResult Delete()
+        {
+            return View();
+        }
+        public IActionResult Save()
+        {
+            return View();
+        }
+        public IActionResult Download()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> UploadTestFile(IFormFile file)
+        {
+            String teacherId = "123";
+            if (file != null && file.Length > 0)
+            {
+                int testId;
+                if (HttpContext.Session.TryGetValue("TestId", out byte[] testIdBytes))
+                {
+                    // Nếu đã có testId, chuyển từ byte[] thành Guid
+                    testId = BitConverter.ToInt32(testIdBytes, 0);
+                }
+                else
+                {
+                    // Nếu chưa có testId, tạo một bản ghi test và lấy testId từ đó
+
+                    testId = TeacherService.CreateTest(teacherId);
+                    HttpContext.Session.SetInt32("TestId", testId);
+                }
+                var uploadedFile = new TestFile
+                {
+                    FileId = Guid.NewGuid(),
+                    FileName = Path.GetFileName(file.FileName),
+                    MimeType = file.ContentType,
+                    Size = file.Length,
+                    TestId = testId
+                };
+
+                // Tạo đường dẫn lưu trữ trên server
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", uploadedFile.FileId.ToString());
+
+                // Lưu file vào đường dẫn vừa tạo
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                // Lưu thông tin về file vào CSDL
+                TeacherService.UploadTestFile(testId, uploadedFile);
+
+                return View("CreateExam");
+            }
+
+            return BadRequest();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SelectStudents(Test model)
+        {
+            int testId;
+            
+            // Kiểm tra xem testId đã được lưu trong session chưa
+            if (HttpContext.Session.TryGetValue("TestId", out byte[] testIdBytes))
+            {
+                // Nếu đã có testId, chuyển từ byte[] thành int
+                testId = BitConverter.ToInt32(testIdBytes, 0);
+                model.TestId = testId;
+                // Cập nhật bản ghi test
+                bool result = TeacherService.EditTest(model);                
+            }
+            else
+            {
+                // Nếu chưa có testId, tạo một bản ghi test mới
+                var test = new Test
+                {
+                    Title = model.Title,
+                    Instruction = model.Instruction,
+                    IsCheckIP = model.IsCheckIP,
+                    IsConductedAtSchool = model.IsConductedAtSchool,
+                    StartTime = model.StartTime,
+                    EndTime = model.EndTime,
+                    TeacherId = model.TeacherId,
+                    CreatedTime = DateTime.Now,
+                    TestType = TestType.Exam,
+                    
+                };
+
+                testId = TeacherService.InitTest(test);
+                
+
+                // Lưu testId vào session để sử dụng cho các lần upload file sau
+                HttpContext.Session.SetInt32("TestId", test.TestId);
+
+                testId = test.TestId;
+            }
+
+            // Redirect đến trang chọn sinh viên
+            return RedirectToAction("SelectStudents", new { TestId = testId });
+        }
+    }
+
+}

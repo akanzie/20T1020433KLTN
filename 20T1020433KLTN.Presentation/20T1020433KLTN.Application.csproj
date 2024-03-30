@@ -515,6 +515,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\20T1020433KLTN.BussinessLayers\20T1020433KLTN.BusinessLayers.csproj" />
+    <ProjectReference Include="..\20T1020433KLTN.DataLayers\20T1020433KLTN.DataLayers.csproj" />
     <ProjectReference Include="..\20T1020433KLTN.Domain\20T1020433KLTN.DomainModels.csproj" />
   </ItemGroup>
 
@@ -526,6 +527,7 @@
   <ItemGroup>
     <PackageReference Include="Duende.IdentityServer" Version="7.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+    <PackageReference Include="System.Security.Claims" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
