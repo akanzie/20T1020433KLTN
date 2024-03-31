@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Enum
+namespace KLTN20T102433.Domain.Enum
 {
     public enum AccountType
     {

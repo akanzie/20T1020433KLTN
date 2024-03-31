@@ -1,4 +1,4 @@
-﻿namespace _20T1020433KLTN.Application.AppCodes
+﻿namespace KLTN20T102433.Application.AppCodes
 {
     public class WebUserRole
     {

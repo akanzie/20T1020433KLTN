@@ -1,8 +1,8 @@
-﻿using _20T1020433KLTN.BussinessLayers;
-using _20T1020433KLTN.Domain.Enum;
+﻿using KLTN20T102433.BussinessLayers;
+using KLTN20T102433.Domain.Enum;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace _20T1020433KLTN.Application.AppCodes
+namespace KLTN20T102433.Application.AppCodes
 {
     public class SelectListHelper
     {
@@ -12,7 +12,7 @@ namespace _20T1020433KLTN.Application.AppCodes
 
             list.Add(new SelectListItem()
             {
-                Value = TestStatus.All.ToString(),
+                Value = "",
                 Text = "-- Tất cả --"
             });
 
@@ -22,6 +22,48 @@ namespace _20T1020433KLTN.Application.AppCodes
                 {
                     Value = item.ToString(),
                     Text = Utils.GetTestStatusDisplayName(item)
+                });
+            }
+
+            return list;
+        }
+        public static List<SelectListItem> GetTestType()
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+
+            list.Add(new SelectListItem()
+            {
+                Value = "",
+                Text = "-- Kỳ thi/Bài kiểm tra --"
+            });
+
+            foreach (TestType item in Enum.GetValues(typeof(TestType)))
+            {
+                list.Add(new SelectListItem()
+                {
+                    Value = item.ToString(),
+                    Text = Utils.GetTestTypeDisplayName(item)
+                });
+            }
+
+            return list;
+        }
+        public static List<SelectListItem> GetSubmissionStatus()
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+
+            list.Add(new SelectListItem()
+            {
+                Value = "",
+                Text = "-- Tất cả --"
+            });
+
+            foreach (SubmissionStatus item in Enum.GetValues(typeof(SubmissionStatus)))
+            {
+                list.Add(new SelectListItem()
+                {
+                    Value = item.ToString(),
+                    Text = Utils.GetSubmissionStatusDisplayName(item)
                 });
             }
 

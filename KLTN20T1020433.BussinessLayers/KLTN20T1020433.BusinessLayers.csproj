@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\20T1020433KLTN.DataLayers\KLTN20T1020433.DataLayers.csproj" />
-    <ProjectReference Include="..\20T1020433KLTN.Domain\KLTN20T1020433.DomainModels.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.DataLayers\KLTN20T1020433.DataLayers.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
   </ItemGroup>
 
 </Project>

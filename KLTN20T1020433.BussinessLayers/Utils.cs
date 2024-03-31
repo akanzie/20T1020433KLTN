@@ -1,11 +1,11 @@
-﻿using _20T1020433KLTN.Domain.Enum;
+﻿using KLTN20T102433.Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.BussinessLayers
+namespace KLTN20T102433.BussinessLayers
 {
     public static class Utils
     {
@@ -20,16 +20,44 @@ namespace _20T1020433KLTN.BussinessLayers
         {
             switch (status)
             {
-                case TestStatus.All:
-                    return "Tất cả";
                 case TestStatus.Upcoming:
                     return "Chưa bắt đầu";
                 case TestStatus.Ongoing:
                     return "Đang diễn ra";
                 case TestStatus.Finished:
                     return "Đã kết thúc";
-                case TestStatus.Cancelled:
+                case TestStatus.Canceled:
                     return "Đã bị hủy";
+                default:
+                    return "";
+            }
+        }
+        public static string GetTestTypeDisplayName(TestType status)
+        {
+            switch (status)
+            {
+                case TestType.Exam:
+                    return "Kỳ thi";
+                case TestType.Quiz:
+                    return "Bài kiểm tra";
+                default:
+                    return "";
+            }
+        }
+        public static string GetSubmissionStatusDisplayName(SubmissionStatus status)
+        {
+            switch (status)
+            {
+                case SubmissionStatus.NotSubmitted:
+                    return "Chưa nộp bài";
+                case SubmissionStatus.Absent:
+                    return "Không nộp bài (Thiếu)";
+                case SubmissionStatus.LateSubmission:
+                    return "Đã nộp muộn";
+                case SubmissionStatus.Submitted:
+                    return "Đã nộp";
+                case SubmissionStatus.PendingProcessing:
+                    return "Đang chờ xử lý";
                 default:
                     return "";
             }

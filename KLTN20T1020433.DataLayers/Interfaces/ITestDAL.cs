@@ -1,13 +1,13 @@
 ﻿
-using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Domain.Enum;
+using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Interfaces
+namespace KLTN20T102433.Domain.Interfaces
 {
     public interface ITestDAL
     {
@@ -33,8 +33,8 @@ namespace _20T1020433KLTN.Domain.Interfaces
         /// <param name="toTime"></param>
         /// <returns></returns>
         IList<Test> GetTestsOfStudent(int page = 1, int pageSize = 0,
-            string studentId = "", string searchValue = "", TestType testType = TestType.All,
-            TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null);
+           string studentId = "", string searchValue = "", TestType? testType = null,
+           TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null);
         /// <summary>
         /// 
         /// </summary>
@@ -48,8 +48,8 @@ namespace _20T1020433KLTN.Domain.Interfaces
         /// <param name="toTime"></param>
         /// <returns></returns>
         IList<Test> GetTestsOfTeacher(int page = 1, int pageSize = 0,
-           string teacherId = "", string searchValue = "", TestType testType = TestType.All,
-           TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null);
+           string teacherId = "", string searchValue = "", TestType? testType = null,
+           TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null);
         /// <summary>
         /// 
         /// </summary>

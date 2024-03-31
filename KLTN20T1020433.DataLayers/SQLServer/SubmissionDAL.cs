@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Numerics;
-using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Domain.Interfaces;
+using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Domain.Interfaces;
 using Dapper;
-using DataLayers.SQLServer;
 
-namespace _20T1020433KLTN.DataLayers.SQLServer
+namespace KLTN20T102433.DataLayers.SQLServer
 {
     public class SubmissionDAL : _BaseDAL, ISubmissionDAL
     {
@@ -49,7 +48,7 @@ namespace _20T1020433KLTN.DataLayers.SQLServer
             throw new NotImplementedException();
         }
 
-        public IList<Submission> GetSubmissionsOfTest(string testId)
+        public IList<Submission> GetSubmissionsOfTest(int testId)
         {
             throw new NotImplementedException();
         }

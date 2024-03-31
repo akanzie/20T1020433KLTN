@@ -1,12 +1,17 @@
-﻿using _20T1020433KLTN.BussinessLayers;
-using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Domain.Enum;
+﻿using KLTN20T102433.Application.AppCodes;
+using KLTN20T102433.Application.Models;
+using KLTN20T102433.BussinessLayers;
+using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Domain.Enum;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _20T1020433KLTN.Application.Controllers.Teacher
+namespace KLTN20T102433.Application.Controllers.Teacher
 {
     public class TeacherTestController : Controller
     {
+        const int TEST_PAGE_SIZE = 10;
+        const string TEST_SEARCH = "test_search";
+
         public IActionResult Detail(int testId = 0)
         {
             var test = TeacherService.GetTest(testId);
@@ -62,7 +67,44 @@ namespace _20T1020433KLTN.Application.Controllers.Teacher
         }
         public IActionResult ListTest()
         {
-            return View();
+            TestSearchInput? input = ApplicationContext.GetSessionData<TestSearchInput>(TEST_SEARCH);
+            if (input == null)
+            {
+                input = new TestSearchInput()
+                {
+                    Page = 1,
+                    PageSize = TEST_PAGE_SIZE,
+                    SearchValue = "",
+                    Status = null,
+                    Type = null,
+                    FromTime = null,
+                    ToTime = null,
+                    //ToTime = string.Format("{0:dd/MM/yyyy} - {1:dd/MM/yyyy}",DateTime.Today.AddMonths(-1), DateTime.Today)
+                };
+            }
+
+            return View(input);
+        }
+        public IActionResult Search(TestSearchInput input)
+        {
+            int rowCount = 0;
+            string teacherId = "";
+            var data = TeacherService.GetTestsOfTeacher(out rowCount, input.Page, input.PageSize, input.SearchValue ?? "", teacherId, input.Type, input.Status,
+                                            input.FromTime, input.ToTime);
+
+            var model = new TestSearchResult()
+            {
+                Page = input.Page,
+                PageSize = input.PageSize,
+                SearchValue = input.SearchValue ?? "",
+                RowCount = rowCount,
+                Data = data
+            };
+
+            // Lưu lại vào session điều kiện tìm kiếm
+            ApplicationContext.SetSessionData(TEST_SEARCH, input);
+
+            return View(model);
         }
         public IActionResult SelectStudents()
         {
@@ -141,7 +183,7 @@ namespace _20T1020433KLTN.Application.Controllers.Teacher
         public async Task<IActionResult> SelectStudents(Test model)
         {
             int testId;
-            
+
             // Kiểm tra xem testId đã được lưu trong session chưa
             if (HttpContext.Session.TryGetValue("TestId", out byte[] testIdBytes))
             {
@@ -149,7 +191,7 @@ namespace _20T1020433KLTN.Application.Controllers.Teacher
                 testId = BitConverter.ToInt32(testIdBytes, 0);
                 model.TestId = testId;
                 // Cập nhật bản ghi test
-                bool result = TeacherService.EditTest(model);                
+                bool result = TeacherService.EditTest(model);
             }
             else
             {
@@ -165,11 +207,11 @@ namespace _20T1020433KLTN.Application.Controllers.Teacher
                     TeacherId = model.TeacherId,
                     CreatedTime = DateTime.Now,
                     TestType = TestType.Exam,
-                    
+
                 };
 
                 testId = TeacherService.InitTest(test);
-                
+
 
                 // Lưu testId vào session để sử dụng cho các lần upload file sau
                 HttpContext.Session.SetInt32("TestId", test.TestId);

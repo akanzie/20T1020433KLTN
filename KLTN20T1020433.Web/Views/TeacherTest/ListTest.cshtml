@@ -1,32 +1,26 @@
-﻿
-@model _20T1020433KLTN.DomainModels.Test
+﻿@model KLTN20T1020433.Web.Models.TestSearchInput
 @{
     ViewData["Title"] = "ListExam";
     Layout = "~/Views/Shared/Teacher/_Layout.cshtml";
 }
 
 <div class="container-fluid">
-    <form class="d-flex justify-content-between align-items-center mb-4">
+    <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="~/TeacherTest/Search" method="get" data-container="#searchResult">
         <div class="d-flex">
-            @Html.DropDownListFor(m => m.TestStatus, SelectListHelper.GetTestStatus(), new { @class = "form-select filter-select me-2" })
-            <select class="form-select filter-select me-2" style="width: 200px;">
-                <option value="">Thi/Bài kiểm tra</option>
-                <option value="ket-thuc-hoc-phan">Thi kết thúc học phần</option>
-                <option value="kiem-tra-giua-ky">Bài kiểm tra</option>
-            </select>
+            @Html.DropDownListFor(m => m.TestStatus, SelectListHelper.GetTestStatus(), new { @class = "form-select filter-select me-2" @style = "width: 200px;" })
+            @Html.DropDownListFor(m => m.TestType, SelectListHelper.GetTestType(), new { @class = "form-select filter-select me-2" @style = "width: 200px;" })
         </div>
         <div class="d-flex">
-            <label for="fromDate" class="input-group-text">Từ ngày:</label>
-            <input id="fromDate" type="date" class="form-control me-2" style="width: 150px;">
-            <label for="toDate" class="input-group-text">Đến ngày:</label>
-            <input id="toDate" type="date" class="form-control me-2" style="width: 150px;">
-
+            <label for="fromTime" class="input-group-text">Từ ngày:</label>
+            <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime">
+            <label for="toTime" class="input-group-text">Đến ngày:</label>
+            <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
 
             <button class="btn btn-outline-primary" type="submit">
                 Lọc
             </button>
         </div>
-
+        @Html.HiddenFor(m => m.PageSize)
     </form>
     <div class="row">
         <div class="col">

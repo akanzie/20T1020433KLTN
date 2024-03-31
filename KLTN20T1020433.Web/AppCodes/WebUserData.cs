@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
-namespace _20T1020433KLTN.Application.AppCodes
+namespace KLTN20T102433.Application.AppCodes
 {
     public class WebUserData
     {

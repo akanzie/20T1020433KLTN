@@ -1,11 +1,11 @@
-﻿using _20T1020433KLTN.Application.Models;
-using _20T1020433KLTN.BussinessLayers;
-using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Infrastructure.Entities;
+﻿using KLTN20T102433.Application.Models;
+using KLTN20T102433.BussinessLayers;
+using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace _20T1020433KLTN.Application.Controllers
+namespace KLTN20T102433.Application.Controllers
 {
     public class TeacherHomeController : Controller
     {

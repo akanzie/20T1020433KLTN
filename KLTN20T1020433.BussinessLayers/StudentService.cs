@@ -1,6 +1,7 @@
-﻿using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Domain.Enum;
-using _20T1020433KLTN.Domain.Interfaces;
+﻿using KLTN20T102433.DataLayers.SQLServer;
+using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Domain.Enum;
+using KLTN20T102433.Domain.Interfaces;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.BussinessLayers
+namespace KLTN20T102433.BussinessLayers
 {
     public static class StudentService
     {
@@ -28,16 +29,16 @@ namespace _20T1020433KLTN.BussinessLayers
             return testDB.GetTestsForStudentHome(page, pageSize, studentId).ToList();
         }
         public static List<Test> GetTestsByStudent(int page = 1, int pageSize = 0,
-            string studentId = "", string searchValue = "", TestType testType = TestType.All,
-            TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null)
+            string studentId = "", string searchValue = "", TestType? testType = null,
+            TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
-            return testDB.GetTestsByStudent(page, pageSize, studentId, searchValue, testType, testStatus, fromTime, toTime).ToList();
+            return testDB.GetTestsOfStudent(page, pageSize, studentId, searchValue, testType, testStatus, fromTime, toTime).ToList();
         }
-        public static Test? GetTest(long testId)
+        public static Test? GetTest(int testId)
         {
             return testDB.GetById(testId);
         }
-        public static int SubmitTest(string studentId, long testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submitTime)
+        public static int SubmitTest(string studentId, int testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submitTime)
         {
             if (files.Count() == 0)
             {
@@ -69,7 +70,7 @@ namespace _20T1020433KLTN.BussinessLayers
             {
                 foreach (var item in files)
                 {
-                    submissionDB.AddFileBySubmission(item);
+                    submissionDB.AddSubmissionFile(item);
 
                 }
                 return submissionId;
@@ -77,7 +78,7 @@ namespace _20T1020433KLTN.BussinessLayers
 
             return 0;
         }
-        public static bool CancelSubmission(long submissionId)
+        public static bool CancelSubmission(int submissionId)
         {
             Submission? submission = submissionDB.Get(submissionId);
             Test? test = testDB.GetById(submission.TestId);
@@ -88,14 +89,14 @@ namespace _20T1020433KLTN.BussinessLayers
             if (submission.Status == SubmissionStatus.Submitted && test.Status == TestStatus.Ongoing)
             {
                 submission.Status = SubmissionStatus.NotSubmitted;
-                data.FinishedTime = DateTime.Now;
+                submission.SubmitTime = DateTime.Now;
 
-                return orderDB.Update(data);
+                return submissionDB.Update(submission);
             }
 
             return false;
         }
-        public static bool EditSubmission(long submissionID, string studentId, long testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submitTime)
+        public static bool EditSubmission(int submissionID, string studentId, int testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submitTime)
         {
             if (files.Count() == 0)
             {
@@ -124,14 +125,14 @@ namespace _20T1020433KLTN.BussinessLayers
      
             foreach (var item in files)
             {
-                submissionDB.DeleteFileBySubmission();
+                submissionDB.DeleteSubmissionFile(item);
             }
 
-            if (submissionDB.Update(data))
+            if (submissionDB.Update(newSubmission))
             {
                 foreach (var item in files)
                 {
-                    submissionDB.AddFileBySubmission(item);
+                    submissionDB.AddSubmissionFile(item);
                 }
 
                 return true;

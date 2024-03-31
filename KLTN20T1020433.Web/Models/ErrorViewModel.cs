@@ -1,4 +1,4 @@
-namespace _20T1020433KLTN.Application.Models
+namespace KLTN20T102433.Application.Models
 {
     public class ErrorViewModel
     {

@@ -1,7 +1,7 @@
-﻿using _20T1020433KLTN.Domain.Aggregates.Exam;
-using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Infrastructure.Configurations;
-using _20T1020433KLTN.Infrastructure.Entities;
+﻿using KLTN20T102433.Domain.Aggregates.Exam;
+using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Infrastructure.Configurations;
+using KLTN20T102433.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Infrastructure.Contexts
+namespace KLTN20T102433.Infrastructure.Contexts
 {
     public class MyDbContext : DbContext
     {

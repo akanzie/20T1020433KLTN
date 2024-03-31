@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\20T1020433KLTN.Domain\KLTN20T1020433.DomainModels.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
   </ItemGroup>
 
 </Project>

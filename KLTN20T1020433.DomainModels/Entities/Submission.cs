@@ -1,5 +1,5 @@
-﻿using _20T1020433KLTN.Domain.Enum;
-using _20T1020433KLTN.Infrastructure.Entities;
+﻿using KLTN20T102433.Domain.Enum;
+using KLTN20T102433.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Entities
+namespace KLTN20T102433.Domain.Entities
 {
     /// <summary>
     /// Bài nộp của sinh viên
@@ -17,7 +17,7 @@ namespace _20T1020433KLTN.Domain.Entities
         public int SubmissionId { get; set; }
         public DateTime SubmitTime {  get; set; }
         public string StudentId { get; set; }
-        public long TestId { get; set; }
+        public int TestId { get; set; }
         public String IPAddress {  get; set; }
         public SubmissionStatus Status { get; set; }
 

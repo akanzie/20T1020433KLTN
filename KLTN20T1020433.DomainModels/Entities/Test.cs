@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using _20T1020433KLTN.Domain.Enum;
-using _20T1020433KLTN.Infrastructure.Entities;
+using KLTN20T102433.Domain.Enum;
+using KLTN20T102433.Infrastructure.Entities;
 
-namespace _20T1020433KLTN.Domain.Entities
+namespace KLTN20T102433.Domain.Entities
 {
     /// <summary>
     /// Kỳ thi

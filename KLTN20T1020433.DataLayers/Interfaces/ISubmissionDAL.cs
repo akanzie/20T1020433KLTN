@@ -1,16 +1,16 @@
-﻿using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Domain.Enum;
+﻿using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _20T1020433KLTN.Domain.Interfaces
+namespace KLTN20T102433.Domain.Interfaces
 {
     public interface ISubmissionDAL
     {
-        IList<Submission> GetSubmissionsOfTest(string testId);
+        IList<Submission> GetSubmissionsOfTest(int testId);
         Submission Get(int SubmissionId);
         IList<SubmissionFile> GetFilesOfSubmission(int submissionId = 0);
         int Add(Submission data);

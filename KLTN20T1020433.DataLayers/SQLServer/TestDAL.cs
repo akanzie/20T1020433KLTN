@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Data;
-using _20T1020433KLTN.Domain.Entities;
-using _20T1020433KLTN.Domain.Enum;
-using _20T1020433KLTN.Domain.Interfaces;
+using KLTN20T102433.Domain.Entities;
+using KLTN20T102433.Domain.Enum;
+using KLTN20T102433.Domain.Interfaces;
 using Dapper;
 
 
-namespace _20T1020433KLTN.DataLayers.SQLServer
+namespace KLTN20T102433.DataLayers.SQLServer
 {
     public class TestDAL : _BaseDAL, ITestDAL
     {
@@ -39,15 +39,15 @@ namespace _20T1020433KLTN.DataLayers.SQLServer
             int id = 0;
             using (var connection = OpenConnection())
             {
-                var sql = @"insert into Tests (Title, Instructions, StartTime, EndTime, Status, 
+                var sql = @"insert into Tests (Title, Instruction, StartTime, EndTime, Status, 
                                 IsCheckIP, IsConductedAtSchool, CreatedTime, TestType, TeacherId) 
-                            values (@Title,@Instructions,@StartTime,@EndTime,@Status,@IsCheckIP,
+                            values (@Title,@Instruction,@StartTime,@EndTime,@Status,@IsCheckIP,
                                 @IsConductedAtSchool,@CreatedTime,@TestType,@TeacherId);
                             SELECT SCOPE_IDENTITY()";
                 var parameters = new
                 {
                     Title = data.Title ?? "",
-                    Instructions = data.Instructions ?? "",
+                    Instruction = data.Instruction ?? "",
                     StartTime = data.StartTime,
                     EndTime = data.EndTime,
                     Status = data.Status.ToString(),
@@ -242,12 +242,12 @@ namespace _20T1020433KLTN.DataLayers.SQLServer
             return list;
         }
 
-        public IList<Test> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType testType = TestType.All, TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null)
+        public IList<Test> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
 
-        public IList<Test> GetTestsOfTeacher(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType testType = TestType.All, TestStatus testStatus = TestStatus.All, DateTime? fromTime = null, DateTime? toTime = null)
+        public IList<Test> GetTestsOfTeacher(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
@@ -283,7 +283,7 @@ namespace _20T1020433KLTN.DataLayers.SQLServer
             {
                 var sql = @"update Tests
                             set Title = @Title,
-                                Instructions = @Instructions,
+                                Instruction = @Instruction,
                                 StartTime = @StartTime,
                                 EndTime = @EndTime,
                                 Status = @Status,
@@ -298,7 +298,7 @@ namespace _20T1020433KLTN.DataLayers.SQLServer
                 var parameters = new
                 {
                     Title = data.Title ?? "",
-                    Instructions = data.Instructions ?? "",
+                    Instruction = data.Instruction ?? "",
                     StartTime = data.StartTime,
                     EndTime = data.EndTime,
                     Status = data.Status.ToString(),
@@ -316,6 +316,11 @@ namespace _20T1020433KLTN.DataLayers.SQLServer
             }
 
             return result;
+        }
+
+        public bool CheckFileOwner(string teacherId, Guid fileId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

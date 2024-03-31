@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace _20T1020433KLTN.Application.Controllers.Student
+namespace KLTN20T102433.Application.Controllers.Student
 {
     public class StudentHomeController : Controller
     {

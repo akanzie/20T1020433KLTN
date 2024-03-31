@@ -1,4 +1,4 @@
-using _20T1020433KLTN.Application.AppCodes;
+using KLTN20T102433.Application.AppCodes;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.

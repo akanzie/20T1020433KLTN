@@ -1,11 +1,10 @@
 ﻿using Dapper;
 using System.Data;
 using Microsoft.Data.SqlClient;
-using DataLayers.SQLServer;
-using _20T1020433KLTN.Domain.Entities;
+using KLTN20T102433.Domain.Entities;
 using DataLayers.Interfaces;
 
-namespace _20T1020433KLTN.DataLayers.SQLServer
+namespace KLTN20T102433.DataLayers.SQLServer
 {
     public class StudentDAL : _BaseDAL, ICommonAPI<Student>
     {
@@ -53,7 +52,7 @@ namespace _20T1020433KLTN.DataLayers.SQLServer
 
 
 
-        public IList<Student> List(int page = 1, int pageSize = 0, string searchValue = "")
+        public IList<Student> GetList(int page = 1, int pageSize = 0, string searchValue = "")
         {
             List<Student> list = new List<Student>();
 

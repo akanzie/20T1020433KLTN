@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>_20T1020433KLTN.Application</RootNamespace>
+    <RootNamespace>KLTN20T102433.Application</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -514,9 +514,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\20T1020433KLTN.BussinessLayers\KLTN20T1020433.BusinessLayers.csproj" />
-    <ProjectReference Include="..\20T1020433KLTN.DataLayers\KLTN20T1020433.DataLayers.csproj" />
-    <ProjectReference Include="..\20T1020433KLTN.Domain\KLTN20T1020433.DomainModels.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.BussinessLayers\KLTN20T1020433.BusinessLayers.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.DataLayers\KLTN20T1020433.DataLayers.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
