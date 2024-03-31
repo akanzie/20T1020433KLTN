@@ -1,0 +1,111 @@
+<quan_ly_tap_hoa>
+    <don_hang>
+        <ma_don>DH001</ma_don>
+        <ngay_xuat>2024-03-27</ngay_xuat>
+        <khach_hang>
+            <ma_khach_hang>KH001</ma_khach_hang>
+            <ho_ten>Nguyễn Văn A</ho_ten>
+        </khach_hang>
+        <tong_tien>500000</tong_tien>
+        <danh_sach_mat_hang>
+            <mat_hang>
+                <ma_hang>MH001</ma_hang>
+                <ten_hang>Bánh mì</ten_hang>
+                <gia>10000</gia>
+                <so_luong>10</so_luong>
+            </mat_hang>
+            <mat_hang>
+                <ma_hang>MH002</ma_hang>
+                <ten_hang>Nước ngọt</ten_hang>
+                <gia>15000</gia>
+                <so_luong>5</so_luong>
+            </mat_hang>
+        </danh_sach_mat_hang>
+    </don_hang>
+    <don_hang>
+        <ma_don>DH002</ma_don>
+        <ngay_xuat>2024-03-28</ngay_xuat>
+        <khach_hang>
+            <ma_khach_hang>KH002</ma_khach_hang>
+            <ho_ten>Trần Thị B</ho_ten>
+        </khach_hang>
+        <tong_tien>750000</tong_tien>
+        <danh_sach_mat_hang>
+            <mat_hang>
+                <ma_hang>MH003</ma_hang>
+                <ten_hang>Trứng gà</ten_hang>
+                <gia>25000</gia>
+                <so_luong>20</so_luong>
+            </mat_hang>
+            <mat_hang>
+                <ma_hang>MH004</ma_hang>
+                <ten_hang>Hành tây</ten_hang>
+                <gia>20000</gia>
+                <so_luong>5</so_luong>
+            </mat_hang>
+        </danh_sach_mat_hang>
+    </don_hang>
+    <don_hang>
+        <ma_don>DH003</ma_don>
+        <ngay_xuat>2024-03-29</ngay_xuat>
+        <khach_hang>
+            <ma_khach_hang>KH003</ma_khach_hang>
+            <ho_ten>Lê Văn C</ho_ten>
+        </khach_hang>
+        <tong_tien>300000</tong_tien>
+        <danh_sach_mat_hang>
+            <mat_hang>
+                <ma_hang>MH005</ma_hang>
+                <ten_hang>Sữa đậu nành</ten_hang>
+                <gia>30000</gia>
+                <so_luong>5</so_luong>
+            </mat_hang>
+        </danh_sach_mat_hang>
+    </don_hang>
+    <don_hang>
+        <ma_don>DH004</ma_don>
+        <ngay_xuat>2024-03-30</ngay_xuat>
+        <khach_hang>
+            <ma_khach_hang>KH004</ma_khach_hang>
+            <ho_ten>Phạm Thị D</ho_ten>
+        </khach_hang>
+        <tong_tien>200000</tong_tien>
+        <danh_sach_mat_hang>
+            <mat_hang>
+                <ma_hang>MH006</ma_hang>
+                <ten_hang>Bột giặt</ten_hang>
+                <gia>50000</gia>
+                <so_luong>4</so_luong>
+            </mat_hang>
+            <mat_hang>
+                <ma_hang>MH007</ma_hang>
+                <ten_hang>Xà phòng</ten_hang>
+                <gia>15000</gia>
+                <so_luong>5</so_luong>
+            </mat_hang>
+        </danh_sach_mat_hang>
+    </don_hang>
+    <don_hang>
+        <ma_don>DH005</ma_don>
+        <ngay_xuat>2024-03-31</ngay_xuat>
+        <khach_hang>
+            <ma_khach_hang>KH005</ma_khach_hang>
+            <ho_ten>Nguyễn Thị E</ho_ten>
+        </khach_hang>
+        <tong_tien>450000</tong_tien>
+        <danh_sach_mat_hang>
+            <mat_hang>
+                <ma_hang>MH008</ma_hang>
+                <ten_hang>Thịt heo</ten_hang>
+                <gia>100000</gia>
+                <so_luong>3</so_luong>
+            </mat_hang>
+            <mat_hang>
+                <ma_hang>MH009</ma_hang>
+                <ten_hang>Rau cải</ten_hang>
+                <gia>20000</gia>
+                <so_luong>5</so_luong>
+            </mat_hang>
+        </danh_sach_mat_hang>
+    </don_hang>
+</quan_ly_tap_hoa>

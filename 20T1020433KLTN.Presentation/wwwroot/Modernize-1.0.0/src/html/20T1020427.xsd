@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Định nghĩa các phần tử -->
+  
+  <!-- Phần tử quản lý tạp hóa -->
+  <xs:element name="quan_ly_tap_hoa">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="don_hang" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- Phần tử đơn hàng -->
+  <xs:element name="don_hang">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ma_don" type="xs:string"/>
+        <xs:element name="ngay_xuat" type="xs:date"/>
+        <xs:element ref="khach_hang"/>
+        <xs:element name="tong_tien" type="xs:decimal"/>
+        <xs:element ref="danh_sach_mat_hang"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- Phần tử khách hàng -->
+  <xs:element name="khach_hang">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ma_khach_hang" type="xs:string"/>
+        <xs:element name="ho_ten" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- Phần tử danh sách mặt hàng -->
+  <xs:element name="danh_sach_mat_hang">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="mat_hang" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- Phần tử mặt hàng -->
+  <xs:element name="mat_hang">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ma_hang" type="xs:string"/>
+        <xs:element name="ten_hang" type="xs:string"/>
+        <xs:element name="gia" type="xs:decimal"/>
+        <xs:element name="so_luong" type="xs:integer"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
