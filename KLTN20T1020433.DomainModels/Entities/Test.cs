@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using KLTN20T102433.Domain.Enum;
-using KLTN20T102433.Infrastructure.Entities;
+using KLTN20T1020433.DomainModels.Enum;
+using KLTN20T1020433.Infrastructure.Entities;
 
-namespace KLTN20T102433.Domain.Entities
+namespace KLTN20T1020433.DomainModels.Entities
 {
     /// <summary>
     /// Kỳ thi
@@ -36,7 +36,28 @@ namespace KLTN20T102433.Domain.Entities
                     return TestStatus.Ongoing;
             }
         }
-        
+        public string StatusDescription
+        {
+            get
+            {
+                if (Status == TestStatus.Upcoming)
+                {
+                    return "Chưa bắt đầu";
+                }
+                else if (Status == TestStatus.Ongoing)
+                {
+                    return "Đang diễn ra";
+                }
+                else if (Status == TestStatus.Finished)
+                {
+                    return "Đã kết thúc";
+                }
+                else
+                    return "Đã bị hủy";
+            }
+        }
+
+
         public string TeacherId { get; set; }
         public string TeacherName { get; set; }
     }

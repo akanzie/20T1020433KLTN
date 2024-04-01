@@ -1,6 +1,6 @@
-﻿using KLTN20T102433.Domain.Entities;
+﻿using KLTN20T1020433.DomainModels.Entities;
 
-namespace KLTN20T102433.Application.Models
+namespace KLTN20T1020433.Web.Models
 {
     public abstract class BasePaginationResult
     {
@@ -8,6 +8,7 @@ namespace KLTN20T102433.Application.Models
         public int PageSize { get; set; }
         public string SearchValue { get; set; } = "";
         public int RowCount { get; set; }
+        
         public int PageCount
         {
             get

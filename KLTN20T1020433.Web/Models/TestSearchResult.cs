@@ -1,13 +1,15 @@
-﻿using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Domain.Enum;
+﻿using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Enum;
 
-namespace KLTN20T102433.Application.Models
+namespace KLTN20T1020433.Web.Models
 {
     public class TestSearchResult : BasePaginationResult
     {
-        public TestType Type { get; set; } = TestType.All;
-        public TestStatus Status { get; set; } = TestStatus.All;
-        public string TimeRange { get; set; } = "";
+        public TestType? Type { get; set; } = null;
+        public TestStatus? Status { get; set; } = null;
+        public DateTime? FromTime { get; set; } = null;
+        public DateTime? ToTime { get; set; } = null;
+
         public List<Test> Data { get; set; } = new List<Test>();
     }
 }

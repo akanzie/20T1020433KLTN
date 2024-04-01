@@ -1,11 +1,11 @@
-﻿using KLTN20T102433.Application.AppCodes;
-using KLTN20T102433.Application.Models;
-using KLTN20T102433.BussinessLayers;
-using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Domain.Enum;
+﻿using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.Web.Models;
+using KLTN20T1020433.BusinessLayers;
+using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Enum;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KLTN20T102433.Application.Controllers.Teacher
+namespace KLTN20T1020433.Web.Controllers.Teacher
 {
     public class TeacherTestController : Controller
     {
@@ -210,7 +210,7 @@ namespace KLTN20T102433.Application.Controllers.Teacher
 
                 };
 
-                testId = TeacherService.InitTest(test);
+                //testId = TeacherService.InitTest(test);
 
 
                 // Lưu testId vào session để sử dụng cho các lần upload file sau

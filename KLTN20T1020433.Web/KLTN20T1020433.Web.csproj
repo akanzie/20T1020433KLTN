@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>KLTN20T102433.Application</RootNamespace>
+    <RootNamespace>KLTN20T1020433.Web</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -514,12 +514,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KLTN20T1020433.BussinessLayers\KLTN20T1020433.BusinessLayers.csproj" />
-    <ProjectReference Include="..\KLTN20T1020433.DataLayers\KLTN20T1020433.DataLayers.csproj" />
-    <ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <TypeScriptCompile Include="wwwroot\Modernize-1.0.0\src\assets\libs\apexcharts\types\apexcharts.d.ts" />
     <TypeScriptCompile Include="wwwroot\Modernize-1.0.0\src\assets\libs\simplebar\dist\simplebar.d.ts" />
   </ItemGroup>
@@ -537,6 +531,12 @@
     <Folder Include="Handlers\Teacher\" />
     <Folder Include="Mapper\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KLTN20T1020433.BussinessLayers\KLTN20T1020433.BusinessLayers.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.DataLayers\KLTN20T1020433.DataLayers.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
   </ItemGroup>
 
 </Project>

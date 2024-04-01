@@ -1,9 +1,11 @@
 ﻿using DataLayers.Interfaces;
-using KLTN20T102433.DataLayers.SQLServer;
-using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Domain.Enum;
-using KLTN20T102433.Domain.Interfaces;
-using KLTN20T102433.Infrastructure.Entities;
+using KLTN20T1020433.DataLayers.API;
+using KLTN20T1020433.DataLayers.Interfaces;
+using KLTN20T1020433.DataLayers.SQLServer;
+using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Enum;
+using KLTN20T1020433.DomainModels.Interfaces;
+using KLTN20T1020433.Infrastructure.Entities;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -12,36 +14,46 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KLTN20T102433.BussinessLayers
+namespace KLTN20T1020433.BusinessLayers
 {
     public static class TeacherService
     {
         private static readonly ITestDAL testDB;
         private static readonly ISubmissionDAL submissionDB;
-        private static readonly ICommonDAL<Course> courseDB;
+        private static readonly ICourseDAL courseDB;
+        private static readonly IStudentDAL studentDB;
         static TeacherService()
         {
             string connectionString = Configuration.ConnectionString;
 
             testDB = new TestDAL(connectionString);
             submissionDB = new SubmissionDAL(connectionString);
-            courseDB = new CourseDAL(connectionString);
+
         }
         public static List<Test> GetTestsOfTeacher(out int rowCount, int page = 1, int pageSize = 0,
            string teacherId = "", string searchValue = "", TestType? testType = null,
            TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
-            rowCount = testDB.Count(searchValue);
+            rowCount = testDB.CountTestsOfTeacher(searchValue);
             return testDB.GetTestsOfTeacher(page, pageSize, teacherId, searchValue, testType, testStatus, fromTime, toTime).ToList();
 
         }
-        public static List<Course> GetCourses(string teacherId)
+        public static async Task<List<Course>> GetCourses(string teacherId)
         {
-            return courseDB.GetCourses(teacherId).ToList();
+            try
+            {
+                return await courseDB.GetCourses(teacherId);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý bất kỳ ngoại lệ nào xảy ra, ghi nhật ký hoặc ném lại nếu cần
+                Console.WriteLine($"Đã xảy ra lỗi khi lấy danh sách khóa học: {ex.Message}");
+                throw;
+            }
         }
-        public static List<Student> GetStudentsOfCourse(string courseId)
+        public static async Task<List<Student>> GetStudentsOfCourse(string courseId)
         {
-            return courseDB.GetStudentsOfCourse(courseId).ToList();
+            return await studentDB.GetStudentsOfCourse(courseId);
         }
         public static Test GetTest(int testId)
         {

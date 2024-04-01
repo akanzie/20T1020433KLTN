@@ -2,9 +2,9 @@
 using System.Net;
 using System.Numerics;
 using Dapper;
-using KLTN20T102433.Domain.Entities;
+using KLTN20T1020433.DomainModels.Entities;
 
-namespace KLTN20T102433.DataLayers.SQLServer
+namespace KLTN20T1020433.DataLayers.SQLServer
 {
     public class TestFileDAL : _BaseDAL//, ICommonDAL<TestFile>
     {

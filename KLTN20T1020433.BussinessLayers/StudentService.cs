@@ -1,7 +1,7 @@
-﻿using KLTN20T102433.DataLayers.SQLServer;
-using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Domain.Enum;
-using KLTN20T102433.Domain.Interfaces;
+﻿using KLTN20T1020433.DataLayers.SQLServer;
+using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Enum;
+using KLTN20T1020433.DomainModels.Interfaces;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KLTN20T102433.BussinessLayers
+namespace KLTN20T1020433.BusinessLayers
 {
     public static class StudentService
     {
@@ -23,15 +23,17 @@ namespace KLTN20T102433.BussinessLayers
             submissionDB = new SubmissionDAL(connectionString);
 
         }
-        public static List<Test> GetTestsForStudentHome(int page = 1, int pageSize = 0,
+        public static List<Test> GetTestsForStudentHome(out int rowCount, int page = 1, int pageSize = 0,
             string studentId = "")
         {
+            rowCount = testDB.CountTestsForStudentHome(studentId);
             return testDB.GetTestsForStudentHome(page, pageSize, studentId).ToList();
         }
-        public static List<Test> GetTestsByStudent(int page = 1, int pageSize = 0,
+        public static List<Test> GetTestsByStudent(out int rowCount, int page = 1, int pageSize = 0,
             string studentId = "", string searchValue = "", TestType? testType = null,
             TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
+            rowCount = testDB.CountTestsOfStudent(studentId,searchValue, testType, testStatus,fromTime, toTime);
             return testDB.GetTestsOfStudent(page, pageSize, studentId, searchValue, testType, testStatus, fromTime, toTime).ToList();
         }
         public static Test? GetTest(int testId)

@@ -1,4 +1,4 @@
-﻿using KLTN20T102433.Infrastructure.Entities;
+﻿using KLTN20T1020433.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KLTN20T102433.Domain.Entities
+namespace KLTN20T1020433.DomainModels.Entities
 {
     /// <summary>
     /// Giảng viên

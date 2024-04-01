@@ -1,7 +1,7 @@
-﻿using KLTN20T102433.Application.AppCodes;
-using KLTN20T102433.Domain.Enum;
+﻿using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.DomainModels.Enum;
 
-namespace KLTN20T102433.Application.Models
+namespace KLTN20T1020433.Web.Models
 {
     public class TestSearchInput : PaginationSearchInput
     {

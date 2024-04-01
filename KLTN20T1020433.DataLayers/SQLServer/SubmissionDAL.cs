@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Numerics;
-using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Domain.Interfaces;
+using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Interfaces;
 using Dapper;
 
-namespace KLTN20T102433.DataLayers.SQLServer
+namespace KLTN20T1020433.DataLayers.SQLServer
 {
     public class SubmissionDAL : _BaseDAL, ISubmissionDAL
     {

@@ -1,13 +1,13 @@
 ﻿
-using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Domain.Enum;
+using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KLTN20T102433.Domain.Interfaces
+namespace KLTN20T1020433.DomainModels.Interfaces
 {
     public interface ITestDAL
     {
@@ -50,6 +50,12 @@ namespace KLTN20T102433.Domain.Interfaces
         IList<Test> GetTestsOfTeacher(int page = 1, int pageSize = 0,
            string teacherId = "", string searchValue = "", TestType? testType = null,
            TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null);
+        int CountTestsOfTeacher(string teacherId = "", string searchValue = "", TestType? testType = null,
+           TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null);
+        int CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null,
+          TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null);
+        int CountTestsForStudentHome(string studentId = "");
+
         /// <summary>
         /// 
         /// </summary>

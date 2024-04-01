@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace KLTN20T102433.Application.Controllers.Teacher
+namespace KLTN20T1020433.Web.Controllers.Teacher
 {
     public class TeacherCourseController : Controller
     {

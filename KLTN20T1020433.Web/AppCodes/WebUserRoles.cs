@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace KLTN20T102433.Application.AppCodes
+namespace KLTN20T1020433.Web.AppCodes
 {
     public class WebUserRoles
     {
@@ -38,13 +38,13 @@ namespace KLTN20T102433.Application.AppCodes
             }
         }
     }
-    [Display(Name = "Quản trị hệ thống")]
-    public const string Administrator = "admin";
+    //[Display(Name = "Quản trị hệ thống")]
+    //public const string Administrator = "admin";
 
-    [Display(Name = "Nhân viên")]
-    public const string Employee = "employee";
+    //[Display(Name = "Nhân viên")]
+    //public const string Employee = "employee";
 
-    [Display(Name = "Khách hàng")]
-    public const string Customer = "customer";
+    //[Display(Name = "Khách hàng")]
+    //public const string Customer = "customer";
 
 }

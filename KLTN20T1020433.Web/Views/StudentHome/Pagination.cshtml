@@ -1,0 +1,73 @@
+﻿@model KLTN20T1020433.Web.Models.TestSearchResult
+
+@{
+    Layout = null;
+}
+
+<div>
+    <div class="table-responsive">
+        <table class="table text-nowrap mb-0 align-middle">
+            <thead class="text-dark fs-4">
+                <tr>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">STT</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Tên kì thi/ bài kiểm tra</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Thời gian bắt đầu</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Thời gian kết thúc</h6>
+                    </th>
+                    <th class="border-bottom-0">
+                        <h6 class="fw-semibold mb-0">Trạng thái</h6>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Data)
+                {
+                    <tr>
+                        <td class="border-bottom-0">
+                            <h6 class="fw-semibold mb-0">1</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                            <h6 class="fw-semibold mb-1"><a href="~/StudentExam/Detail">@item.Title</a></h6>
+                        </td>
+                        <td class="border-bottom-0">
+                            <h6 class="fw-semibold mb-1">@item.StartTime</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                            <h6 class="fw-semibold mb-1">@item.EndTime</h6>
+                        </td>
+                        <td class="border-bottom-0">
+                            <h6 class="fw-semibold mb-1 text-primary">@item.StatusDescription</h6>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.PageCount > 1)
+    {
+        <div class="text-center">
+            <ul class="pagination">
+
+                @for (int p = 1; p <= Model.PageCount; p++)
+                {
+                    if (Model.Page == p)
+                    {
+                        <li class="active"><a href="#">@p</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="javascript:;" onclick="doSearch(@p)">@p</a></li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+</div>

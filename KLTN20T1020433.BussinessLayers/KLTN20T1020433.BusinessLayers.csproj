@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>KLTN20T1020433.BusinessLayers</RootNamespace>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\KLTN20T1020433.DataLayers\KLTN20T1020433.DataLayers.csproj" />
-    <ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\KLTN20T1020433.DataLayers\KLTN20T1020433.DataLayers.csproj" />
+		<ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
+	</ItemGroup>
 
 </Project>

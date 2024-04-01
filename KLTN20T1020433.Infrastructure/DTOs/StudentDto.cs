@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using KLTN20T102433.Domain.Entities;
+using KLTN20T1020433.DomainModels.Entities;
 
-namespace KLTN20T102433.Infrastructure.Entities
+namespace KLTN20T1020433.Infrastructure.Entities
 {
     public class StudentDto 
     {

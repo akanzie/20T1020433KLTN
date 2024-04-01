@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KLTN20T102433.BussinessLayers
+namespace KLTN20T1020433.BusinessLayers
 {
     public class AuthenticationService
 {

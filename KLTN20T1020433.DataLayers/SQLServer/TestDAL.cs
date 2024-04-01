@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Data;
-using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Domain.Enum;
-using KLTN20T102433.Domain.Interfaces;
+using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Enum;
+using KLTN20T1020433.DomainModels.Interfaces;
 using Dapper;
+using System.Buffers;
+using Azure;
 
 
-namespace KLTN20T102433.DataLayers.SQLServer
+namespace KLTN20T1020433.DataLayers.SQLServer
 {
     public class TestDAL : _BaseDAL, ITestDAL
     {
@@ -89,23 +91,7 @@ namespace KLTN20T102433.DataLayers.SQLServer
             return id;
         }
 
-        public int Count(string searchValue = "")
-        {
-            int count = 0;
-            if (!string.IsNullOrEmpty(searchValue))
-                searchValue = "%" + searchValue + "%";
-            using (var connection = OpenConnection())
-            {
-                var sql = @"select count(*) from Tests where (@SearchValue = N'') or (TestType like @SearchValue)";
-                var parameters = new
-                {
-                    SearchValue = searchValue ?? ""
-                };
-                count = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
-            }
-            return count;
-        }
+
 
         public bool DeleteStudentParticipantTest(string studentId, int testId)
         {
@@ -254,7 +240,36 @@ namespace KLTN20T102433.DataLayers.SQLServer
 
         public IList<Test> GetTestsForStudentHome(int page = 1, int pageSize = 0, string studentId = "")
         {
-            throw new NotImplementedException();
+            List<Test> listTests = new List<Test>();
+
+            using (var connection = OpenConnection())
+            {
+                var sql = @"
+                    with cte as
+                    (
+	                    select t.*, ROW_NUMBER() over (order by StartTime) as RowNumber
+	                    from Tests t join TestStudents ts on t.TestId = ts.TestId
+	                    where StudentId like @studentId
+                    )
+
+                    select * from cte
+                    where (@pageSize= 0)
+	                    or (RowNumber between (@page - 1) * @pageSize + 1 and @page * @pageSize)
+                    order by RowNumber;";
+
+                var parameters = new
+                {
+                    page = page,
+                    pageSize = pageSize,
+                    studentId = studentId
+                };
+
+                listTests = connection.Query<Test>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
+
+                connection.Close();
+            }
+
+            return listTests;
         }
 
         public bool IsUsed(int id)
@@ -322,5 +337,34 @@ namespace KLTN20T102433.DataLayers.SQLServer
         {
             throw new NotImplementedException();
         }
+
+        public int CountTestsOfTeacher(string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CountTestsForStudentHome(string studentId = "")
+        {
+            int count = 0;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"select count(*) from Tests t join TestStudents ts on t.TestId = ts.TestId
+	                    where StudentId like @studentId";
+                var parameters = new
+                {
+                    StudentId = studentId ?? ""
+                };
+                count = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+                connection.Close();
+            }
+            return count;
+        }
+
+
     }
 }

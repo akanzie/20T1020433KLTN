@@ -2,9 +2,9 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 using DataLayers.Interfaces;
-using KLTN20T102433.Domain.Entities;
+using KLTN20T1020433.DomainModels.Entities;
 
-namespace KLTN20T102433.DataLayers.SQLServer
+namespace KLTN20T1020433.DataLayers.SQLServer
 {
     public class SubmissionFileDAL : _BaseDAL, ICommonDAL<SubmissionFile>
     {

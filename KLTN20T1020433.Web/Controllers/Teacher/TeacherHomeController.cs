@@ -1,11 +1,11 @@
-﻿using KLTN20T102433.Application.Models;
-using KLTN20T102433.BussinessLayers;
-using KLTN20T102433.Domain.Entities;
-using KLTN20T102433.Infrastructure.Entities;
+﻿using KLTN20T1020433.Web.Models;
+using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using KLTN20T1020433.BusinessLayers;
 
-namespace KLTN20T102433.Application.Controllers
+namespace KLTN20T1020433.Web.Controllers
 {
     public class TeacherHomeController : Controller
     {
@@ -16,9 +16,9 @@ namespace KLTN20T102433.Application.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(string teacherId)
+        public async Task<IActionResult> Index(string teacherId)
         {
-            List<Course> courses = TeacherService.GetCourses(teacherId);
+            List<Course> courses = await TeacherService.GetCourses(teacherId);
 
             // Trả về danh sách các khóa học đó cho view
             return View(courses);

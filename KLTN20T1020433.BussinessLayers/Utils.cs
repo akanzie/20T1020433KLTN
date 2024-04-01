@@ -1,11 +1,11 @@
-﻿using KLTN20T102433.Domain.Enum;
+﻿using KLTN20T1020433.DomainModels.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KLTN20T102433.BussinessLayers
+namespace KLTN20T1020433.BusinessLayers
 {
     public static class Utils
     {

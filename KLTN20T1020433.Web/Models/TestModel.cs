@@ -1,6 +1,6 @@
-﻿using KLTN20T102433.Domain.Entities;
+﻿using KLTN20T1020433.DomainModels.Entities;
 
-namespace KLTN20T102433.Application.Models
+namespace KLTN20T1020433.Web.Models
 {
     public class TestModel
     {

@@ -1,4 +1,4 @@
-using KLTN20T102433.Application.AppCodes;
+using KLTN20T1020433.Web.AppCodes;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -41,6 +41,6 @@ ApplicationContext.Configure
     hostEnvironment: app.Services.GetService<IWebHostEnvironment>()
 );
 
-string connectionString = @"server=LAPCN-KietCA\SQLEXPRESS;user id=sa;password=123;database=LiteCommerceDB;TrustServerCertificate=true";
-SV20T1020293.BusinessLayers.Configuration.Initialize(connectionString);
+string connectionString = @"server=LAPCN-KIETCA;user id=sa;password=1;database=QuanLyBaiThi;TrustServerCertificate=true";
+KLTN20T1020433.BusinessLayers.Configuration.Initialize(connectionString);
 app.Run();

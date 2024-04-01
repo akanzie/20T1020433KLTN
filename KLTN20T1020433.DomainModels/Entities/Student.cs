@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using KLTN20T102433.Infrastructure.Entities;
+using KLTN20T1020433.Infrastructure.Entities;
 
-namespace KLTN20T102433.Domain.Entities
+namespace KLTN20T1020433.DomainModels.Entities
 {
     /// <summary>
     /// Sinh viên

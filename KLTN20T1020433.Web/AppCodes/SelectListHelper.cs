@@ -1,8 +1,8 @@
-﻿using KLTN20T102433.BussinessLayers;
-using KLTN20T102433.Domain.Enum;
+﻿using KLTN20T1020433.BusinessLayers;
+using KLTN20T1020433.DomainModels.Enum;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace KLTN20T102433.Application.AppCodes
+namespace KLTN20T1020433.Web.AppCodes
 {
     public class SelectListHelper
     {

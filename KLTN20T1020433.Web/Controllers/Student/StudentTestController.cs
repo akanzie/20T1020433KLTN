@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace KLTN20T102433.Application.Controllers.Student
+namespace KLTN20T1020433.Web.Controllers.Student
 {
     public class StudentTestController : Controller
     {
