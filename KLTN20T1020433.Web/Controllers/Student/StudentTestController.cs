@@ -27,20 +27,22 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public IActionResult Submission(int id = 0)
         {
             string studentId = "20T1020433";
-            var submission = StudentService.GetSubmissionOfStudent(id, studentId);
+            var submission = StudentService.GetSubmission(id, studentId);
 
             // Kiểm tra xem submission có tồn tại không
             if (submission != null)
             {
                 var files = StudentService.GetFilesOfSubmission(id, studentId);
-                var comment = StudentService.GetComment(submission.SubmissionId);
-                var model = new SubmissionModel
-                {
-                    Submission = submission,
-                    Files = files,
-                    Comment = comment
-                };
-                return PartialView(model);
+                var comments = StudentService.GetComments(submission.SubmissionId);
+               
+                    var model = new SubmissionModel
+                    {
+                        Submission = submission,
+                        Files = files,
+                        Comments = comments
+                    };              
+                             
+               return PartialView(model);
             }
             else
             {

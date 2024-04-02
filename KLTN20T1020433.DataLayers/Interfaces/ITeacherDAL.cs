@@ -9,7 +9,7 @@ namespace KLTN20T1020433.DataLayers.Interfaces
 {
     public interface ITeacherDAL
     {
-        Teacher GetTeacher(string id);
+        Task <Teacher?> GetTeacher(string id);
 
     }
 }

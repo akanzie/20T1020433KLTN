@@ -3,7 +3,6 @@ using KLTN20T1020433.DataLayers.SQLServer;
 using KLTN20T1020433.DomainModels.Entities;
 using KLTN20T1020433.DomainModels.Enum;
 using KLTN20T1020433.DomainModels.Interfaces;
-using KLTN20T1020433.DomainModelsModels.Entities;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -164,19 +163,15 @@ namespace KLTN20T1020433.BusinessLayers
             }
         }
 
-        public static Submission GetSubmissionOfStudent(int id, string studentId)
+        public static Submission? GetSubmission(int id, string studentId)
         {
             return submissionDB.Get(id, studentId);
         }
 
-        public static Comment? GetComment(int submissionId)
+        public static List<Comment> GetComments(int submissionId)
         {
-            Comment? comment = commentDB.GetBySubmissionId(submissionId);
-            if(comment != null)
-            {
-                comment.TeacherName = teacherDB.GetTeacher(comment.TeacherId).FullName;
-            }
-            return comment;
+           List<Comment> comments = commentDB.GetComments(submissionId).ToList(); 
+            return comments;
         }
     }
 }

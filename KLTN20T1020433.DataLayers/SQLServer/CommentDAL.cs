@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using KLTN20T1020433.DataLayers.Interfaces;
-using KLTN20T1020433.DomainModelsModels.Entities;
+using KLTN20T1020433.DomainModels.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -82,6 +82,22 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 connection.Close();
             }
             return data;
+        }
+
+        public IList<Comment> GetComments(int submissionId)
+        {
+            List<Comment> comments = new List<Comment>();
+            using (var connection = OpenConnection())
+            {
+                var sql = @"SELECT * FROM Comments WHERE SubmissionId = @SubmissionId";
+                var parameters = new
+                {
+                    SubmissionId = submissionId
+                };
+                comments = connection.Query<Comment>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
+                connection.Close();
+            }
+            return comments;
         }
 
         public bool Update(Comment data)

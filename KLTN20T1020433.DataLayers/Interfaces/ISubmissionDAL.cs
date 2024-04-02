@@ -10,9 +10,9 @@ namespace KLTN20T1020433.DomainModels.Interfaces
 {
     public interface ISubmissionDAL
     {
-        IList<Submission> GetSubmissionsOfTest(int testId);
-        Submission Get(int testId, string studentId);
-        Submission GetById(int submisionId);
+        IList<Submission> GetSubmissions(int testId);
+        Submission? Get(int testId, string studentId);
+        Submission? GetById(int submisionId);
         IList<SubmissionFile> GetFilesOfSubmission(int submisionId);
         int Add(Submission data);
         bool Update(Submission data);

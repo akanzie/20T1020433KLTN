@@ -534,7 +534,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KLTN20T1020433.BussinessLayers\KLTN20T1020433.BusinessLayers.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.BusinessLayers\KLTN20T1020433.BusinessLayers.csproj" />
     <ProjectReference Include="..\KLTN20T1020433.DataLayers\KLTN20T1020433.DataLayers.csproj" />
     <ProjectReference Include="..\KLTN20T1020433.DomainModels\KLTN20T1020433.DomainModels.csproj" />
   </ItemGroup>

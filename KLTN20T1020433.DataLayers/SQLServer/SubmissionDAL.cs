@@ -141,7 +141,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             return file;
         }
 
-        public IList<Submission> GetSubmissionsOfTest(int testId)
+        public IList<Submission> GetSubmissions(int testId)
         {
             List<Submission> submissions = new List<Submission>();
             using (var connection = OpenConnection())

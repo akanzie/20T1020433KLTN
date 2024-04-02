@@ -13,7 +13,13 @@ namespace KLTN20T1020433.DataLayers.API
         }
         public async Task<Student?> GetStudent(string studentId)
         {
-            throw new NotImplementedException();
+            Student? student = new Student
+            {
+                StudentId = "20T1020433",
+                FirstName = "Kiệt",
+                LastName = "Châu Anh",
+            };
+            return student;
         }
         public async Task<List<Student>> GetStudentsOfCourse(string courseId)
         {

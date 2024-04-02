@@ -1,5 +1,4 @@
-﻿using KLTN20T1020433.DomainModels.Entities;
-using KLTN20T1020433.DomainModelsModels.Entities;
+﻿using KLTN20T1020433.DomainModels.Entities; 
 
 namespace KLTN20T1020433.Web.Models
 {
@@ -7,6 +6,6 @@ namespace KLTN20T1020433.Web.Models
     {
         public Submission Submission { get; set; }
         public List<SubmissionFile> Files { get; set; }
-        public Comment Comment { get; set; }
+        public List<Comment>? Comments { get; set; } = null;
     }
 }

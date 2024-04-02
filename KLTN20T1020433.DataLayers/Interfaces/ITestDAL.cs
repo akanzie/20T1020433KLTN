@@ -61,7 +61,7 @@ namespace KLTN20T1020433.DomainModels.Interfaces
         /// </summary>
         /// <param name="testId"></param>
         /// <returns></returns>
-        Test GetById(int testId);
+        Test? GetById(int testId);
         /// <summary>
         /// 
         /// </summary>

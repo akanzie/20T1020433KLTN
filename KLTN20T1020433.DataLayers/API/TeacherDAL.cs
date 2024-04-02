@@ -13,9 +13,9 @@ namespace KLTN20T1020433.DataLayers.API
         {
         }
 
-        public Teacher GetTeacher(string id)
+        public async Task<Teacher?> GetTeacher(string id)
         {
-            Teacher teacher = new Teacher
+            Teacher? teacher = new Teacher
             {
                 TeacherId = "1",
                 FirstName = "A",

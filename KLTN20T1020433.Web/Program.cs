@@ -41,6 +41,6 @@ ApplicationContext.Configure
     hostEnvironment: app.Services.GetService<IWebHostEnvironment>()
 );
 
-string connectionString = @"server=LAPCN-KIETCA;user id=sa;password=1;database=QuanLyBaiThi;TrustServerCertificate=true";
+string connectionString = @"server=KITHGG;user id=sa;password=1;database=QuanLyBaiThi;TrustServerCertificate=true";
 KLTN20T1020433.BusinessLayers.Configuration.Initialize(connectionString);
 app.Run();

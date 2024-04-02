@@ -1,4 +1,4 @@
-﻿using KLTN20T1020433.DomainModelsModels.Entities;
+﻿using KLTN20T1020433.DomainModels.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +9,11 @@ namespace KLTN20T1020433.DataLayers.Interfaces
 {
     public interface ICommentDAL
     {
-
         Comment? GetBySubmissionId(int submissionId);
         Comment? Get(int id);
         int Add(Comment data);
-
         bool Update(Comment data);
-
         bool Delete(int id);
-
+        IList<Comment> GetComments(int submissionId);
     }
 }

@@ -54,7 +54,7 @@ namespace KLTN20T1020433.BusinessLayers
         {
             return await studentDB.GetStudentsOfCourse(courseId);
         }
-        public static Test GetTest(int testId)
+        public static Test? GetTest(int testId)
         {
             return testDB.GetById(testId);
         }
@@ -72,7 +72,7 @@ namespace KLTN20T1020433.BusinessLayers
         public static List<Submission> GetSubmissionsOfTest(int testId)
         {
 
-            return submissionDB.GetSubmissionsOfTest(testId).ToList();
+            return submissionDB.GetSubmissions(testId).ToList();
         }
 
         public static int CreateTest(string teacherId)
