@@ -11,13 +11,13 @@ namespace KLTN20T1020433.DomainModels.Interfaces
     public interface ISubmissionDAL
     {
         IList<Submission> GetSubmissionsOfTest(int testId);
-        Submission Get(int SubmissionId);
-        IList<SubmissionFile> GetFilesOfSubmission(int submissionId = 0);
+        Submission Get(int testId, string studentId);
+        Submission GetById(int submisionId);
+        IList<SubmissionFile> GetFilesOfSubmission(int submisionId);
         int Add(Submission data);
         bool Update(Submission data);
-        bool Delete(int submissionId);
-        int AddSubmissionFile(SubmissionFile file);
-        bool DeleteSubmissionFile(SubmissionFile file);
-        SubmissionFile? GetSubmissionFile(int submission, int fileId);
+        Guid AddSubmissionFile(SubmissionFile file);
+        bool DeleteSubmissionFile(Guid fileId);
+        SubmissionFile? GetSubmissionFile( Guid fileId);
     }
 }

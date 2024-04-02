@@ -18,6 +18,7 @@ namespace KLTN20T1020433.DomainModels.Entities
         public string TeacherId { get; set; }
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
+        public string FullName => FirstName + " " + LastName;
         public string Email { get; set; } = "";
 
     }

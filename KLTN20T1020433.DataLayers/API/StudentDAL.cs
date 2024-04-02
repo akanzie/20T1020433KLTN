@@ -2,7 +2,6 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 using KLTN20T1020433.DomainModels.Entities;
-using DataLayers.Interfaces;
 using KLTN20T1020433.DataLayers.Interfaces;
 
 namespace KLTN20T1020433.DataLayers.API
@@ -12,7 +11,10 @@ namespace KLTN20T1020433.DataLayers.API
         public StudentDAL(string baseUrl) : base(baseUrl)
         {
         }
-
+        public async Task<Student?> GetStudent(string studentId)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<List<Student>> GetStudentsOfCourse(string courseId)
         {
             try

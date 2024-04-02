@@ -34,7 +34,7 @@
                             <h6 class="fw-semibold mb-0">1</h6>
                         </td>
                         <td class="border-bottom-0">
-                            <h6 class="fw-semibold mb-1"><a href="~/StudentExam/Detail">@item.Title</a></h6>
+                            <h6 class="fw-semibold mb-1"><a href="~/StudentTest/Detail/@item.TestId">@item.Title</a></h6>
                         </td>
                         <td class="border-bottom-0">
                             <h6 class="fw-semibold mb-1">@item.StartTime</h6>
@@ -43,7 +43,19 @@
                             <h6 class="fw-semibold mb-1">@item.EndTime</h6>
                         </td>
                         <td class="border-bottom-0">
-                            <h6 class="fw-semibold mb-1 text-primary">@item.StatusDescription</h6>
+                           @if(item.Status == KLTN20T1020433.DomainModels.Enum.TestStatus.Ongoing){
+                                <h6 class="fw-semibold mb-1 text-danger">@item.StatusDescription</h6>
+                            }
+                            @if(item.Status == KLTN20T1020433.DomainModels.Enum.TestStatus.Finished){
+                                <h6 class="fw-semibold mb-1 text-success">@item.StatusDescription</h6>
+                            }
+                            @if(item.Status == KLTN20T1020433.DomainModels.Enum.TestStatus.Upcoming){
+                                <h6 class="fw-semibold mb-1 text-primary">@item.StatusDescription</h6>
+                            }
+                            @if (item.Status == KLTN20T1020433.DomainModels.Enum.TestStatus.Canceled)
+                            {
+                                <h6 class="fw-semibold mb-1 text-dark">@item.StatusDescription</h6>
+                            }
                         </td>
                     </tr>
                 }

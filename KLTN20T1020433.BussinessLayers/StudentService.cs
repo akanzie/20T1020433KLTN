@@ -1,7 +1,9 @@
-﻿using KLTN20T1020433.DataLayers.SQLServer;
+﻿using KLTN20T1020433.DataLayers.Interfaces;
+using KLTN20T1020433.DataLayers.SQLServer;
 using KLTN20T1020433.DomainModels.Entities;
 using KLTN20T1020433.DomainModels.Enum;
 using KLTN20T1020433.DomainModels.Interfaces;
+using KLTN20T1020433.DomainModelsModels.Entities;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -15,13 +17,15 @@ namespace KLTN20T1020433.BusinessLayers
     {
         private static readonly ITestDAL testDB;
         private static readonly ISubmissionDAL submissionDB;
+        private static readonly ICommentDAL commentDB;
+        private static readonly ITeacherDAL teacherDB;
         static StudentService()
         {
             string connectionString = Configuration.ConnectionString;
 
             testDB = new TestDAL(connectionString);
             submissionDB = new SubmissionDAL(connectionString);
-
+            commentDB = new CommentDAL(connectionString);
         }
         public static List<Test> GetTestsForStudentHome(out int rowCount, int page = 1, int pageSize = 0,
             string studentId = "")
@@ -33,14 +37,14 @@ namespace KLTN20T1020433.BusinessLayers
             string studentId = "", string searchValue = "", TestType? testType = null,
             TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
-            rowCount = testDB.CountTestsOfStudent(studentId,searchValue, testType, testStatus,fromTime, toTime);
+            rowCount = testDB.CountTestsOfStudent(studentId, searchValue, testType, testStatus, fromTime, toTime);
             return testDB.GetTestsOfStudent(page, pageSize, studentId, searchValue, testType, testStatus, fromTime, toTime).ToList();
         }
         public static Test? GetTest(int testId)
         {
             return testDB.GetById(testId);
         }
-        public static int SubmitTest(string studentId, int testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submitTime)
+        public static int SubmitTest(string studentId, int testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submittedTime)
         {
             if (files.Count() == 0)
             {
@@ -52,7 +56,7 @@ namespace KLTN20T1020433.BusinessLayers
             {
                 status = SubmissionStatus.PendingProcessing;
             }
-            else if (submitTime > test.EndTime)
+            else if (submittedTime > test.EndTime)
             {
                 status = SubmissionStatus.LateSubmission;
             }
@@ -62,7 +66,7 @@ namespace KLTN20T1020433.BusinessLayers
                 StudentId = studentId,
                 TestId = testId,
                 IPAddress = iPAddress,
-                SubmitTime = submitTime,
+                SubmittedTime = submittedTime,
                 Status = status
             };
 
@@ -82,7 +86,7 @@ namespace KLTN20T1020433.BusinessLayers
         }
         public static bool CancelSubmission(int submissionId)
         {
-            Submission? submission = submissionDB.Get(submissionId);
+            Submission? submission = submissionDB.GetById(submissionId);
             Test? test = testDB.GetById(submission.TestId);
             if (submission == null)
                 return false;
@@ -91,7 +95,7 @@ namespace KLTN20T1020433.BusinessLayers
             if (submission.Status == SubmissionStatus.Submitted && test.Status == TestStatus.Ongoing)
             {
                 submission.Status = SubmissionStatus.NotSubmitted;
-                submission.SubmitTime = DateTime.Now;
+                submission.SubmittedTime = DateTime.Now;
 
                 return submissionDB.Update(submission);
             }
@@ -121,13 +125,13 @@ namespace KLTN20T1020433.BusinessLayers
                 StudentId = studentId,
                 TestId = testId,
                 IPAddress = iPAddress,
-                SubmitTime = submitTime,
+                SubmittedTime = submitTime,
                 Status = status
             };
-     
+
             foreach (var item in files)
             {
-                submissionDB.DeleteSubmissionFile(item);
+                submissionDB.DeleteSubmissionFile(item.FileId);
             }
 
             if (submissionDB.Update(newSubmission))
@@ -141,6 +145,38 @@ namespace KLTN20T1020433.BusinessLayers
             }
 
             return false;
+        }
+        public static List<SubmissionFile> GetFilesOfSubmission(int id, string studentId)
+        {
+            Submission submission = submissionDB.Get(id, studentId);
+            if (submission == null)
+            {
+                return new List<SubmissionFile>();
+            }
+            List<SubmissionFile> files = submissionDB.GetFilesOfSubmission(submission.SubmissionId).ToList();
+            if (files != null)
+            {
+                return files.ToList();
+            }
+            else
+            {
+                return new List<SubmissionFile>();
+            }
+        }
+
+        public static Submission GetSubmissionOfStudent(int id, string studentId)
+        {
+            return submissionDB.Get(id, studentId);
+        }
+
+        public static Comment? GetComment(int submissionId)
+        {
+            Comment? comment = commentDB.GetBySubmissionId(submissionId);
+            if(comment != null)
+            {
+                comment.TeacherName = teacherDB.GetTeacher(comment.TeacherId).FullName;
+            }
+            return comment;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public IActionResult Pagination(TestPagination input)
         {
             int rowCount = 0;
+            
             var data = StudentService.GetTestsForStudentHome(out rowCount, input.Page, input.PageSize, input.StudentId ?? "20T1020433");
 
             var model = new TestSearchResult()

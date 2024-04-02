@@ -67,19 +67,19 @@ namespace KLTN20T1020433.DomainModels.Interfaces
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        int AddTest(Test data);
+        int Add(Test data);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        bool UpdateTest(Test data);
+        bool Update(Test data);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="testID"></param>
         /// <returns></returns>
-        bool DeleteTest(int testID);
+        bool Delete(int testID);
         /// <summary>
         /// 
         /// </summary>
@@ -131,8 +131,6 @@ namespace KLTN20T1020433.DomainModels.Interfaces
         /// <param name="testId"></param>
         /// <param name="studentId"></param>
         /// <returns></returns>
-        Student? GetStudent(string studentId);
-
         bool IsUsed(int id);
         bool CheckFileOwner(string teacherId, Guid fileId);
 

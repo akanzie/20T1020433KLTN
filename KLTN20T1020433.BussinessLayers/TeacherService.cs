@@ -1,5 +1,4 @@
-﻿using DataLayers.Interfaces;
-using KLTN20T1020433.DataLayers.API;
+﻿using KLTN20T1020433.DataLayers.API;
 using KLTN20T1020433.DataLayers.Interfaces;
 using KLTN20T1020433.DataLayers.SQLServer;
 using KLTN20T1020433.DomainModels.Entities;
@@ -84,7 +83,7 @@ namespace KLTN20T1020433.BusinessLayers
                 CreatedTime = DateTime.Now,
             };
 
-            return testDB.AddTest(test);
+            return testDB.Add(test);
         }
         public static bool DeleteTestFile(string teacherId, Guid fileId)
         {
@@ -99,7 +98,7 @@ namespace KLTN20T1020433.BusinessLayers
         }
         public static bool InitTest(Test test, IEnumerable<string> studentIds)
         {
-            bool result = testDB.UpdateTest(test);
+            bool result = testDB.Update(test);
 
             if (result)
             {
@@ -114,7 +113,7 @@ namespace KLTN20T1020433.BusinessLayers
         }
         public static bool EditTest(Test test)
         {
-            return testDB.UpdateTest(test);
+            return testDB.Update(test);
         }
         public static bool DeleteTest(int testId)
         {
@@ -124,7 +123,7 @@ namespace KLTN20T1020433.BusinessLayers
 
             if (data.Status == TestStatus.Upcoming
             || data.Status == TestStatus.Canceled)
-                return testDB.DeleteTest(testId);
+                return testDB.Delete(testId);
             return false;
         }
     }

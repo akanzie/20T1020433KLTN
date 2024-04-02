@@ -36,7 +36,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             return result;
         }
 
-        public int AddTest(Test data)
+        public int Add(Test data)
         {
             int id = 0;
             using (var connection = OpenConnection())
@@ -90,9 +90,6 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             }
             return id;
         }
-
-
-
         public bool DeleteStudentParticipantTest(string studentId, int testId)
         {
             bool result = false;
@@ -111,13 +108,16 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             return result;
         }
 
-        public bool DeleteTest(int testID)
+        public bool Delete(int testID)
         {
 
             bool result = false;
             using (var connection = OpenConnection())
             {
-                var sql = @"delete from Tests where TestID = @TestID";
+                var sql = @"begin 
+                                delete from Tests where TestID = @TestID
+                                delete from TestFiles where TestID = @TestID
+                            end;";
                 var parameters = new
                 {
                     TestID = testID
@@ -145,7 +145,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             return result;
         }
 
-        public Test GetById(int testId)
+        public Test? GetById(int testId)
         {
             Test? data = null;
             using (var connection = OpenConnection())
@@ -175,12 +175,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 connection.Close();
             }
             return data;
-        }
-
-        public Student? GetStudent(string studentId)
-        {
-            throw new NotImplementedException();
-        }
+        }        
 
         public IList<Student> GetStudentIdsParticipantTest(int testId)
         {
@@ -189,9 +184,9 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             using (var connection = OpenConnection())
             {
                 var sql = @"select studentId
-                            from TestStudents as ts
-                                join Tests as t on ts.testId = t.testId
-                            where ts.testId = @TestId";
+                            from Submissions as s
+                                join Tests as t on s.testId = t.testId
+                            where s.testId = @TestId";
 
                 var parameters = new
                 {
@@ -214,7 +209,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 var sql = @"select FileId, FileName, FilePath, MimeType, Size
                             from TestFiles as tf
                                 join Tests as t on tf.testId = t.testId
-                            where ts.testId = @TestId";
+                            where tf.testId = @TestId";
 
                 var parameters = new
                 {
@@ -248,7 +243,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     with cte as
                     (
 	                    select t.*, ROW_NUMBER() over (order by StartTime) as RowNumber
-	                    from Tests t join TestStudents ts on t.TestId = ts.TestId
+	                    from Tests t join Submissions s on t.TestId = s.TestId
 	                    where StudentId like @studentId
                     )
 
@@ -277,13 +272,13 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             bool result = false;
             using (var connection = OpenConnection())
             {
-                var sql = @"if exists(select * from TestFiles where TestId = @TestId)
+                var sql = @"if exists(select * from Submissions where TestId = @TestId)
                                 select 1
                             else 
                                 select 0";
                 var parameters = new
                 {
-                    ShipperID = id
+                    TestId = id
                 };
                 result = connection.ExecuteScalar<bool>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
                 connection.Close();
@@ -291,7 +286,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             return result;
         }
 
-        public bool UpdateTest(Test data)
+        public bool Update(Test data)
         {
             bool result = false;
             using (var connection = OpenConnection())
@@ -353,7 +348,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             int count = 0;
             using (var connection = OpenConnection())
             {
-                var sql = @"select count(*) from Tests t join TestStudents ts on t.TestId = ts.TestId
+                var sql = @"select count(*) from Tests t join Submissions s on t.TestId = s.TestId
 	                    where StudentId like @studentId";
                 var parameters = new
                 {
