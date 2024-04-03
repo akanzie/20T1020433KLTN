@@ -17,7 +17,8 @@
             <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
                 <input type="hidden" name="SubmissionId" value="@Model.Submission.SubmissionId" />
                 <input type="hidden" name="TestId" value="@Model.Submission.TestId" />
-                <input type="file" class="form-control mt-4" id="fileUpload" name="Files[]" multiple>
+                <input type="file" class="d-none" multiple id="fileInput" />
+                <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
             </form>
             @if (Model.Submission.Status == KLTN20T1020433.DomainModels.Enum.SubmissionStatus.NotSubmitted)
             {
@@ -56,62 +57,74 @@
     </div>
 
 </div>
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            getFiles(@Model.Submission.SubmissionId);
+<script>
+    $(document).ready(function () {
+        getFiles(@Model.Submission.SubmissionId);
+        console.log("a");
+        $('#selectFileBtn').click(function () {
+            $('#fileInput').click();
+            console.log("a");
         });
-        function getFiles(submissionId) {
-            var url = '@Url.Action("ListSubmissionFiles", "StudentTest")';
-            $.ajax({
-                url: url,
-                type: "GET",
-                data: { submissionId: submissionId }
-                error: function () {
-                    alert("Your request is not valid!");
-                },
-                success: function (data) {
-                    $("#submission_files").html(data);
-                }
+        $('#fileInput').change(function () {
+            var formData = new FormData();
+            var files = $(this)[0].files;
+            files.forEach(function (file) {
+                formData.append('files[]', file);
             });
+            var submissionId = $('[name="SubmissionId"]').val();
+            var testId = $('[name="TestId"]').val();
+            formData.append('submissionId', submissionId);
+            formData.append('testId', testId);
+            uploadFiles(formData);
+        });
+    });
+    $(document).on('click', '.remove-button', function () {
+        var fileId = $(this).siblings('input[name="FileId"]').val();
+        var url = '@Url.Action("RemoveSubmissionFile", "StudentTest")';
 
-            return;
-        }
-        $('#fileUpload').change(function () {
-            var formData = new FormData($(this).parents('form')[0]);
-            url = '@Url.Action("UploadSubmissionFile", "StudentTest")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    getFiles(@Model.Submission.TestId);
-                },
-                error: function (xhr, status, error) {
-                    alert("Your request is not valid!");
-                }
-            });
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { fileId: fileId },
+            success: function (response) {
+                getFiles(@Model.Submission.TestId);
+            },
+            error: function (xhr, status, error) {
+                alert("Your request is not valid!");
+            }
         });
-        $(document).on('click', '.remove-button', function () {
-            var fileId = $(this).siblings('input[name="FileId"]').val(); // Lấy giá trị của trường input hidden có tên là "FileId"
-            var url = '@Url.Action("RemoveSubmissionFile", "StudentTest")'; // URL endpoint xử lý xóa tệp
+    });
 
-            // Gửi yêu cầu AJAX để gọi action RemoveSubmissionFile
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: { fileId: fileId }, // Truyền dữ liệu fileId đến action
-                success: function (response) {
-                    // Nếu yêu cầu thành công, cập nhật lại danh sách tệp
-                    getFiles(@Model.Submission.TestId);
-                },
-                error: function (xhr, status, error) {
-                    // Xử lý lỗi nếu có
-                    alert("Your request is not valid!");
-                }
-            });
+    function uploadFiles(formData) {
+        var url = '@Url.Action("UploadSubmissionFile", "StudentTest")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                getFiles(@Model.Submission.TestId);
+            },
+            error: function (xhr, status, error) {
+                alert("Your request is not valid!");
+            }
         });
-    </script>
-}
+    }
+
+    function getFiles(submissionId) {
+        var url = '@Url.Action("ListSubmissionFiles", "StudentTest")';
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: { submissionId: submissionId },
+            error: function () {
+                alert("Your request is not valid!");
+            },
+            success: function (data) {
+                $("#submission_files").html(data);
+            }
+        });
+    }
+</script>
+
