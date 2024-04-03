@@ -10,5 +10,6 @@ namespace KLTN20T1020433.DomainModels.Entities
     {
 
         public int SubmissionId { get; set; }
+        public bool IsSubmitted {  get; set; } = false;
     }
 }

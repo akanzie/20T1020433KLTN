@@ -78,11 +78,12 @@
             getSubmission(@Model.Test.TestId);
         });
         function getSubmission(testId) {
-            var url = '@Url.Action("Submission", "StudentTest")' + '/' + testId;
+            var url = '@Url.Action("Submission", "StudentTest")';
             
             $.ajax({
                 url: url,
-                type: "GET",                
+                type: "GET",
+                data: {testId : testId},
                 error: function () {
                     alert("Your request is not valid!");
                 },

@@ -30,7 +30,7 @@
             doSearch(@Model.Page);
         });
         function doSearch(page) {
-            var url = "Pagination";
+            var url = '@Url.Action("Pagination", "StudentHome")';
             var postData = [];
             postData.push({ "name": "page", "value": page }, { "name": "pageSize", "value": 10 }, { "name": "studentId", "value": '20T1020433' });
             $.ajax({

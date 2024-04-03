@@ -5,7 +5,6 @@ namespace KLTN20T1020433.Web.Models
     public class SubmissionModel
     {
         public Submission Submission { get; set; }
-        public List<SubmissionFile> Files { get; set; }
         public List<Comment>? Comments { get; set; } = null;
     }
 }

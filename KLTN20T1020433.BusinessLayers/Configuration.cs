@@ -12,7 +12,7 @@ namespace KLTN20T1020433.BusinessLayers
         /// Chuỗi thông số kết nối với CSDL
         /// </summary>
         public static string ConnectionString { get; private set; } = "";
-
+        public static string FileStoragePath { get; private set; } = "";
         /// <summary>
         /// Hàm khởi tạo cấu hình cho BusinessLayer
         /// (Hàm này phải được gọi trước khi chạy ứng dụng)
@@ -21,6 +21,10 @@ namespace KLTN20T1020433.BusinessLayers
         public static void Initialize(string connectionString)
         {
             Configuration.ConnectionString = connectionString;
+        }
+        public static void GetFileStoragePath(string path)
+        {
+            Configuration.FileStoragePath = path;
         }
     }
 }

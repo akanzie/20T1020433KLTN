@@ -1,8 +1,10 @@
 ﻿using KLTN20T1020433.BusinessLayers;
 using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
+using System.Reflection;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
@@ -24,33 +26,55 @@ namespace KLTN20T1020433.Web.Controllers.Student
             return View(model);
 
         }
-        public IActionResult Submission(int id = 0)
+        public IActionResult Submission(int testId = 0)
         {
             string studentId = "20T1020433";
-            var submission = StudentService.GetSubmission(id, studentId);
+            var submission = StudentService.GetSubmission(testId, studentId);
 
-            // Kiểm tra xem submission có tồn tại không
             if (submission != null)
             {
-                var files = StudentService.GetFilesOfSubmission(id, studentId);
                 var comments = StudentService.GetComments(submission.SubmissionId);
-               
-                    var model = new SubmissionModel
-                    {
-                        Submission = submission,
-                        Files = files,
-                        Comments = comments
-                    };              
-                             
-               return PartialView(model);
+
+                var model = new SubmissionModel
+                {
+                    Submission = submission,
+                    Comments = comments
+                };
+
+                return PartialView(model);
             }
             else
             {
-                // Trả về một view hoặc thông báo lỗi phù hợp nếu submission không tồn tại
-                return NotFound(); // Ví dụ: Trả về lỗi 404 - Không tìm thấy
+                return NotFound();
             }
         }
-
+        [HttpPost]
+        public IActionResult UploadSubmissionFile(List<IFormFile> files, int testId = 0, int submissionId = 0)
+        {
+            if (files == null || files.Count == 0)
+                return Json("Không có tệp nào được gửi.");
+            else
+            {
+                foreach (var item in files)
+                {
+                    SubmissionFile submissionFile = FileUtils.SaveSubmissionFile(item, testId, submissionId);
+                    FileService.AddSubmissionFile(submissionFile);
+                }
+            }
+            return Json("Tải file lên thành công.");
+        }
+        [HttpPost]
+        public IActionResult RemoveSubmissionFile(Guid id)
+        {
+            SubmissionFile? file = FileService.GetSubmissionFile(id);
+            if (file == null)
+                return Json("Không tìm thấy file");
+            else
+            {
+                FileService.RemoveSubmissionFile(id);
+            }
+            return Json("Tải file lên thành công.");
+        }
         public IActionResult Submit()
         {
             return View();
@@ -59,9 +83,18 @@ namespace KLTN20T1020433.Web.Controllers.Student
         {
             return View();
         }
-        public IActionResult ListExam()
+        public IActionResult ListSubmissionFiles(int submissionId = 0)
         {
-            return View();
+            var submission = StudentService.GetSubmission(submissionId);
+            if (submission != null)
+            {
+                var model = StudentService.GetFilesOfSubmission(submissionId);
+                return PartialView(model);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

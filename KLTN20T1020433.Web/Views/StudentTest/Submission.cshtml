@@ -12,20 +12,21 @@
     <div class="card-body" style="padding-top: 0%;">
         <!-- Hiển thị file bài nộp của sinh viên -->
         <div class="mb-3">
-            @foreach(var item in Model.Files){
-                <div class="file-container">
-                    <a href="#" class="file-link form-control border mb-3" data-file="bainop1.jpg">
-                        <img src="../assets/images/logos/favicon.png" width="50px" alt="Demo Image" class="mx-1">
-                        @item.FileName
-                    </a>
-                    <button class="remove-button">Remove</button>
-                </div>
-            }         
-           
-            <form action="" class="form-group">
-                <input type="file" class="form-control mt-4" id="fileUpload" name="" multiple>
-                <button class="btn btn-primary mt-4 form-control" type="submit">Gửi lại</button>
+            <div id="submission_files">
+            </div>
+            <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
+                <input type="hidden" name="SubmissionId" value="@Model.Submission.SubmissionId" />
+                <input type="hidden" name="TestId" value="@Model.Submission.TestId" />
+                <input type="file" class="form-control mt-4" id="fileUpload" name="Files[]" multiple>
             </form>
+            @if (Model.Submission.Status == KLTN20T1020433.DomainModels.Enum.SubmissionStatus.NotSubmitted)
+            {
+                <button class="btn btn-primary mt-4 form-control" type="button" action="Submit">Nộp bài</button>
+            }
+            @if (Model.Submission.Status == KLTN20T1020433.DomainModels.Enum.SubmissionStatus.Submitted)
+            {
+                <button class="btn btn-primary mt-4 form-control" type="button" action="Cancel">Hủy nộp bài</button>
+            }
         </div>
     </div>
 </div>
@@ -49,9 +50,68 @@
                         <p class="mb-0  fw-bold text-dark">@item.Body</p>
                     </div>
                 }
-                
+
             </div>
         </div>
     </div>
 
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            getFiles(@Model.Submission.SubmissionId);
+        });
+        function getFiles(submissionId) {
+            var url = '@Url.Action("ListSubmissionFiles", "StudentTest")';
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: { submissionId: submissionId }
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $("#submission_files").html(data);
+                }
+            });
+
+            return;
+        }
+        $('#fileUpload').change(function () {
+            var formData = new FormData($(this).parents('form')[0]);
+            url = '@Url.Action("UploadSubmissionFile", "StudentTest")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    getFiles(@Model.Submission.TestId);
+                },
+                error: function (xhr, status, error) {
+                    alert("Your request is not valid!");
+                }
+            });
+        });
+        $(document).on('click', '.remove-button', function () {
+            var fileId = $(this).siblings('input[name="FileId"]').val(); // Lấy giá trị của trường input hidden có tên là "FileId"
+            var url = '@Url.Action("RemoveSubmissionFile", "StudentTest")'; // URL endpoint xử lý xóa tệp
+
+            // Gửi yêu cầu AJAX để gọi action RemoveSubmissionFile
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { fileId: fileId }, // Truyền dữ liệu fileId đến action
+                success: function (response) {
+                    // Nếu yêu cầu thành công, cập nhật lại danh sách tệp
+                    getFiles(@Model.Submission.TestId);
+                },
+                error: function (xhr, status, error) {
+                    // Xử lý lỗi nếu có
+                    alert("Your request is not valid!");
+                }
+            });
+        });
+    </script>
+}

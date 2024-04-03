@@ -145,9 +145,9 @@ namespace KLTN20T1020433.BusinessLayers
 
             return false;
         }
-        public static List<SubmissionFile> GetFilesOfSubmission(int id, string studentId)
+        public static List<SubmissionFile> GetFilesOfSubmission(int submissionId)
         {
-            Submission submission = submissionDB.Get(id, studentId);
+            Submission? submission = submissionDB.GetById(submissionId);
             if (submission == null)
             {
                 return new List<SubmissionFile>();
@@ -163,11 +163,14 @@ namespace KLTN20T1020433.BusinessLayers
             }
         }
 
-        public static Submission? GetSubmission(int id, string studentId)
+        public static Submission? GetSubmission(int id)
         {
-            return submissionDB.Get(id, studentId);
+            return submissionDB.GetById(id);
         }
-
+        public static Submission? GetSubmission(int testId, string studentId)
+        {
+            return submissionDB.Get(testId, studentId);
+        }
         public static List<Comment> GetComments(int submissionId)
         {
            List<Comment> comments = commentDB.GetComments(submissionId).ToList(); 
