@@ -16,7 +16,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var test = StudentService.GetTest(id);
             if (test == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "StudentHome");
             }
             List<TestFile> files = TeacherService.GetFilesOfTest(id);
             var model = new TestModel
@@ -46,7 +46,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("Index", "StudentHome");
             }
         }
         [HttpPost]
@@ -86,10 +86,46 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress;
 
-                StudentService.SubmitTest(ipAddress, id);
-                return Json("Nộp bài thành công.");
+                if (StudentService.SubmitTest(ipAddress, id))
+                {
+                    submission = StudentService.GetSubmission(id);
+                    var model = new SubmissionModel
+                    {
+                        Submission = submission,
+                        Comments = StudentService.GetComments(id),
+                    };
+
+                    return PartialView("Submission", model);
+                }
+                else
+                {
+                    return BadRequest("Bạn chưa gửi file.");
+                }
             }
-            return RedirectToAction("Index", "StudentHome");
+            return BadRequest("Có lỗi xảy ra.");
+        }
+        [HttpPost]
+        public IActionResult Cancel(int id)
+        {
+            var submission = StudentService.GetSubmission(id);
+
+            if (submission != null)
+            {
+                var ipAddress = HttpContext.Connection.RemoteIpAddress;
+
+                if (StudentService.Cancel(ipAddress, id))
+                {
+                    submission = StudentService.GetSubmission(id);
+                    var model = new SubmissionModel
+                    {
+                        Submission = submission,
+                        Comments = StudentService.GetComments(id),       
+                    };
+
+                    return PartialView("Submission",model);
+                }                
+            }
+            return BadRequest("Có lỗi xảy ra.");
         }
         public IActionResult Download()
         {
@@ -100,13 +136,15 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var submission = StudentService.GetSubmission(submissionId);
             if (submission != null)
             {
-                var model = StudentService.GetFilesOfSubmission(submissionId);
+                var files = StudentService.GetFilesOfSubmission(submissionId);
+                var model = new SubmissionFileModel
+                {
+                    SubmissionFiles = files,
+                    Submission = submission
+                };
                 return PartialView(model);
             }
-            else
-            {
-                return NotFound();
-            }
+            return BadRequest("Có lỗi xảy ra.");
         }
     }
 }

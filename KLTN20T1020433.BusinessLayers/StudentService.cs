@@ -84,7 +84,7 @@ namespace KLTN20T1020433.BusinessLayers
             }
 
             return false;
-        }        
+        }
         public static List<SubmissionFile> GetFilesOfSubmission(int submissionId)
         {
             Submission? submission = submissionDB.GetById(submissionId);
@@ -115,6 +115,17 @@ namespace KLTN20T1020433.BusinessLayers
         {
             List<Comment> comments = commentDB.GetComments(submissionId).ToList();
             return comments;
+        }
+
+        public static bool Cancel(IPAddress? ipAddress, int submissionId)
+        {
+            Submission? submission = submissionDB.GetById(submissionId);
+
+            submission!.Status = SubmissionStatus.NotSubmitted;
+
+            bool result = submissionDB.Update(submission);
+
+            return result;
         }
     }
 }

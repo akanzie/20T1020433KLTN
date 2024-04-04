@@ -166,7 +166,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 {
                     SubmittedTime = data.SubmittedTime,
                     IPAddress = data.IPAddress,
-                    Status = data.Status,
+                    Status = data.Status.ToString(),
                     SubmissionId = data.SubmissionId
                 };
                 result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
