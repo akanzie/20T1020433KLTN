@@ -4,19 +4,25 @@
 }
 @foreach (var item in Model)
 {
-    <div class="file-container">
-        <form action="RemoveSubmissionFie" method="post" >
-            <a href="DownLoadSubmissionFile" class="file-link form-control border mb-3" data-file="bainop1.jpg">
-                <img src="../assets/images/logos/favicon.png" width="50px" alt="Demo Image" class="mx-1">
-                @item.FileName
+    <div class="d-block mb-2">
+        <div class="px-2 border rounded-2 d-flex align-items-center justify-content-between">
+            <a href="DownLoadSubmissionFile" class="d-flex flex-grow-1 overflow-hidden d-flex align-items-center" data-file="bainop1.jpg">
+                <div style="overflow: hidden; height: 3.5rem; width:3.5rem" class="flex-shrink-0 position-relative">
+                    <img src="../assets/images/logos/favicon.png" width="50px" class="mx-1" style="width: 100%; height: auto;">
+                </div>
+                <div style="overflow: hidden">
+                    <span class="d-inline-block text-truncate" style="width: 130px;">@item.OriginalName</span>
+                </div>
             </a>
-            <input type="hidden" name="FileId" value="@item.FileId" />
-            <button class="remove-button" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-                </svg>
-            </button>
-        </form>
-        
+            <div style="width:48px; height: 48px" class="d-flex align-items-center justify-content-center user-select-none border-0 rounded-circle cursor-pointer d-inline-block flex-shrink-0 overflow-hidden position-relative text-center">
+                <button class="remove-button" type="button" data-fileid="@item.FileId">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"></path>
+                    </svg>
+                </button>
+
+            </div>
+        </div>
     </div>
+
 }

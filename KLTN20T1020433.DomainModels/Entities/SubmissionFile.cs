@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.DomainModels.Entities
 {
-    public class SubmissionFile : File
+    public class SubmissionFile : _FileBase
     {
 
         public int SubmissionId { get; set; }

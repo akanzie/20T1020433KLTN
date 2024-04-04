@@ -36,29 +36,26 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             }
             return id;
         }
-        public Guid AddSubmissionFile(SubmissionFile file)
+        public void AddSubmissionFile(SubmissionFile file)
         {
-            Guid id = Guid.NewGuid();
             using (var connection = OpenConnection())
             {
-                var sql = @"INSERT INTO SubmissionFiles (FileId, SubmissionId, FileName, FilePath, MimeType, Size)
-                    VALUES (@FileId, @SubmissionId, @FileName, @FilePath, @MimeType, @Size);
-                            ";
+                var sql = @"INSERT INTO SubmissionFiles (FileId, SubmissionId, FileName, FilePath, MimeType, Size, OriginalName)
+                    VALUES (@FileId, @SubmissionId, @FileName, @FilePath, @MimeType, @Size, @OriginalName)";
                 var parameters = new
                 {
-                    FileId = id,
+                    FileId = file.FileId,
                     FileName = file.FileName ?? "",
                     FilePath = file.FilePath ?? "",
                     MimeType = file.MimeType ?? "",
                     Size = file.Size,
-                    SubmissionId = file.SubmissionId
-
+                    SubmissionId = file.SubmissionId,
+                    OriginalName = file.OriginalName ?? ""
                 };
-                connection.ExecuteScalar<Guid>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+                connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
                 connection.Close();
             }
-            return id;
-        }                
+        }
 
         public bool DeleteSubmissionFile(Guid fileId)
         {

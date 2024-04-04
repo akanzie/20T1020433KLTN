@@ -29,8 +29,16 @@ namespace KLTN20T1020433.Web.AppCodes
             string uniqueFileName = $"{id}_{file.FileName}";
             // Tạo đường dẫn đầy đủ cho tệp
 
-            string filePath = Path.Combine(Configuration.FileStoragePath, testId.ToString(), "Submission", uniqueFileName);
+            string directoryPath = Path.Combine(Configuration.FileStoragePath, testId.ToString(), "Submission");
 
+            // Kiểm tra và tạo thư mục nếu nó không tồn tại
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            // Tạo đường dẫn đầy đủ cho tệp
+            string filePath = Path.Combine(directoryPath, uniqueFileName);
             // Lưu tệp vào đường dẫn được chỉ định
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -40,13 +48,28 @@ namespace KLTN20T1020433.Web.AppCodes
             return new SubmissionFile
             {
                 FileId = id,
-                FileName = file.FileName,
+                FileName = uniqueFileName,
                 FilePath = filePath,
                 MimeType = file.ContentType,
                 Size = file.Length,
                 SubmissionId = submissionId,
-
+                OriginalName = file.FileName
             };
+        }
+
+        public static void DeleteFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {    
+                    File.Delete(filePath);                   
+                }   
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi xảy ra: {ex.Message}");
+            }
         }
     }
 }

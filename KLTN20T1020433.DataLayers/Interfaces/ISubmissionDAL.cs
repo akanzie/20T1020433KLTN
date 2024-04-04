@@ -16,7 +16,7 @@ namespace KLTN20T1020433.DomainModels.Interfaces
         IList<SubmissionFile> GetFilesOfSubmission(int submisionId);
         int Add(Submission data);
         bool Update(Submission data);
-        Guid AddSubmissionFile(SubmissionFile file);
+        void AddSubmissionFile(SubmissionFile file);
         bool DeleteSubmissionFile(Guid fileId);
         SubmissionFile? GetSubmissionFile( Guid fileId);
     }

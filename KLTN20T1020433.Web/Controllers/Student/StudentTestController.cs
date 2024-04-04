@@ -3,6 +3,7 @@ using KLTN20T1020433.DomainModels.Entities;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
 
@@ -71,13 +72,24 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return Json("Không tìm thấy file");
             else
             {
+                FileUtils.DeleteFile(file.FilePath);
                 FileService.RemoveSubmissionFile(id);
             }
             return Json("Tải file lên thành công.");
         }
-        public IActionResult Submit()
+        [HttpPost]
+        public IActionResult Submit(int id)
         {
-            return View();
+            var submission = StudentService.GetSubmission(id);
+
+            if (submission != null)
+            {
+                var ipAddress = HttpContext.Connection.RemoteIpAddress;
+
+                StudentService.SubmitTest(ipAddress, id);
+                return Json("Nộp bài thành công.");
+            }
+            return RedirectToAction("Index", "StudentHome");
         }
         public IActionResult Download()
         {

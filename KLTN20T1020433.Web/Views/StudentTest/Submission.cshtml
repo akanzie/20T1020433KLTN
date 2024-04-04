@@ -58,34 +58,18 @@
 
 </div>
 <script>
-    $(document).ready(function () {
-        getFiles(@Model.Submission.SubmissionId);
-        console.log("a");
-        $('#selectFileBtn').click(function () {
-            $('#fileInput').click();
-            console.log("a");
-        });
-        $('#fileInput').change(function () {
-            var formData = new FormData();
-            var files = $(this)[0].files;
-            files.forEach(function (file) {
-                formData.append('files[]', file);
-            });
-            var submissionId = $('[name="SubmissionId"]').val();
-            var testId = $('[name="TestId"]').val();
-            formData.append('submissionId', submissionId);
-            formData.append('testId', testId);
-            uploadFiles(formData);
-        });
+    $(document).on('click', '#selectFileBtn', function () {
+        console.log("b");
+        $('#fileInput').click();
     });
     $(document).on('click', '.remove-button', function () {
-        var fileId = $(this).siblings('input[name="FileId"]').val();
+        var fileId = $(this).data('fileid');
+        console.log(fileId);
         var url = '@Url.Action("RemoveSubmissionFile", "StudentTest")';
-
         $.ajax({
             url: url,
             type: 'POST',
-            data: { fileId: fileId },
+            data: { id: fileId },
             success: function (response) {
                 getFiles(@Model.Submission.TestId);
             },
@@ -94,8 +78,25 @@
             }
         });
     });
+    $(document).on('change', '#fileInput', function () {
+        var formData = new FormData();
+        console.log("a");
+        var files = $(this)[0].files;
+        files.forEach(function (file) {
+            formData.append('files', file);
+        });
+        var submissionId = $('[name="SubmissionId"]').val();
+        var testId = $('[name="TestId"]').val();
+        formData.append('submissionId', submissionId);
+        formData.append('testId', testId);
 
+        uploadFiles(formData);
+    });
+    $(document).ready(function () {
+        getFiles(@Model.Submission.SubmissionId);
+    });
     function uploadFiles(formData) {
+        console.log("c");
         var url = '@Url.Action("UploadSubmissionFile", "StudentTest")';
         $.ajax({
             url: url,
@@ -104,6 +105,7 @@
             processData: false,
             contentType: false,
             success: function (response) {
+                $('#fileInput').val('');
                 getFiles(@Model.Submission.TestId);
             },
             error: function (xhr, status, error) {
@@ -111,7 +113,6 @@
             }
         });
     }
-
     function getFiles(submissionId) {
         var url = '@Url.Action("ListSubmissionFiles", "StudentTest")';
         $.ajax({

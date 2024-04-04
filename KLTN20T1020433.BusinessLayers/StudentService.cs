@@ -7,6 +7,7 @@ using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,45 +44,28 @@ namespace KLTN20T1020433.BusinessLayers
         {
             return testDB.GetById(testId);
         }
-        public static int SubmitTest(string studentId, int testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submittedTime)
+        public static bool SubmitTest(IPAddress ipAddress, int submissionId = 0)
         {
-            if (files.Count() == 0)
+            if (submissionDB.GetFilesOfSubmission(submissionId).Count == 0)
             {
-                return 0;
+                return false;
             }
-            SubmissionStatus status = SubmissionStatus.Submitted;
-            Test test = testDB.GetById(testId);
-            if (Utils.CheckIPAddress(iPAddress))
+            Submission? submission = submissionDB.GetById(submissionId);
+            submission.SubmittedTime = DateTime.Now;
+            Test? test = testDB.GetById(submission.TestId);
+            if (submission.SubmittedTime > test.EndTime)
+                submission.Status = SubmissionStatus.LateSubmission;
+            else if (Utils.CheckIPAddress(ipAddress))
             {
-                status = SubmissionStatus.PendingProcessing;
+                submission.Status = SubmissionStatus.PendingProcessing;
             }
-            else if (submittedTime > test.EndTime)
+            else
             {
-                status = SubmissionStatus.LateSubmission;
+                submission.Status = SubmissionStatus.Submitted;
             }
+            bool result = submissionDB.Update(submission);
 
-            Submission data = new Submission()
-            {
-                StudentId = studentId,
-                TestId = testId,
-                IPAddress = iPAddress,
-                SubmittedTime = submittedTime,
-                Status = status
-            };
-
-            int submissionId = submissionDB.Add(data);
-
-            if (submissionId > 0)
-            {
-                foreach (var item in files)
-                {
-                    submissionDB.AddSubmissionFile(item);
-
-                }
-                return submissionId;
-            }
-
-            return 0;
+            return result;
         }
         public static bool CancelSubmission(int submissionId)
         {
@@ -100,51 +84,7 @@ namespace KLTN20T1020433.BusinessLayers
             }
 
             return false;
-        }
-        public static bool EditSubmission(int submissionID, string studentId, int testId, IEnumerable<SubmissionFile> files, string iPAddress, DateTime submitTime)
-        {
-            if (files.Count() == 0)
-            {
-                return false;
-            }
-            SubmissionStatus status = SubmissionStatus.Submitted;
-            Test test = testDB.GetById(testId);
-            if (Utils.CheckIPAddress(iPAddress))
-            {
-                status = SubmissionStatus.PendingProcessing;
-            }
-            else if (submitTime > test.EndTime)
-            {
-                status = SubmissionStatus.LateSubmission;
-            }
-
-            Submission newSubmission = new Submission()
-            {
-                SubmissionId = submissionID,
-                StudentId = studentId,
-                TestId = testId,
-                IPAddress = iPAddress,
-                SubmittedTime = submitTime,
-                Status = status
-            };
-
-            foreach (var item in files)
-            {
-                submissionDB.DeleteSubmissionFile(item.FileId);
-            }
-
-            if (submissionDB.Update(newSubmission))
-            {
-                foreach (var item in files)
-                {
-                    submissionDB.AddSubmissionFile(item);
-                }
-
-                return true;
-            }
-
-            return false;
-        }
+        }        
         public static List<SubmissionFile> GetFilesOfSubmission(int submissionId)
         {
             Submission? submission = submissionDB.GetById(submissionId);
@@ -173,7 +113,7 @@ namespace KLTN20T1020433.BusinessLayers
         }
         public static List<Comment> GetComments(int submissionId)
         {
-           List<Comment> comments = commentDB.GetComments(submissionId).ToList(); 
+            List<Comment> comments = commentDB.GetComments(submissionId).ToList();
             return comments;
         }
     }

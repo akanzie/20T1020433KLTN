@@ -18,9 +18,9 @@ namespace KLTN20T1020433.BusinessLayers
             
             submissionDB = new SubmissionDAL(connectionString);
         }
-        public static Guid AddSubmissionFile(SubmissionFile file)
+        public static void AddSubmissionFile(SubmissionFile file)
         {
-            return submissionDB.AddSubmissionFile(file);
+            submissionDB.AddSubmissionFile(file);
         }
 
         public static SubmissionFile? GetSubmissionFile(Guid id)
