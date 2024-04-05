@@ -9,11 +9,11 @@ namespace KLTN20T1020433.DataLayers.Interfaces
 {
     public interface ICommentDAL
     {
-        Comment? GetBySubmissionId(int submissionId);
-        Comment? Get(int id);
-        int Add(Comment data);
-        bool Update(Comment data);
-        bool Delete(int id);
-        IList<Comment> GetComments(int submissionId);
+        Task<Comment?> GetBySubmissionId(int submissionId);
+        Task<Comment?> Get(int id);
+        Task<int> Add(Comment data);
+        Task<bool> Update(Comment data);
+        Task<bool> Delete(int id);
+        Task<IList<Comment>> GetComments(int submissionId);
     }
 }

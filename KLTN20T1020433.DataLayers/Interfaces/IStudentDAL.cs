@@ -9,6 +9,6 @@ namespace KLTN20T1020433.DataLayers.Interfaces
 {
     public interface IStudentDAL
     {
-        Task<List<Student>> GetStudentsOfCourse(string courseId);
+        Task<IList<Student>> GetStudentsOfCourse(string courseId);
     }
 }

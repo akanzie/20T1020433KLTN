@@ -27,11 +27,11 @@ namespace KLTN20T1020433.DataLayers.SQLServer
         /// Tạo và mở kết nối đến CSDL
         /// </summary>
         /// <returns></returns>
-        protected SqlConnection OpenConnection()
+        protected async Task<SqlConnection> OpenConnectionAsync()
         {
             SqlConnection connection = new SqlConnection();
             connection.ConnectionString = _connectionString;
-            connection.Open();
+            await connection.OpenAsync();
 
             return connection;
         }

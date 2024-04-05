@@ -10,14 +10,14 @@ namespace KLTN20T1020433.DomainModels.Interfaces
 {
     public interface ISubmissionDAL
     {
-        IList<Submission> GetSubmissions(int testId);
-        Submission? Get(int testId, string studentId);
-        Submission? GetById(int submisionId);
-        IList<SubmissionFile> GetFilesOfSubmission(int submisionId);
-        int Add(Submission data);
-        bool Update(Submission data);
-        void AddSubmissionFile(SubmissionFile file);
-        bool DeleteSubmissionFile(Guid fileId);
-        SubmissionFile? GetSubmissionFile( Guid fileId);
+        Task<IList<Submission>> GetSubmissions(int testId);
+        Task<Submission?> Get(int testId, string studentId);
+        Task<Submission?> GetById(int submisionId);
+        Task<IList<SubmissionFile>> GetFilesOfSubmission(int submisionId);
+        Task<int> Add(Submission data);
+        Task<bool> Update(Submission data);
+        Task<Guid> AddSubmissionFile(SubmissionFile file);
+        Task<bool> DeleteSubmissionFile(Guid fileId);
+        Task<SubmissionFile?> GetSubmissionFile( Guid fileId);
     }
 }

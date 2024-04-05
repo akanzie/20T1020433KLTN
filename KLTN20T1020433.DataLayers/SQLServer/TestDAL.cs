@@ -16,10 +16,10 @@ namespace KLTN20T1020433.DataLayers.SQLServer
         {
         }
 
-        public bool AddStudentParticipantTest(string studentId, int testId)
+        public async Task<bool> AddStudentParticipantTest(string studentId, int testId)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"insert into Tests (studentId, testId) 
                             values (@StudentId,@TestId);
@@ -30,16 +30,15 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestId = testId,
 
                 };
-                result = connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
             }
             return result;
         }
 
-        public int Add(Test data)
+        public async Task<int> Add(Test data)
         {
             int id = 0;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"insert into Tests (Title, Instruction, StartTime, EndTime, Status, 
                                 IsCheckIP, IsConductedAtSchool, CreatedTime, TestType, TeacherId) 
@@ -59,16 +58,16 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestType = data.TestType.ToString(),
                     TeacherId = data.TeacherId
                 };
-                id = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
+                id = await connection.ExecuteScalarAsync<int>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+
             }
             return id;
         }
 
-        public Guid AddTestFile(TestFile file)
+        public async Task<Guid> AddTestFile(TestFile file)
         {
-            Guid id = Guid.NewGuid();
-            using (var connection = OpenConnection())
+
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"insert into TestFiles (FileId, FileName, FilePath, MimeType, Size, 
                                 TestId) 
@@ -77,7 +76,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                             ";
                 var parameters = new
                 {
-                    FileId = id,
+                    FileId = file.FileId,
                     FileName = file.FileName ?? "",
                     FilePath = file.FilePath ?? "",
                     MimeType = file.MimeType ?? "",
@@ -85,15 +84,15 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestId = file.TestId
 
                 };
-                connection.ExecuteScalar<Guid>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
+                await connection.ExecuteScalarAsync<Guid>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+
             }
-            return id;
+            return file.FileId;
         }
-        public bool DeleteStudentParticipantTest(string studentId, int testId)
+        public async Task<bool> DeleteStudentParticipantTest(string studentId, int testId)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"delete from TestStudents where StudentId = @StudentId and TestID = @TestID";
                 var parameters = new
@@ -102,17 +101,17 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestId = testId,
 
                 };
-                result = connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
+
             }
             return result;
         }
 
-        public bool Delete(int testID)
+        public async Task<bool> Delete(int testID)
         {
 
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"begin 
                                 delete from Tests where TestID = @TestID
@@ -122,66 +121,66 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 {
                     TestID = testID
                 };
-                result = connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync (sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
+                
             }
             return result;
         }
 
-        public bool DeleteTestFile(Guid fileId)
+        public async Task<bool> DeleteTestFile(Guid fileId)
         {
 
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"delete from TestFiles where FileID = @FileID";
                 var parameters = new
                 {
                     FileID = fileId
                 };
-                result = connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
+                
             }
             return result;
         }
 
-        public Test? GetById(int testId)
+        public async Task<Test?> GetById(int testId)
         {
             Test? data = null;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"select * from Tests where TestID = @TestID";
                 var parameters = new
                 {
                     TestID = testId
                 };
-                data = connection.QueryFirstOrDefault<Test>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
+                data = await connection.QueryFirstOrDefaultAsync<Test>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+                
             }
             return data;
         }
 
-        public TestFile? GetTestFile(Guid fileId)
+        public async Task<TestFile?> GetTestFile(Guid fileId)
         {
             TestFile? data = null;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"select * from TestFiles where FileID = @FileID";
                 var parameters = new
                 {
                     FileId = fileId
                 };
-                data = connection.QueryFirstOrDefault<TestFile>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
+                data = await connection.QueryFirstOrDefaultAsync<TestFile>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+                
             }
             return data;
-        }        
+        }
 
-        public IList<Student> GetStudentIdsParticipantTest(int testId)
+        public async Task<IList<Student>> GetStudentIdsParticipantTest(int testId)
         {
             List<Student> list = new List<Student>();
 
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"select studentId
                             from Submissions as s
@@ -193,18 +192,18 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestId = testId,
                 };
 
-                list = connection.Query<Student>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
+                list = (await connection.QueryAsync<Student>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
 
-                connection.Close();
+                
             }
             return list;
         }
 
-        public IList<TestFile> GetFilesOfTest(int testId)
+        public async Task<IList<TestFile>> GetFilesOfTest(int testId)
         {
             List<TestFile> list = new List<TestFile>();
 
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"select FileId, FileName, FilePath, MimeType, Size
                             from TestFiles as tf
@@ -216,28 +215,26 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestId = testId,
                 };
 
-                list = connection.Query<TestFile>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
+                list = (await connection.QueryAsync<TestFile>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
 
-                connection.Close();
             }
             return list;
         }
 
-        public IList<Test> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<IList<Test>> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
 
-        public IList<Test> GetTestsOfTeacher(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<IList<Test>> GetTestsOfTeacher(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
 
-        public IList<Test> GetTestsForStudentHome(int page = 1, int pageSize = 0, string studentId = "")
+        public async Task<IList<Test>> GetTestsForStudentHome(int page = 1, int pageSize = 0, string studentId = "")
         {
             List<Test> listTests = new List<Test>();
-
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"
                     with cte as
@@ -259,18 +256,17 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     studentId = studentId
                 };
 
-                listTests = connection.Query<Test>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
+                listTests = (await connection.QueryAsync<Test>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
 
-                connection.Close();
             }
 
             return listTests;
         }
 
-        public bool IsUsed(int id)
+        public async Task<bool> IsUsed(int id)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"if exists(select * from Submissions where TestId = @TestId)
                                 select 1
@@ -280,16 +276,16 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 {
                     TestId = id
                 };
-                result = connection.ExecuteScalar<bool>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
+                result = await connection.ExecuteScalarAsync<bool>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+                
             }
             return result;
         }
 
-        public bool Update(Test data)
+        public async Task<bool> Update(Test data)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"update Tests
                             set Title = @Title,
@@ -321,32 +317,32 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestId = data.TestId
                 };
 
-                result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                
             }
 
             return result;
         }
 
-        public bool CheckFileOwner(string teacherId, Guid fileId)
+        public async Task<bool> CheckFileOwner(string teacherId, Guid fileId)
         {
             throw new NotImplementedException();
         }
 
-        public int CountTestsOfTeacher(string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<int> CountTestsOfTeacher(string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
 
-        public int CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<int> CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             throw new NotImplementedException();
         }
 
-        public int CountTestsForStudentHome(string studentId = "")
+        public async Task<int> CountTestsForStudentHome(string studentId = "")
         {
             int count = 0;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"select count(*) from Tests t join Submissions s on t.TestId = s.TestId
 	                    where StudentId like @studentId";
@@ -354,8 +350,8 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 {
                     StudentId = studentId ?? ""
                 };
-                count = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
+                count = await connection.ExecuteScalarAsync<int>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+                
             }
             return count;
         }

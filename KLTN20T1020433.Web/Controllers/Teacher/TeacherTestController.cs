@@ -12,15 +12,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         const int TEST_PAGE_SIZE = 10;
         const string TEST_SEARCH = "test_search";
 
-        public IActionResult Detail(int testId = 0)
+        public async Task<IActionResult> Detail(int testId = 0)
         {
-            var test = TeacherService.GetTest(testId);
+            var test = await TeacherService.GetTest(testId);
             if (test == null)
             {
                 return RedirectToAction("Index");
             }
 
-            var files = TeacherService.GetFilesOfTest(testId);
+            var files = await TeacherService.GetFilesOfTest(testId);
             var model = new TestModel()
             {
                 Test = test,
@@ -85,11 +85,13 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
             return View(input);
         }
-        public IActionResult Search(TestSearchInput input)
+        public async Task<IActionResult> Search(TestSearchInput input)
         {
-            int rowCount = 0;
             string teacherId = "";
-            var data = TeacherService.GetTestsOfTeacher(out rowCount, input.Page, input.PageSize, input.SearchValue ?? "", teacherId, input.Type, input.Status,
+            int rowCount = await TeacherService.GetRowCount(teacherId, input.SearchValue ?? "", input.Type, input.Status,
+                                            input.FromTime, input.ToTime);
+            
+            var data = await TeacherService.GetTestsOfTeacher(input.Page, input.PageSize, input.SearchValue ?? "", teacherId, input.Type, input.Status,
                                             input.FromTime, input.ToTime);
 
             var model = new TestSearchResult()
@@ -150,7 +152,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 {
                     // Nếu chưa có testId, tạo một bản ghi test và lấy testId từ đó
 
-                    testId = TeacherService.CreateTest(teacherId);
+                    testId = await TeacherService.CreateTest(teacherId);
                     HttpContext.Session.SetInt32("TestId", testId);
                 }
                 var uploadedFile = new TestFile
@@ -191,7 +193,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 testId = BitConverter.ToInt32(testIdBytes, 0);
                 model.TestId = testId;
                 // Cập nhật bản ghi test
-                bool result = TeacherService.EditTest(model);
+                bool result = await TeacherService.EditTest(model);
             }
             else
             {

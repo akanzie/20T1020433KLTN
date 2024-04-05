@@ -18,19 +18,19 @@ namespace KLTN20T1020433.BusinessLayers
             
             submissionDB = new SubmissionDAL(connectionString);
         }
-        public static void AddSubmissionFile(SubmissionFile file)
+        public static async Task<Guid> AddSubmissionFile(SubmissionFile file)
         {
-            submissionDB.AddSubmissionFile(file);
+            return await submissionDB.AddSubmissionFile(file);
         }
 
-        public static SubmissionFile? GetSubmissionFile(Guid id)
+        public static async Task<SubmissionFile?> GetSubmissionFile(Guid id)
         {
-            return submissionDB.GetSubmissionFile(id);
+            return await submissionDB.GetSubmissionFile(id);
         }
 
-        public static bool RemoveSubmissionFile(Guid id)
+        public static async Task<bool> RemoveSubmissionFile(Guid id)
         {
-            return submissionDB.DeleteSubmissionFile(id);
+            return await submissionDB.DeleteSubmissionFile(id);
         }
     }
 }

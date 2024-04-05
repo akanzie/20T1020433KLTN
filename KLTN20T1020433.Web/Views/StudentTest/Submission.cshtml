@@ -80,7 +80,7 @@
             type: 'POST',
             data: { id: fileId },
             success: function (response) {
-                getFiles(@Model.Submission.SubmissionId);
+                getFiles(@Model.Submission.SubmissionId);                
             },
             error: function (xhr, status, error) {
                 alert("Your request is not valid!");
@@ -115,7 +115,7 @@
             contentType: false,
             success: function (response) {
                 $('#fileInput').val('');
-                getFiles(@Model.Submission.SubmissionId);
+                getFiles(@Model.Submission.SubmissionId);                
             },
             error: function (xhr, status, error) {
                 alert("Your request is not valid!");
@@ -129,7 +129,8 @@
             type: "GET",
             data: { submissionId: submissionId },
             error: function () {
-                alert("Your request is not valid!");
+                var errorMessage = xhr.responseText; 
+                alert(errorMessage);
             },
             success: function (data) {
                 $("#submission_files").html(data);
@@ -147,7 +148,8 @@
                 getFiles(submissionId);
             },
             error: function (xhr, status, error) {
-                alert("Bạn chưa thêm file bài nộp!");
+                var errorMessage = xhr.responseText; 
+                alert(errorMessage);
             }
         });
     }
@@ -163,7 +165,8 @@
                 getFiles(submissionId);
             },
             error: function (xhr, status, error) {
-                alert("Your request is not valid!");
+                var errorMessage = xhr.responseText; 
+                alert(errorMessage);
             }
         });
     }

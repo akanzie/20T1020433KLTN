@@ -14,12 +14,12 @@ namespace KLTN20T1020433.DataLayers.SQLServer
     {
         public CommentDAL(string connectionString) : base(connectionString)
         {
-        }
+        }      
 
-        public int Add(Comment data)
+        public async Task<int> Add(Comment data)
         {
             int id = 0;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"INSERT INTO Comments (Body, TeacherId, SubmissionId, CommentedTime) 
                     VALUES (@Body, @TeacherId, @SubmissionId, @CommentedTime);
@@ -31,79 +31,77 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     SubmissionId = data.SubmissionId,
                     CommentedTime = data.CommentedTime
                 };
-                id = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: CommandType.Text);
-                connection.Close();
+                id = await connection.ExecuteScalarAsync<int>(sql: sql, param: parameters, commandType: CommandType.Text);
             }
             return id;
-        }  
-        public bool Delete(int id)
+        }
+        public async Task<bool> Delete(int id)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = "DELETE FROM Comments WHERE CommentId = @CommentId";
                 var parameters = new
                 {
                     CommentId = id
                 };
-                result =  connection.Execute(sql, param: parameters) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync(sql, param: parameters) > 0;                
             }
             return result;
         }
 
-        public Comment? Get(int id)
+        public async Task<Comment?> Get(int id)
         {
             Comment? data = null;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = "SELECT * FROM Comments WHERE CommentId = @CommentId";
                 var parameters = new
                 {
                     CommentId = id
                 };
-                data = connection.QueryFirstOrDefault<Comment>(sql: sql, param: parameters, commandType: CommandType.Text);
-                connection.Close();
+                data = await connection.QueryFirstOrDefaultAsync<Comment>(sql: sql, param: parameters, commandType: CommandType.Text);
+                
             }
             return data;
         }
 
-        public Comment? GetBySubmissionId(int submissionId)
+        public async Task<Comment?> GetBySubmissionId(int submissionId)
         {
             Comment? data = null;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = "SELECT * FROM Comments WHERE SubmissionId = @SubmissionId";
                 var parameters = new
                 {
                     SubmissionId = submissionId
                 };
-                data = connection.QueryFirstOrDefault<Comment>(sql: sql, param: parameters, commandType: CommandType.Text);
-                connection.Close();
+                data = await connection.QueryFirstOrDefaultAsync<Comment>(sql: sql, param: parameters, commandType: CommandType.Text);
+               
             }
             return data;
         }
 
-        public IList<Comment> GetComments(int submissionId)
+        public async Task<IList<Comment>> GetComments(int submissionId)
         {
             List<Comment> comments = new List<Comment>();
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"SELECT * FROM Comments WHERE SubmissionId = @SubmissionId";
                 var parameters = new
                 {
                     SubmissionId = submissionId
                 };
-                comments = connection.Query<Comment>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
-                connection.Close();
+                comments = (await connection.QueryAsync<Comment>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+                
             }
             return comments;
         }
 
-        public bool Update(Comment data)
+        public async Task<bool> Update(Comment data)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"UPDATE Comments 
                     SET Body = @Body, TeacherId = @TeacherId, SubmissionId = @SubmissionId, CommentedTime = @CommentedTime
@@ -116,12 +114,12 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     CommentedTime = data.CommentedTime,
                     CommentId = data.CommentId
                 };
-                result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                
             }
 
             return result;
         }
-
+        
     }
 }

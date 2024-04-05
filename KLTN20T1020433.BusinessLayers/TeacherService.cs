@@ -29,19 +29,24 @@ namespace KLTN20T1020433.BusinessLayers
             submissionDB = new SubmissionDAL(connectionString);
 
         }
-        public static List<Test> GetTestsOfTeacher(out int rowCount, int page = 1, int pageSize = 0,
+        public static async Task<List<Test>> GetTestsOfTeacher(int page = 1, int pageSize = 0,
            string teacherId = "", string searchValue = "", TestType? testType = null,
            TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
-            rowCount = testDB.CountTestsOfTeacher(searchValue);
-            return testDB.GetTestsOfTeacher(page, pageSize, teacherId, searchValue, testType, testStatus, fromTime, toTime).ToList();
 
+            return (await testDB.GetTestsOfTeacher(page, pageSize, teacherId, searchValue, testType, testStatus, fromTime, toTime)).ToList();
+
+        }
+        public static async Task<int> GetRowCount(string teacherId = "", string searchValue = "", TestType? testType = null,
+           TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        {
+            return await testDB.CountTestsOfTeacher(searchValue);
         }
         public static async Task<List<Course>> GetCourses(string teacherId)
         {
             try
             {
-                return await courseDB.GetCourses(teacherId);
+                return (await courseDB.GetCourses(teacherId)).ToList();
             }
             catch (Exception ex)
             {
@@ -50,32 +55,34 @@ namespace KLTN20T1020433.BusinessLayers
                 throw;
             }
         }
+
         public static async Task<List<Student>> GetStudentsOfCourse(string courseId)
         {
-            return await studentDB.GetStudentsOfCourse(courseId);
+            return (await studentDB.GetStudentsOfCourse(courseId)).ToList();
         }
-        public static Test? GetTest(int testId)
-        {
-            return testDB.GetById(testId);
-        }
-        public static Guid UploadTestFile(int testId, TestFile file)
-        {
 
+        public static async Task<Test?> GetTest(int testId)
+        {
+            return await testDB.GetById(testId);
+        }
+
+        public static async Task<Guid> UploadTestFile(int testId, TestFile file)
+        {
             file.TestId = testId;
-            return testDB.AddTestFile(file);
+            return await testDB.AddTestFile(file);
         }
-        public static List<TestFile> GetFilesOfTest(int testId)
+
+        public static async Task<List<TestFile>> GetFilesOfTest(int testId)
         {
-
-            return testDB.GetFilesOfTest(testId).ToList();
+            return (await testDB.GetFilesOfTest(testId)).ToList();
         }
-        public static List<Submission> GetSubmissionsOfTest(int testId)
+
+        public static async Task<List<Submission>> GetSubmissionsOfTest(int testId)
         {
-
-            return submissionDB.GetSubmissions(testId).ToList();
+            return (await submissionDB.GetSubmissions(testId)).ToList();
         }
 
-        public static int CreateTest(string teacherId)
+        public static async Task<int> CreateTest(string teacherId)
         {
             Test test = new Test()
             {
@@ -83,48 +90,52 @@ namespace KLTN20T1020433.BusinessLayers
                 CreatedTime = DateTime.Now,
             };
 
-            return testDB.Add(test);
+            return await testDB.Add(test);
         }
-        public static bool DeleteTestFile(string teacherId, Guid fileId)
+
+        public static async Task<bool> DeleteTestFile(string teacherId, Guid fileId)
         {
-            if (testDB.CheckFileOwner(teacherId, fileId))
+            if (await testDB.CheckFileOwner(teacherId, fileId))
             {
-                return testDB.DeleteTestFile(fileId);
+                return await testDB.DeleteTestFile(fileId);
             }
             else
             {
                 return false;
             }
         }
-        public static bool InitTest(Test test, IEnumerable<string> studentIds)
+
+        public static async Task<bool> InitTest(Test test, IEnumerable<string> studentIds)
         {
-            bool result = testDB.Update(test);
+            bool result = await testDB.Update(test);
 
             if (result)
             {
                 if (studentIds.Count() > 0)
                     foreach (var studentId in studentIds)
                     {
-                        testDB.AddStudentParticipantTest(studentId, test.TestId);
+                        await testDB.AddStudentParticipantTest(studentId, test.TestId);
                     }
                 return true;
             }
             return false;
         }
-        public static bool EditTest(Test test)
+
+        public static async Task<bool> EditTest(Test test)
         {
-            return testDB.Update(test);
+            return await testDB.Update(test);
         }
-        public static bool DeleteTest(int testId)
+
+        public static async Task<bool> DeleteTest(int testId)
         {
-            var data = testDB.GetById(testId);
+            var data = await testDB.GetById(testId);
             if (data == null)
                 return false;
 
-            if (data.Status == TestStatus.Upcoming
-            || data.Status == TestStatus.Canceled)
-                return testDB.Delete(testId);
+            if (data.Status == TestStatus.Upcoming || data.Status == TestStatus.Canceled)
+                return await testDB.Delete(testId);
             return false;
         }
+
     }
 }

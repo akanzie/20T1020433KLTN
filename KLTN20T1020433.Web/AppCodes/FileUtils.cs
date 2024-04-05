@@ -18,7 +18,7 @@ namespace KLTN20T1020433.Web.AppCodes
             return await System.IO.File.ReadAllBytesAsync(filePath);
         }
 
-        public static SubmissionFile SaveSubmissionFile(IFormFile file, int testId = 0, int submissionId = 0)
+        public static async Task<SubmissionFile> SaveSubmissionFileAsync(IFormFile file, int testId = 0, int submissionId = 0)
         {
             if (file == null || file.Length == 0)
             {
@@ -37,12 +37,12 @@ namespace KLTN20T1020433.Web.AppCodes
                 Directory.CreateDirectory(directoryPath);
             }
 
-            // Tạo đường dẫn đầy đủ cho tệp
+            
             string filePath = Path.Combine(directoryPath, uniqueFileName);
             // Lưu tệp vào đường dẫn được chỉ định
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                file.CopyTo(stream);
+                await file.CopyToAsync(stream);
             }
             // Tạo đối tượng File từ thông tin của IFormFile
             return new SubmissionFile

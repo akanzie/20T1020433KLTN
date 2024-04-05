@@ -1,4 +1,5 @@
 ﻿using KLTN20T1020433.BusinessLayers;
+using KLTN20T1020433.DataLayers.SQLServer;
 using KLTN20T1020433.DomainModels.Entities;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
@@ -11,14 +12,60 @@ namespace KLTN20T1020433.Web.Controllers.Student
 {
     public class StudentTestController : Controller
     {
-        public IActionResult Detail(int id = 0)
+        const int PAGE_SIZE = 10;
+        const string TEST_SEARCH = "test_search";
+
+        public IActionResult ListTest()
         {
-            var test = StudentService.GetTest(id);
+            Models.TestSearchInput? input = ApplicationContext.GetSessionData<TestSearchInput>(TEST_SEARCH);
+            if (input == null)
+            {
+                input = new TestSearchInput()
+                {
+                    Page = 1,
+                    PageSize = PAGE_SIZE,
+                    FromTime = null,
+                    ToTime = null,
+                    SearchValue = "",
+                    Status = null,
+                    Type = null,
+                    StudentId = "20T1020433"
+                };
+
+            }
+            return View(input);
+        }
+        public async Task<IActionResult> Search(TestSearchInput input)
+        {
+            var data = await StudentService.GetTestsForStudentHome(input.Page, input.PageSize, input.StudentId ?? "20T1020433");
+            int rowCount = await StudentService.GetRowCount(input.StudentId ?? "20T1020433");
+            var model = new TestSearchResult()
+            {
+                Page = input.Page,
+                PageSize = input.PageSize,
+                RowCount = rowCount,
+                FromTime = input.FromTime,
+                ToTime = input.ToTime,
+                SearchValue = input.SearchValue ?? "",
+                Status = input.Status,
+                Type = input.Type,
+                Data = data
+            };
+
+            // Lưu lại vào session điều kiện tìm kiếm
+            ApplicationContext.SetSessionData(TEST_SEARCH, input);
+
+            return View(model);
+
+        }
+        public async Task<IActionResult> Detail(int id = 0)
+        {
+            var test = await StudentService.GetTest(id);
             if (test == null)
             {
                 return RedirectToAction("Index", "StudentHome");
             }
-            List<TestFile> files = TeacherService.GetFilesOfTest(id);
+            List<TestFile> files = await TeacherService.GetFilesOfTest(id);
             var model = new TestModel
             {
                 Test = test,
@@ -27,14 +74,14 @@ namespace KLTN20T1020433.Web.Controllers.Student
             return View(model);
 
         }
-        public IActionResult Submission(int testId = 0)
+        public async Task<IActionResult> Submission(int testId = 0)
         {
             string studentId = "20T1020433";
-            var submission = StudentService.GetSubmission(testId, studentId);
+            var submission = await StudentService.GetSubmission(testId, studentId);
 
             if (submission != null)
             {
-                var comments = StudentService.GetComments(submission.SubmissionId);
+                var comments = await StudentService.GetComments(submission.SubmissionId);
 
                 var model = new SubmissionModel
                 {
@@ -50,7 +97,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
         }
         [HttpPost]
-        public IActionResult UploadSubmissionFile(List<IFormFile> files, int testId = 0, int submissionId = 0)
+        public async Task<IActionResult> UploadSubmissionFile(List<IFormFile> files, int testId = 0, int submissionId = 0)
         {
             if (files == null || files.Count == 0)
                 return Json("Không có tệp nào được gửi.");
@@ -58,41 +105,45 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 foreach (var item in files)
                 {
-                    SubmissionFile submissionFile = FileUtils.SaveSubmissionFile(item, testId, submissionId);
-                    FileService.AddSubmissionFile(submissionFile);
+                    SubmissionFile submissionFile = await FileUtils.SaveSubmissionFileAsync(item, testId, submissionId);
+                    await FileService.AddSubmissionFile(submissionFile);
                 }
             }
             return Json("Tải file lên thành công.");
         }
         [HttpPost]
-        public IActionResult RemoveSubmissionFile(Guid id)
+        public async Task<IActionResult> RemoveSubmissionFile(Guid id)
         {
-            SubmissionFile? file = FileService.GetSubmissionFile(id);
+            SubmissionFile? file = await FileService.GetSubmissionFile(id);
             if (file == null)
                 return Json("Không tìm thấy file");
             else
             {
                 FileUtils.DeleteFile(file.FilePath);
-                FileService.RemoveSubmissionFile(id);
+                await FileService.RemoveSubmissionFile(id);
             }
-            return Json("Tải file lên thành công.");
+            return Json("Xóa file thành công.");
         }
         [HttpPost]
-        public IActionResult Submit(int id)
+        public async Task<IActionResult> Submit(int id)
         {
-            var submission = StudentService.GetSubmission(id);
-
+            var submission = await StudentService.GetSubmission(id);
             if (submission != null)
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress;
-
-                if (StudentService.SubmitTest(ipAddress, id))
+                Test? test = await StudentService.GetTest(submission.TestId);
+                if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(ipAddress))
                 {
-                    submission = StudentService.GetSubmission(id);
+
+                    return BadRequest("Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.");
+                }
+                if (await StudentService.SubmitTest(ipAddress, id))
+                {
+                    submission = await StudentService.GetSubmission(id);
                     var model = new SubmissionModel
                     {
                         Submission = submission,
-                        Comments = StudentService.GetComments(id),
+                        Comments = await StudentService.GetComments(id),
                     };
 
                     return PartialView("Submission", model);
@@ -105,25 +156,25 @@ namespace KLTN20T1020433.Web.Controllers.Student
             return BadRequest("Có lỗi xảy ra.");
         }
         [HttpPost]
-        public IActionResult Cancel(int id)
+        public async Task<IActionResult> Cancel(int id)
         {
-            var submission = StudentService.GetSubmission(id);
+            var submission = await StudentService.GetSubmission(id);
 
             if (submission != null)
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress;
 
-                if (StudentService.Cancel(ipAddress, id))
+                if (await StudentService.Cancel(ipAddress, id))
                 {
-                    submission = StudentService.GetSubmission(id);
+                    submission = await StudentService.GetSubmission(id);
                     var model = new SubmissionModel
                     {
                         Submission = submission,
-                        Comments = StudentService.GetComments(id),       
+                        Comments = await StudentService.GetComments(id),
                     };
 
-                    return PartialView("Submission",model);
-                }                
+                    return PartialView("Submission", model);
+                }
             }
             return BadRequest("Có lỗi xảy ra.");
         }
@@ -131,12 +182,13 @@ namespace KLTN20T1020433.Web.Controllers.Student
         {
             return View();
         }
-        public IActionResult ListSubmissionFiles(int submissionId = 0)
+
+        public async Task<IActionResult> ListSubmissionFiles(int submissionId = 0)
         {
-            var submission = StudentService.GetSubmission(submissionId);
+            var submission = await StudentService.GetSubmission(submissionId);
             if (submission != null)
             {
-                var files = StudentService.GetFilesOfSubmission(submissionId);
+                var files = await StudentService.GetFilesOfSubmission(submissionId);
                 var model = new SubmissionFileModel
                 {
                     SubmissionFiles = files,

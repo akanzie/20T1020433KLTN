@@ -15,7 +15,7 @@ namespace KLTN20T1020433.DataLayers.API
         {
         }
 
-        public async Task<List<Course>> GetCourses(string teacherId)
+        public async Task<IList<Course>> GetCourses(string teacherId)
         {
             try
             {

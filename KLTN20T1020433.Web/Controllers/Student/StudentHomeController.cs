@@ -25,12 +25,11 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
             return View(input);
         }
-        public IActionResult Pagination(TestPagination input)
-        {
-            int rowCount = 0;
+        public async Task<IActionResult> Pagination(TestPagination input)
+        {          
             
-            var data = StudentService.GetTestsForStudentHome(out rowCount, input.Page, input.PageSize, input.StudentId ?? "20T1020433");
-
+            var data = await StudentService.GetTestsForStudentHome(input.Page, input.PageSize, input.StudentId ?? "20T1020433");
+            int rowCount = await StudentService.GetRowCount(input.StudentId ?? "20T1020433");
             var model = new TestSearchResult()
             {
                 Page = input.Page,

@@ -19,12 +19,12 @@ namespace KLTN20T1020433.DomainModels.Entities
         public string Title { get; set; } = "";
         public string Instruction { get; set; } = "";
         public TestType TestType { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? StartTime { get; set; } = null;
+        public DateTime? EndTime { get; set; } = null;
         public bool IsCheckIP { get; set; }
         public bool IsConductedAtSchool { get; set; }
         public DateTime CreatedTime { get; set; }
-        public DateTime LastUpdateTime { get; set; }
+        public DateTime? LastUpdateTime { get; set; } = null;
         public TestStatus Status {
             get
             {
@@ -56,7 +56,6 @@ namespace KLTN20T1020433.DomainModels.Entities
                     return "Đã bị hủy";
             }
         }
-
 
         public string TeacherId { get; set; }
         public string TeacherName { get; set; }

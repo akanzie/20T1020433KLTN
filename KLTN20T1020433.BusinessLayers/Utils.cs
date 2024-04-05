@@ -63,5 +63,10 @@ namespace KLTN20T1020433.BusinessLayers
                     return "";
             }
         }
+
+        internal static bool CheckIpAddressExists(IPAddress ipAddress)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

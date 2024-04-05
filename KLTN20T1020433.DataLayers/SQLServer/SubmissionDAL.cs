@@ -15,10 +15,10 @@ namespace KLTN20T1020433.DataLayers.SQLServer
         {
         }
 
-        public int Add(Submission data)
+        public async Task<int> Add(Submission data)
         {
             int id = 0;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"INSERT INTO Submissions (StudentId, TestId, SubmittedTime, IPAddress, Status)
                     VALUES (@StudentId, @TestId, @SubmittedTime, @IPAddress, @Status);
@@ -36,9 +36,9 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             }
             return id;
         }
-        public void AddSubmissionFile(SubmissionFile file)
+        public async Task<Guid> AddSubmissionFile(SubmissionFile file)
         {
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"INSERT INTO SubmissionFiles (FileId, SubmissionId, FileName, FilePath, MimeType, Size, OriginalName)
                     VALUES (@FileId, @SubmissionId, @FileName, @FilePath, @MimeType, @Size, @OriginalName)";
@@ -52,31 +52,31 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     SubmissionId = file.SubmissionId,
                     OriginalName = file.OriginalName ?? ""
                 };
-                connection.Execute(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
-                connection.Close();
+                await connection.ExecuteAsync(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);               
             }
+            return file.FileId;
         }
 
-        public bool DeleteSubmissionFile(Guid fileId)
+        public async Task<bool> DeleteSubmissionFile(Guid fileId)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"DELETE FROM SubmissionFiles WHERE FileId = @FileId";
                 var parameters = new
                 {
                     FileId = fileId
                 };
-                result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
-                connection.Close();
+                 result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                
             }
             return result;
         }
 
-        public Submission Get(int testId, string studentId)
+        public async Task<Submission?> Get(int testId, string studentId)
         {
             Submission? submission = null;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"SELECT * FROM Submissions WHERE TestId = @TestId AND StudentId = @StudentId";
                 var parameters = new
@@ -84,80 +84,80 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     TestId = testId,
                     StudentId = studentId
                 };
-                submission = connection.QueryFirstOrDefault<Submission>(sql: sql, param: parameters, commandType: CommandType.Text);
+                submission = await connection.QueryFirstOrDefaultAsync<Submission>(sql: sql, param: parameters, commandType: CommandType.Text);
                 connection.Close();
             }
             return submission;
         }
 
-        public Submission? GetById(int submissionId)
+        public async Task<Submission?> GetById(int submissionId)
         {
             Submission? submission = null;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"SELECT * FROM Submissions WHERE SubmissionId = @SubmissionId";
                 var parameters = new
                 {
                     SubmissionId = submissionId
                 };
-                submission = connection.QueryFirstOrDefault<Submission>(sql: sql, param: parameters, commandType: CommandType.Text);
-                connection.Close();
+                submission = await connection.QueryFirstOrDefaultAsync<Submission>(sql: sql, param: parameters, commandType: CommandType.Text);
+                
             }
             return submission;
         }
 
-        public IList<SubmissionFile> GetFilesOfSubmission(int submissionId)
+        public async Task<IList<SubmissionFile>> GetFilesOfSubmission(int submissionId)
         {
             List<SubmissionFile> files = new List<SubmissionFile>();
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"SELECT * FROM SubmissionFiles WHERE SubmissionId = @SubmissionId";
                 var parameters = new
                 {
                     SubmissionId = submissionId
                 };
-                files = connection.Query<SubmissionFile>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
-                connection.Close();
+                files = (await connection.QueryAsync<SubmissionFile>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+               
             }
             return files;
         }
 
-        public SubmissionFile? GetSubmissionFile(Guid fileId)
+        public async Task<SubmissionFile?> GetSubmissionFile(Guid fileId)
         {
             SubmissionFile? file = null;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"SELECT * FROM SubmissionFiles WHERE FileId = @FileId";
                 var parameters = new
                 {                    
                     FileId = fileId
                 };
-                file = connection.QueryFirstOrDefault<SubmissionFile>(sql: sql, param: parameters, commandType: CommandType.Text);
-                connection.Close();
+                file = await connection.QueryFirstOrDefaultAsync<SubmissionFile>(sql: sql, param: parameters, commandType: CommandType.Text);
+                
             }
             return file;
         }
 
-        public IList<Submission> GetSubmissions(int testId)
+        public async Task<IList<Submission>> GetSubmissions(int testId)
         {
             List<Submission> submissions = new List<Submission>();
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"SELECT * FROM Submissions WHERE TestId = @TestId";
                 var parameters = new
                 {
                     TestId = testId
                 };
-                submissions = connection.Query<Submission>(sql: sql, param: parameters, commandType: CommandType.Text).ToList();
-                connection.Close();
+                submissions = (await connection.QueryAsync<Submission>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+                
             }
             return submissions;
         }
 
-        public bool Update(Submission data)
+        public async Task<bool> Update(Submission data)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (var connection = await OpenConnectionAsync())
             {
                 var sql = @"UPDATE Submissions
                     SET SubmittedTime = @SubmittedTime, IPAddress = @IPAddress, Status = @Status
@@ -169,8 +169,8 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                     Status = data.Status.ToString(),
                     SubmissionId = data.SubmissionId
                 };
-                result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
-                connection.Close();
+                result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                
             }
             return result;
         }

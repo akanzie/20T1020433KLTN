@@ -27,50 +27,58 @@ namespace KLTN20T1020433.BusinessLayers
             submissionDB = new SubmissionDAL(connectionString);
             commentDB = new CommentDAL(connectionString);
         }
-        public static List<Test> GetTestsForStudentHome(out int rowCount, int page = 1, int pageSize = 0,
+        public static async Task<List<Test>> GetTestsForStudentHome(int page = 1, int pageSize = 0,
             string studentId = "")
         {
-            rowCount = testDB.CountTestsForStudentHome(studentId);
-            return testDB.GetTestsForStudentHome(page, pageSize, studentId).ToList();
+            return (await testDB.GetTestsForStudentHome(page, pageSize, studentId)).ToList();
         }
-        public static List<Test> GetTestsByStudent(out int rowCount, int page = 1, int pageSize = 0,
+        public static async Task<int> GetRowCount(string studentId)
+        {
+            return await testDB.CountTestsForStudentHome(studentId);
+        }
+        public static async Task<List<Test>> GetTestsByStudent(int page = 1, int pageSize = 0,
             string studentId = "", string searchValue = "", TestType? testType = null,
             TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
-            rowCount = testDB.CountTestsOfStudent(studentId, searchValue, testType, testStatus, fromTime, toTime);
-            return testDB.GetTestsOfStudent(page, pageSize, studentId, searchValue, testType, testStatus, fromTime, toTime).ToList();
+            return (await testDB.GetTestsOfStudent(page, pageSize, studentId, searchValue, testType, testStatus, fromTime, toTime)).ToList();
         }
-        public static Test? GetTest(int testId)
+        public static async Task<int> GetRowCount(string studentId, string searchValue = "", TestType? testType = null,
+            TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
-            return testDB.GetById(testId);
+            return await testDB.CountTestsOfStudent(studentId, searchValue, testType, testStatus, fromTime, toTime);
         }
-        public static bool SubmitTest(IPAddress ipAddress, int submissionId = 0)
+        public static async Task<Test?> GetTest(int testId)
         {
-            if (submissionDB.GetFilesOfSubmission(submissionId).Count == 0)
+            return await testDB.GetById(testId);
+        }
+        public static async Task<bool> SubmitTest(IPAddress ipAddress, int submissionId = 0)
+        {
+            if ((await submissionDB.GetFilesOfSubmission(submissionId)).Count == 0)
             {
                 return false;
             }
-            Submission? submission = submissionDB.GetById(submissionId);
-            submission.SubmittedTime = DateTime.Now;
-            Test? test = testDB.GetById(submission.TestId);
-            if (submission.SubmittedTime > test.EndTime)
+            Submission? submission = await submissionDB.GetById(submissionId);
+            submission!.SubmittedTime = DateTime.Now;
+            Test? test = await testDB.GetById(submission.TestId);
+            if (submission.SubmittedTime > test!.EndTime)
                 submission.Status = SubmissionStatus.LateSubmission;
-            else if (Utils.CheckIPAddress(ipAddress))
+            else
+                submission.Status = SubmissionStatus.Submitted;
+            if (test.IsCheckIP && Utils.CheckIpAddressExists(ipAddress))
             {
                 submission.Status = SubmissionStatus.PendingProcessing;
             }
-            else
+            if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(ipAddress))
             {
-                submission.Status = SubmissionStatus.Submitted;
+                return false;
             }
-            bool result = submissionDB.Update(submission);
-
+            bool result = await submissionDB.Update(submission);
             return result;
         }
-        public static bool CancelSubmission(int submissionId)
+        public static async Task<bool> CancelSubmission(int submissionId)
         {
-            Submission? submission = submissionDB.GetById(submissionId);
-            Test? test = testDB.GetById(submission.TestId);
+            Submission? submission = await submissionDB.GetById(submissionId);
+            Test? test = await testDB.GetById(submission!.TestId);
             if (submission == null)
                 return false;
             if (test == null)
@@ -80,19 +88,19 @@ namespace KLTN20T1020433.BusinessLayers
                 submission.Status = SubmissionStatus.NotSubmitted;
                 submission.SubmittedTime = DateTime.Now;
 
-                return submissionDB.Update(submission);
+                return await submissionDB.Update(submission);
             }
 
             return false;
         }
-        public static List<SubmissionFile> GetFilesOfSubmission(int submissionId)
+        public static async Task<List<SubmissionFile>> GetFilesOfSubmission(int submissionId)
         {
-            Submission? submission = submissionDB.GetById(submissionId);
+            Submission? submission = await submissionDB.GetById(submissionId);
             if (submission == null)
             {
                 return new List<SubmissionFile>();
             }
-            List<SubmissionFile> files = submissionDB.GetFilesOfSubmission(submission.SubmissionId).ToList();
+            List<SubmissionFile> files = (await submissionDB.GetFilesOfSubmission(submission.SubmissionId)).ToList();
             if (files != null)
             {
                 return files.ToList();
@@ -103,27 +111,27 @@ namespace KLTN20T1020433.BusinessLayers
             }
         }
 
-        public static Submission? GetSubmission(int id)
+        public static async Task<Submission?> GetSubmission(int id)
         {
-            return submissionDB.GetById(id);
+            return await submissionDB.GetById(id);
         }
-        public static Submission? GetSubmission(int testId, string studentId)
+        public static async Task<Submission?> GetSubmission(int testId, string studentId)
         {
-            return submissionDB.Get(testId, studentId);
+            return await submissionDB.Get(testId, studentId);
         }
-        public static List<Comment> GetComments(int submissionId)
+        public static async Task<List<Comment>> GetComments(int submissionId)
         {
-            List<Comment> comments = commentDB.GetComments(submissionId).ToList();
+            List<Comment> comments = (await commentDB.GetComments(submissionId)).ToList();
             return comments;
         }
 
-        public static bool Cancel(IPAddress? ipAddress, int submissionId)
+        public static async Task<bool> Cancel(IPAddress? ipAddress, int submissionId)
         {
-            Submission? submission = submissionDB.GetById(submissionId);
+            Submission? submission = await submissionDB.GetById(submissionId);
 
             submission!.Status = SubmissionStatus.NotSubmitted;
 
-            bool result = submissionDB.Update(submission);
+            bool result = await submissionDB.Update(submission);
 
             return result;
         }
