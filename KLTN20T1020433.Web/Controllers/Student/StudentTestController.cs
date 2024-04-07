@@ -4,6 +4,7 @@ using KLTN20T1020433.DomainModels.Entities;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -178,9 +179,31 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
             return BadRequest("Có lỗi xảy ra.");
         }
-        public IActionResult Download()
+        public async Task<IActionResult> Download(Guid id)
         {
-            return View();
+            string studentId = "20T1020433";
+            bool isAuthorized = await StudentService.CheckFileAuthorize(studentId, id);
+            if (isAuthorized)
+            {
+                var fileInfo = await StudentService.GetSubmissionFile(id);
+
+                if (fileInfo == null)
+                {
+                    return BadRequest();
+                }
+                string filePath = fileInfo.FilePath;
+                string mimeType = fileInfo.MimeType;
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return Json("Không tìm thấy file");
+                }
+                byte[] fileBytes = await FileUtils.ReadFileAsync(filePath);
+                return File(fileBytes, mimeType, fileInfo.OriginalName);
+            }
+            else
+            {
+                return Json("Bạn không có quyền truy cập file.");
+            }
         }
 
         public async Task<IActionResult> ListSubmissionFiles(int submissionId = 0)

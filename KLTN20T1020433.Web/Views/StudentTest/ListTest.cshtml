@@ -1,40 +1,30 @@
-﻿﻿@model KLTN20T1020433.Web.Models.TestSearchInput
+﻿@using KLTN20T1020433.Web.AppCodes
+@model KLTN20T1020433.Web.Models.TestSearchInput
 @{
-    ViewData["Title"] = "ListExam";
     Layout = "~/Views/Shared/Student/_Layout.cshtml";
 }
 <div class="container-fluid">
-    <form class="d-flex justify-content-between align-items-center mb-4">
+    <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="~/StudentTest/Search" method="get" data-container="#searchResult">
         <div class="d-flex">
-            <select class="form-select filter-select me-2" style="width: 200px;">
-                <option value="">Tất cả</option>
-                <option value="ket-thuc-hoc-phan">Chưa bắt đầu</option>
-                <option value="kiem-tra-giua-ky">Đang diễn ra</option>
-                <option value="ki-thi">Đã qua</option>
-            </select>
-            <select class="form-select filter-select me-2" style="width: 200px;">
-                <option value="">Thi/Bài kiểm tra</option>
-                <option value="ket-thuc-hoc-phan">Thi kết thúc học phần</option>
-                <option value="kiem-tra-giua-ky">Bài kiểm tra</option>
-            </select>
+            @Html.DropDownListFor(m => m.Status, SelectListHelper.GetTestStatus(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
+            @Html.DropDownListFor(m => m.Type, SelectListHelper.GetTestType(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" }) 
         </div>
         <div class="d-flex">
-            <label for="fromDate" class="input-group-text">Từ ngày:</label>
-            <input id="fromDate" type="date" class="form-control me-2" style="width: 150px;">
-            <label for="toDate" class="input-group-text">Đến ngày:</label>
-            <input id="toDate" type="date" class="form-control me-2" style="width: 150px;">
-
+            <label for="fromTime" class="input-group-text">Từ ngày:</label>
+            <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime">
+            <label for="toTime" class="input-group-text">Đến ngày:</label>
+            <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
 
             <button class="btn btn-outline-primary" type="submit">
                 Lọc
             </button>
         </div>
-        
+         @Html.HiddenFor(m => m.PageSize)
+         @Html.HiddenFor(m => m.StudentId)
     </form>
     <div id="searchResult">
-
     </div>
-    
+
 </div>
 @section Scripts {
     <script>
@@ -54,8 +44,8 @@
             var postData = $(formSearchInput).serializeArray();
             postData.push(
                 { "name": "page", "value": page },
-                { "name": "categoryId", "value": $('#cate').val() },
-                { "name": "supplierId", "value": $('#sup').val() }
+                { "name": "FromTime", "value": $('#fromTime').val() },
+                { "name": "ToTime", "value": $('#toTime').val() }
             );
             $.ajax({
                 url: url,

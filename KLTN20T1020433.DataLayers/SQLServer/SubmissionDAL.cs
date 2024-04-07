@@ -57,6 +57,11 @@ namespace KLTN20T1020433.DataLayers.SQLServer
             return file.FileId;
         }
 
+        public Task<bool> CheckFileAuthorize(string studentId, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> DeleteSubmissionFile(Guid fileId)
         {
             bool result = false;

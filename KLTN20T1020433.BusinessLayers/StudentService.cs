@@ -135,5 +135,14 @@ namespace KLTN20T1020433.BusinessLayers
 
             return result;
         }
+        public static async Task<SubmissionFile?> GetSubmissionFile(Guid id)
+        {
+            return await submissionDB.GetSubmissionFile(id);
+        }
+
+        public static async Task<bool> CheckFileAuthorize(string studentId, Guid id)
+        {
+            return await submissionDB.CheckFileAuthorize(studentId, id);
+        }
     }
 }

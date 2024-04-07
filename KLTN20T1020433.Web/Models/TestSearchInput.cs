@@ -5,7 +5,7 @@ namespace KLTN20T1020433.Web.Models
 {
     public class TestSearchInput : PaginationSearchInput
     {
-        public string StudentId { get; set; };
+        public string StudentId { get; set; }
         public TestType? Type { get; set; } = null;
         /// <summary>
         /// Trạng thái của đơn hàng cần tìm

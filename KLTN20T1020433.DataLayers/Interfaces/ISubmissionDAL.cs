@@ -19,5 +19,6 @@ namespace KLTN20T1020433.DomainModels.Interfaces
         Task<Guid> AddSubmissionFile(SubmissionFile file);
         Task<bool> DeleteSubmissionFile(Guid fileId);
         Task<SubmissionFile?> GetSubmissionFile( Guid fileId);
+        Task<bool> CheckFileAuthorize(string studentId, Guid id);
     }
 }
