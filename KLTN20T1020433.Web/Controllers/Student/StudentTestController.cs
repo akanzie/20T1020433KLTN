@@ -214,7 +214,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 var files = await StudentService.GetFilesOfSubmission(submissionId);
                 var model = new SubmissionFileModel
                 {
-                    SubmissionFiles = files,
+                    Files = files,
                     Submission = submission
                 };
                 return PartialView(model);

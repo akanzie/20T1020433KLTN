@@ -74,7 +74,20 @@ namespace KLTN20T1020433.BusinessLayers
 
         public static async Task<List<TestFile>> GetFilesOfTest(int testId)
         {
-            return (await testDB.GetFilesOfTest(testId)).ToList();
+            Test? test = await testDB.GetById(testId);
+            if (test == null)
+            {
+                return new List<TestFile>();
+            }
+            List<TestFile> files = (await testDB.GetFilesOfTest(test.TestId)).ToList();
+            if (files != null)
+            {
+                return files.ToList();
+            }
+            else
+            {
+                return new List<TestFile>();
+            }
         }
 
         public static async Task<List<Submission>> GetSubmissionsOfTest(int testId)
@@ -82,11 +95,12 @@ namespace KLTN20T1020433.BusinessLayers
             return (await submissionDB.GetSubmissions(testId)).ToList();
         }
 
-        public static async Task<int> CreateTest(string teacherId)
+        public static async Task<int> CreateTest(string teacherId, TestType testType)
         {
             Test test = new Test()
             {
                 TeacherId = teacherId,
+                TestType = testType,
                 CreatedTime = DateTime.Now,
             };
 
@@ -105,23 +119,12 @@ namespace KLTN20T1020433.BusinessLayers
             }
         }
 
-        public static async Task<bool> InitTest(Test test, IEnumerable<string> studentIds)
+        public static async Task<int> InitTest(Test test)
         {
-            bool result = await testDB.Update(test);
-
-            if (result)
-            {
-                if (studentIds.Count() > 0)
-                    foreach (var studentId in studentIds)
-                    {
-                        await testDB.AddStudentParticipantTest(studentId, test.TestId);
-                    }
-                return true;
-            }
-            return false;
+            return await testDB.Add(test);
         }
 
-        public static async Task<bool> EditTest(Test test)
+        public static async Task<bool> UpdateTest(Test test)
         {
             return await testDB.Update(test);
         }

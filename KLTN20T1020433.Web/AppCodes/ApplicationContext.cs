@@ -72,5 +72,33 @@ namespace KLTN20T1020433.Web.AppCodes
             }
             return null;
         }
+        public static void SetInt32(string key, int value)
+        {
+            try
+            {
+                _httpContextAccessor?.HttpContext?.Session.SetInt32(key, value);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Đọc dữ liệu từ session
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static int? GetDataInt32(string key)
+        {
+            try
+            {
+                return _httpContextAccessor?.HttpContext?.Session.GetInt32(key);
+            }
+            catch
+            {
+            }
+            return null;
+        }
     }
 }

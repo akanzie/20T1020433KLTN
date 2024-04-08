@@ -4,6 +4,7 @@ using KLTN20T1020433.BusinessLayers;
 using KLTN20T1020433.DomainModels.Entities;
 using KLTN20T1020433.DomainModels.Enum;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -11,7 +12,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
     {
         const int TEST_PAGE_SIZE = 10;
         const string TEST_SEARCH = "test_search";
-
+        const string TESTID = "testId";
         public async Task<IActionResult> Detail(int testId = 0)
         {
             var test = await TeacherService.GetTest(testId);
@@ -90,7 +91,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             string teacherId = "";
             int rowCount = await TeacherService.GetRowCount(teacherId, input.SearchValue ?? "", input.Type, input.Status,
                                             input.FromTime, input.ToTime);
-            
+
             var data = await TeacherService.GetTestsOfTeacher(input.Page, input.PageSize, input.SearchValue ?? "", teacherId, input.Type, input.Status,
                                             input.FromTime, input.ToTime);
 
@@ -128,6 +129,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             return View();
         }
+        [HttpPost]
         public IActionResult Save()
         {
             return View();
@@ -137,67 +139,40 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> UploadTestFile(IFormFile file)
+        public async Task<IActionResult> UploadTestFile(List<IFormFile> files)
         {
-            String teacherId = "123";
-            if (file != null && file.Length > 0)
-            {
-                int testId;
-                if (HttpContext.Session.TryGetValue("TestId", out byte[] testIdBytes))
-                {
-                    // Nếu đã có testId, chuyển từ byte[] thành Guid
-                    testId = BitConverter.ToInt32(testIdBytes, 0);
-                }
-                else
-                {
-                    // Nếu chưa có testId, tạo một bản ghi test và lấy testId từ đó
-
-                    testId = await TeacherService.CreateTest(teacherId);
-                    HttpContext.Session.SetInt32("TestId", testId);
-                }
-                var uploadedFile = new TestFile
-                {
-                    FileId = Guid.NewGuid(),
-                    FileName = Path.GetFileName(file.FileName),
-                    MimeType = file.ContentType,
-                    Size = file.Length,
-                    TestId = testId
-                };
-
-                // Tạo đường dẫn lưu trữ trên server
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", uploadedFile.FileId.ToString());
-
-                // Lưu file vào đường dẫn vừa tạo
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(fileStream);
-                }
-
-                // Lưu thông tin về file vào CSDL
-                TeacherService.UploadTestFile(testId, uploadedFile);
-
-                return View("CreateExam");
-            }
-
-            return BadRequest();
-        }
-        [HttpPost]
-        public async Task<IActionResult> SelectStudents(Test model)
-        {
-            int testId;
-
-            // Kiểm tra xem testId đã được lưu trong session chưa
-            if (HttpContext.Session.TryGetValue("TestId", out byte[] testIdBytes))
-            {
-                // Nếu đã có testId, chuyển từ byte[] thành int
-                testId = BitConverter.ToInt32(testIdBytes, 0);
-                model.TestId = testId;
-                // Cập nhật bản ghi test
-                bool result = await TeacherService.EditTest(model);
-            }
+            String teacherId = "1";
+            if (files == null || files.Count == 0)
+                return Json("Không có tệp nào được gửi.");
             else
             {
-                // Nếu chưa có testId, tạo một bản ghi test mới
+                int testId = 0;
+                if (ApplicationContext.GetDataInt32(TESTID) == null)
+                {
+                    testId = await TeacherService.CreateTest(teacherId, TestType.Exam);
+                    ApplicationContext.SetInt32(TESTID, testId);
+                    Console.WriteLine(ApplicationContext.GetDataInt32(TESTID));
+                }
+
+                foreach (var item in files)
+                {
+                    TestFile testFile = await FileUtils.SaveTestFileAsync(item, testId);
+                    await FileService.AddTestFile(testFile);
+                }
+                return Json(testId);
+            }
+        }
+        public async Task<IActionResult> SelectStudents(Test model)
+        {
+            
+            int testId = 0;
+            if (ApplicationContext.GetDataInt32(TESTID) != null)
+            {               
+                model.TestId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+                bool result = await TeacherService.UpdateTest(model);
+            }
+            else
+            {                
                 var test = new Test
                 {
                     Title = model.Title,
@@ -211,19 +186,30 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     TestType = TestType.Exam,
 
                 };
-
-                //testId = TeacherService.InitTest(test);
-
-
-                // Lưu testId vào session để sử dụng cho các lần upload file sau
-                HttpContext.Session.SetInt32("TestId", test.TestId);
-
-                testId = test.TestId;
+                testId = await TeacherService.InitTest(test);
+                HttpContext.Session.SetInt32(TESTID, testId);
             }
 
-            // Redirect đến trang chọn sinh viên
-            return RedirectToAction("SelectStudents", new { TestId = testId });
+            return View(testId);
+        }
+        public async Task<IActionResult> ListTestFiles(int testId = 0)
+        {
+            //testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+            var test = await TeacherService.GetTest(testId);
+            if (test != null)
+            {
+                var files = await TeacherService.GetFilesOfTest(testId);
+                var model = new TestFileModel
+                {
+                    Test = test,
+                    Files = files
+
+                };
+                return PartialView(model);
+            }
+            return BadRequest("Có lỗi xảy ra.");
         }
     }
+
 
 }
