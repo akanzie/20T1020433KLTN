@@ -21,7 +21,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return RedirectToAction("Index");
             }
 
-            var files = await TeacherService.GetFilesOfTest(testId);
+            var files = await FileDataService.GetFilesOfTest(testId);
             var model = new TestModel()
             {
                 Test = test,
@@ -46,9 +46,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             ViewBag.Title = "Tạo bài kiểm tra";
             ViewBag.IsEdit = false;
+            var testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
             var model = new Test()
             {
-                TestId = 0,
+                TestId = testId,
                 TestType = TestType.Quiz
             };
 
@@ -58,9 +59,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             ViewBag.Title = "Tạo bài thi";
             ViewBag.IsEdit = false;
+            var testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
             var model = new Test()
             {
-                TestId = 0,
+                TestId = testId,
                 TestType = TestType.Exam
             };
 
@@ -109,9 +111,19 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
             return View(model);
         }
-        public IActionResult SelectStudents()
+        [HttpPost]
+        public async Task<IActionResult> RemoveTestFile(Guid id)
         {
-            return View();
+            TestFile? file = await FileDataService.GetTestFile(id);
+            if (file == null)
+                return Json("Không tìm thấy file");
+            else
+            {
+                FileUtils.DeleteFile(file.FilePath);
+                await FileDataService.RemoveTestFile(id);
+            }
+            var testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+            return Json(testId);
         }
         public IActionResult SelectCourses()
         {
@@ -134,9 +146,31 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             return View();
         }
-        public IActionResult Download()
+        public async Task<IActionResult> Download(Guid id)
         {
-            return View();
+            string studentId = "20T1020433";
+            bool isAuthorized = await FileDataService.CheckFileAuthorize(studentId, id);
+            if (isAuthorized)
+            {
+                var fileInfo = await FileDataService.GetSubmissionFile(id);
+
+                if (fileInfo == null)
+                {
+                    return BadRequest();
+                }
+                string filePath = fileInfo.FilePath;
+                string mimeType = fileInfo.MimeType;
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return Json("Không tìm thấy file");
+                }
+                byte[] fileBytes = await FileUtils.ReadFileAsync(filePath);
+                return File(fileBytes, mimeType, fileInfo.OriginalName);
+            }
+            else
+            {
+                return Json("Bạn không có quyền truy cập file.");
+            }
         }
         [HttpPost]
         public async Task<IActionResult> UploadTestFile(List<IFormFile> files)
@@ -147,17 +181,21 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             else
             {
                 int testId = 0;
-                if (ApplicationContext.GetDataInt32(TESTID) == null)
+                if (ApplicationContext.GetDataInt32(TESTID) == null || ApplicationContext.GetDataInt32(TESTID) == 0)
                 {
                     testId = await TeacherService.CreateTest(teacherId, TestType.Exam);
                     ApplicationContext.SetInt32(TESTID, testId);
                     Console.WriteLine(ApplicationContext.GetDataInt32(TESTID));
                 }
-
+                else
+                {
+                    testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+                }
+                
                 foreach (var item in files)
                 {
                     TestFile testFile = await FileUtils.SaveTestFileAsync(item, testId);
-                    await FileService.AddTestFile(testFile);
+                    await FileDataService.AddTestFile(testFile);
                 }
                 return Json(testId);
             }
@@ -166,7 +204,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             
             int testId = 0;
-            if (ApplicationContext.GetDataInt32(TESTID) != null)
+            if (ApplicationContext.GetDataInt32(TESTID) != null && ApplicationContext.GetDataInt32(TESTID) != 0)
             {               
                 model.TestId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
                 bool result = await TeacherService.UpdateTest(model);
@@ -198,7 +236,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             var test = await TeacherService.GetTest(testId);
             if (test != null)
             {
-                var files = await TeacherService.GetFilesOfTest(testId);
+                var files = await FileDataService.GetFilesOfTest(testId);               
+
                 var model = new TestFileModel
                 {
                     Test = test,

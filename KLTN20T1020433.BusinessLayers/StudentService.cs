@@ -93,23 +93,7 @@ namespace KLTN20T1020433.BusinessLayers
 
             return false;
         }
-        public static async Task<List<SubmissionFile>> GetFilesOfSubmission(int submissionId)
-        {
-            Submission? submission = await submissionDB.GetById(submissionId);
-            if (submission == null)
-            {
-                return new List<SubmissionFile>();
-            }
-            List<SubmissionFile> files = (await submissionDB.GetFilesOfSubmission(submission.SubmissionId)).ToList();
-            if (files != null)
-            {
-                return files.ToList();
-            }
-            else
-            {
-                return new List<SubmissionFile>();
-            }
-        }
+        
 
         public static async Task<Submission?> GetSubmission(int id)
         {
@@ -135,14 +119,9 @@ namespace KLTN20T1020433.BusinessLayers
 
             return result;
         }
-        public static async Task<SubmissionFile?> GetSubmissionFile(Guid id)
-        {
-            return await submissionDB.GetSubmissionFile(id);
-        }
 
-        public static async Task<bool> CheckFileAuthorize(string studentId, Guid id)
-        {
-            return await submissionDB.CheckFileAuthorize(studentId, id);
-        }
+            
+
+
     }
 }

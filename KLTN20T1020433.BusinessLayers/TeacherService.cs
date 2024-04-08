@@ -66,30 +66,7 @@ namespace KLTN20T1020433.BusinessLayers
             return await testDB.GetById(testId);
         }
 
-        public static async Task<Guid> UploadTestFile(int testId, TestFile file)
-        {
-            file.TestId = testId;
-            return await testDB.AddTestFile(file);
-        }
-
-        public static async Task<List<TestFile>> GetFilesOfTest(int testId)
-        {
-            Test? test = await testDB.GetById(testId);
-            if (test == null)
-            {
-                return new List<TestFile>();
-            }
-            List<TestFile> files = (await testDB.GetFilesOfTest(test.TestId)).ToList();
-            if (files != null)
-            {
-                return files.ToList();
-            }
-            else
-            {
-                return new List<TestFile>();
-            }
-        }
-
+        
         public static async Task<List<Submission>> GetSubmissionsOfTest(int testId)
         {
             return (await submissionDB.GetSubmissions(testId)).ToList();

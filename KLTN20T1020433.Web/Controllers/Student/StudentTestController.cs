@@ -66,7 +66,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 return RedirectToAction("Index", "StudentHome");
             }
-            List<TestFile> files = await TeacherService.GetFilesOfTest(id);
+            List<TestFile> files = await FileDataService.GetFilesOfTest(id);
             var model = new TestModel
             {
                 Test = test,
@@ -107,7 +107,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 foreach (var item in files)
                 {
                     SubmissionFile submissionFile = await FileUtils.SaveSubmissionFileAsync(item, testId, submissionId);
-                    await FileService.AddSubmissionFile(submissionFile);
+                    await FileDataService.AddSubmissionFile(submissionFile);
                 }
             }
             return Json("Tải file lên thành công.");
@@ -115,13 +115,13 @@ namespace KLTN20T1020433.Web.Controllers.Student
         [HttpPost]
         public async Task<IActionResult> RemoveSubmissionFile(Guid id)
         {
-            SubmissionFile? file = await FileService.GetSubmissionFile(id);
+            SubmissionFile? file = await FileDataService.GetSubmissionFile(id);
             if (file == null)
                 return Json("Không tìm thấy file");
             else
             {
                 FileUtils.DeleteFile(file.FilePath);
-                await FileService.RemoveSubmissionFile(id);
+                await FileDataService.RemoveSubmissionFile(id);
             }
             return Json("Xóa file thành công.");
         }
@@ -182,10 +182,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Download(Guid id)
         {
             string studentId = "20T1020433";
-            bool isAuthorized = await StudentService.CheckFileAuthorize(studentId, id);
+            bool isAuthorized = await FileDataService.CheckFileAuthorize(studentId, id);
             if (isAuthorized)
             {
-                var fileInfo = await StudentService.GetSubmissionFile(id);
+                var fileInfo = await FileDataService.GetSubmissionFile(id);
 
                 if (fileInfo == null)
                 {
@@ -211,7 +211,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var submission = await StudentService.GetSubmission(submissionId);
             if (submission != null)
             {
-                var files = await StudentService.GetFilesOfSubmission(submissionId);
+                var files = await FileDataService.GetFilesOfSubmission(submissionId);
                 var model = new SubmissionFileModel
                 {
                     Files = files,
