@@ -204,8 +204,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 return Json("Bạn không có quyền truy cập file.");
             }
-        }
-
+        }       
         public async Task<IActionResult> ListSubmissionFiles(int submissionId = 0)
         {
             var submission = await StudentService.GetSubmission(submissionId);

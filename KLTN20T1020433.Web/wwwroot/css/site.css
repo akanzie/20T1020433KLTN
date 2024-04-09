@@ -5,3 +5,13 @@
     margin-bottom: 20px;
     background-color: var(--bs-secondary-bg);
 }
+.img-file {
+    box-sizing: border-box;
+    max-height: 100%;
+    max-width: 100%;
+}
+.custom-box {
+    height: 4rem;
+    overflow: hidden;
+    width: 6rem;
+}

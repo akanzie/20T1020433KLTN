@@ -16,13 +16,22 @@
 
         <div class="navbar-collapse justify-content-end px-0" id="navbarNav" style="flex-basis: content">
             <ul class="navbar-nav d-flex align-items-center justify-content-end">
-                <li class="nav-item d-none d-sm-inline">
-                    <div class="form-group">
-                        <select class="form-select">
-                            <option value="1">Học kỳ: 2, năm học: 2023-2024</option>
-                            <option value="2">Học kỳ: 2, năm học: 2023-2024</option>
-                            <option value="3">Học kỳ: 2, năm học: 2023-2024</option>
-                            <option value="4">Học kỳ: 2, năm học: 2023-2024</option>
+                <li class="nav-item d-none d-sm-flex">
+                    <div class="d-inline-flex">
+                        <label for="semester">Học kỳ:</label>
+                        <select class="form-select" id="semester">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <div class="d-inline-flex">
+                        <label for="academic_year">Năm học:</label>
+                        <select class="form-select" id="academic_year">
+                            <option value="2021-2022">2021-2022</option>
+                            <option value="2022-2023">2022-2023</option>
+                            <option value="2023-2024">2023-2024</option>
+                            <option value="2024-2025">2024-2025</option>
                         </select>
                     </div>
                 </li>
