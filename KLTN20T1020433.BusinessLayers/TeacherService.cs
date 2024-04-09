@@ -44,16 +44,10 @@ namespace KLTN20T1020433.BusinessLayers
         }
         public static async Task<List<Course>> GetCourses(string teacherId)
         {
-            try
-            {
+            
                 return (await courseDB.GetCourses(teacherId)).ToList();
-            }
-            catch (Exception ex)
-            {
-                // Xử lý bất kỳ ngoại lệ nào xảy ra, ghi nhật ký hoặc ném lại nếu cần
-                Console.WriteLine($"Đã xảy ra lỗi khi lấy danh sách khóa học: {ex.Message}");
-                throw;
-            }
+            
+            
         }
 
         public static async Task<List<Student>> GetStudentsOfCourse(string courseId)
@@ -72,14 +66,8 @@ namespace KLTN20T1020433.BusinessLayers
             return (await submissionDB.GetSubmissions(testId)).ToList();
         }
 
-        public static async Task<int> CreateTest(string teacherId, TestType testType)
-        {
-            Test test = new Test()
-            {
-                TeacherId = teacherId,
-                TestType = testType,
-                CreatedTime = DateTime.Now,
-            };
+        public static async Task<int> CreateTest(Test test)
+        {         
 
             return await testDB.Add(test);
         }
@@ -96,13 +84,9 @@ namespace KLTN20T1020433.BusinessLayers
             }
         }
 
-        public static async Task<int> InitTest(Test test)
-        {
-            return await testDB.Add(test);
-        }
-
+        
         public static async Task<bool> UpdateTest(Test test)
-        {
+        {            
             return await testDB.Update(test);
         }
 

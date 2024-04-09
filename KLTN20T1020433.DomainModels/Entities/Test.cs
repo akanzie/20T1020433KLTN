@@ -25,15 +25,29 @@ namespace KLTN20T1020433.DomainModels.Entities
         public bool IsConductedAtSchool { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime? LastUpdateTime { get; set; } = null;
-        public TestStatus Status {
+        private TestStatus _status;
+
+        public TestStatus Status
+        {
             get
             {
-                if (DateTime.Now < StartTime)
-                    return TestStatus.Upcoming;
-                else if (DateTime.Now > EndTime)
-                    return TestStatus.Finished;
+                if (_status == TestStatus.InProgress)
+                {
+                    if (DateTime.Now < StartTime)
+                        return TestStatus.Upcoming;
+                    else if (DateTime.Now > EndTime)
+                        return TestStatus.Finished;
+                    else
+                        return TestStatus.Ongoing;
+                }
                 else
-                    return TestStatus.Ongoing;
+                {
+                    return _status;
+                }
+            }
+            set
+            {
+                _status = value;
             }
         }
         public string StatusDescription
@@ -51,6 +65,10 @@ namespace KLTN20T1020433.DomainModels.Entities
                 else if (Status == TestStatus.Finished)
                 {
                     return "Đã kết thúc";
+                }
+                else if (Status == TestStatus.Creating)
+                {
+                    return "Đang tạo";
                 }
                 else
                     return "Đã bị hủy";

@@ -47,9 +47,9 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 int id = 0;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"insert into Tests (Title, Instruction, StartTime, EndTime, IsCanceled, 
+                    var sql = @"insert into Tests (Title, Instruction, StartTime, EndTime, Status, 
                             IsCheckIP, IsConductedAtSchool, CreatedTime, TestType, TeacherId) 
-                        values (@Title,@Instruction,@StartTime,@EndTime,@IsCanceled,@IsCheckIP,
+                        values (@Title,@Instruction,@StartTime,@EndTime,@Status,@IsCheckIP,
                             @IsConductedAtSchool,@CreatedTime,@TestType,@TeacherId);
                         SELECT SCOPE_IDENTITY()";
                     var parameters = new
@@ -58,7 +58,7 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                         Instruction = data.Instruction ?? "",
                         StartTime = data.StartTime,
                         EndTime = data.EndTime,
-                        IsCanceled = data.Status == TestStatus.Canceled,
+                        Status = data.Status.ToString(),
                         IsCheckIP = data.IsCheckIP,
                         IsConductedAtSchool = data.IsConductedAtSchool,
                         CreatedTime = data.CreatedTime,
@@ -284,10 +284,12 @@ namespace KLTN20T1020433.DataLayers.SQLServer
 
         public async Task<IList<Test>> GetTestsForStudentHome(int page = 1, int pageSize = 0, string studentId = "")
         {
-            List<Test> listTests = new List<Test>();
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var sql = @"
+                List<Test> listTests = new List<Test>();
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var sql = @"
                     with cte as
                     (
 	                    select t.*, ROW_NUMBER() over (order by StartTime) as RowNumber
@@ -300,18 +302,25 @@ namespace KLTN20T1020433.DataLayers.SQLServer
 	                    or (RowNumber between (@page - 1) * @pageSize + 1 and @page * @pageSize)
                     order by RowNumber;";
 
-                var parameters = new
-                {
-                    page = page,
-                    pageSize = pageSize,
-                    studentId = studentId
-                };
+                    var parameters = new
+                    {
+                        page = page,
+                        pageSize = pageSize,
+                        studentId = studentId
+                    };
 
-                listTests = (await connection.QueryAsync<Test>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+                    listTests = (await connection.QueryAsync<Test>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
 
+                }
+
+                return listTests;
             }
-
-            return listTests;
+            catch (Exception e)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi truy vấn danh sách bài kiểm tra của sinh viên: " + e.Message);
+                throw;
+            }
+            
         }
 
         public async Task<IList<Test>> GetTestsOfTeacher(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
@@ -406,13 +415,13 @@ namespace KLTN20T1020433.DataLayers.SQLServer
                 {
                     Title = data.Title ?? "",
                     Instruction = data.Instruction ?? "",
-                    StartTime = data.StartTime,
-                    EndTime = data.EndTime,
+                    StartTime = data.StartTime ?? null,
+                    EndTime = data.EndTime ?? null,
                     Status = data.Status.ToString(),
                     IsCheckIP = data.IsCheckIP,
                     IsConductedAtSchool = data.IsConductedAtSchool,
                     CreatedTime = data.CreatedTime,
-                    LastUpdateTime = data.LastUpdateTime,
+                    LastUpdateTime = data.LastUpdateTime ?? null,
                     TestType = data.TestType.ToString(),
                     TeacherId = data.TeacherId,
                     TestId = data.TestId

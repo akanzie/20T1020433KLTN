@@ -11,7 +11,7 @@ namespace KLTN20T1020433.Web.AppCodes
         /// <param name="s"></param>
         /// <param name="formats"></param>
         /// <returns></returns>
-        public static DateTime? ToDateTime(this string s, string formats = "d/M/yyyy;d-M-yyyy;d.M.yyyy")
+        public static DateTime? ToDateTime(this string s, string formats = "d/M/yyyy;d-M-yyyy;d.M.yyyy;yyyy-MM-ddTHH:mm")
         {
             try
             {

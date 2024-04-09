@@ -97,6 +97,7 @@ namespace KLTN20T1020433.Web.AppCodes
             }
             catch
             {
+                
             }
             return null;
         }

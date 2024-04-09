@@ -183,9 +183,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 int testId = 0;
                 if (ApplicationContext.GetDataInt32(TESTID) == null || ApplicationContext.GetDataInt32(TESTID) == 0)
                 {
-                    testId = await TeacherService.CreateTest(teacherId, TestType.Exam);
-                    ApplicationContext.SetInt32(TESTID, testId);
-                    Console.WriteLine(ApplicationContext.GetDataInt32(TESTID));
+                    Test test = new Test()
+                    {
+                        TeacherId = teacherId,
+                        TestType = TestType.Exam,
+                        Status = TestStatus.Creating,
+                        CreatedTime = DateTime.Now,
+                    };
+                    testId = await TeacherService.CreateTest(test);
+                    ApplicationContext.SetInt32(TESTID, testId);                    
                 }
                 else
                 {
@@ -205,8 +211,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             
             int testId = 0;
             if (ApplicationContext.GetDataInt32(TESTID) != null && ApplicationContext.GetDataInt32(TESTID) != 0)
-            {               
-                model.TestId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+            {
+                testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+                Test? test = await TeacherService.GetTest(testId);
+                model.TestId = testId;
+                model.TeacherId = test!.TeacherId;                
+                model.TestType = TestType.Exam;
+                model.Status = TestStatus.Creating;
+                model.CreatedTime = DateTime.Now;
                 bool result = await TeacherService.UpdateTest(model);
             }
             else
@@ -224,7 +236,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     TestType = TestType.Exam,
 
                 };
-                testId = await TeacherService.InitTest(test);
+                testId = await TeacherService.CreateTest(test);
                 HttpContext.Session.SetInt32(TESTID, testId);
             }
 

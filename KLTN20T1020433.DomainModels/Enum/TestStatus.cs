@@ -14,6 +14,8 @@ namespace KLTN20T1020433.DomainModels.Enum
         Upcoming, //Chưa bắt đầu        
         Ongoing,    //Đang diễn ra        
         Finished,  //Đã kết thúc
+        Creating, //Đang tạo
+        InProgress, //Đang tiến hành
         Canceled   //Đã bị hủy
     }
 }
