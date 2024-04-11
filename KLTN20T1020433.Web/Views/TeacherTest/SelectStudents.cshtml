@@ -7,9 +7,59 @@
 <div class="container-fluid">
     <h2>Chọn sinh viên tham gia</h2>
     <div class="d-flex justify-content-between">
-        <div class="mb-3">
-            <input type="text" class="form-inline" id="searchInput" placeholder="Nhập mã sinh viên...">
-            <button type="button" class="btn btn-primary" id="">Thêm</button>
+        <div class="d-flex">
+            <div class="mb-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#studentModal">
+                    Chọn sinh viên khác
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="studentModalLabel">Danh sách sinh viên</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm..."
+                                           aria-label="Tìm kiếm...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        Tìm
+                                        kiếm
+                                    </button>
+                                </div>
+                                <!-- Danh sách sinh viên -->
+                                <ul class="list-group">
+                                    <li class="list-group-item">Sinh viên 1</li>
+                                    <li class="list-group-item">Sinh viên 2</li>
+                                    <li class="list-group-item">Sinh viên 3</li>
+                                    <!-- Thêm các sinh viên khác tại đây -->
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Đóng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="mb-3">
+                <select class="">
+                    <option value="">Chọn kỳ thi</option>
+                    <option value="kithi1">Thi kết thúc học phần - Nhóm 1</option>
+                    <option value="kithi1">Thi kết thúc học phần - Nhóm 2</option>
+                </select>
+            </div>
         </div>
         <div class="mb-3">
             <button type="button" class="btn btn-primary" id="">Xác nhận</button>
@@ -18,73 +68,8 @@
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
-                <div class="mb-3 mt-2 ms-3 mx-3">
-                    <h4><strong>Lớp A </strong> <span>(3)</span> </h4>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="selectAllClass1">
-                        @* selectAllClass@(counter) *@
-                        <label class="form-check-label" for="selectAllClass1">
-                            Chọn tất cả
-                        </label>
-                    </div>
-                    <div id="class1Students">
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student1">
-                            <label class="form-check-label" for="student1">
-                                <span class="badge text-primary">MSV1</span>
-                                <span class="badge text-secondary">Sinh viên 1</span>
-                            </label>
-                        </span>
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student1">
-                            <label class="form-check-label" for="student1">
-                                <span class="badge text-primary">MSV2</span>
-                                <span class="badge text-secondary">Sinh viên 2</span>
-                            </label>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
-                <div class="mb-3 mt-2 ms-3 mx-3">
-                    <h4>Lớp B</h4>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="selectAllClass2">
-                        <label class="form-check-label" for="selectAllClassB">
-                            Chọn tất cả
-                        </label>
-                    </div>
-                    <div id="classAStudents">
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student1">
-                            <label class="form-check-label" for="student1">MSV1: Sinh viên 1</label>
-                        </span>
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student2">
-                            <label class="form-check-label" for="student2">MSV2: Sinh viên 2</label>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
-                <div class="mb-3 mt-2 ms-3 mx-3">
-                    <h4>Lớp A</h4>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="selectAllClassA">
-                        <label class="form-check-label" for="selectAllClassA">
-                            Chọn tất cả
-                        </label>
-                    </div>
-                    <div id="classAStudents">
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student1">
-                            <label class="form-check-label" for="student1">MSV1: Sinh viên 1</label>
-                        </span>
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student2">
-                            <label class="form-check-label" for="student2">MSV2: Sinh viên 2</label>
-                        </span>
-                    </div>
+                <div id="studentList">
+                    <!-- Danh sách sinh viên sẽ được cập nhật bởi JavaScript -->
                 </div>
             </div>
         </div>
@@ -114,6 +99,7 @@
 
     </div>
 </div>
+       
 
 <script>
     const selectAllCheckbox = document.getElementById('selectAllClass1');

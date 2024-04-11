@@ -27,7 +27,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
@@ -41,6 +41,8 @@ ApplicationContext.Configure
     hostEnvironment: app.Services.GetService<IWebHostEnvironment>()
 );
 
-string connectionString = @"server=KITHGG;user id=sa;password=1;database=QuanLyBaiThi;TrustServerCertificate=true";
+string connectionString = @"server=LAPCN-KietCA;user id=sa;password=1;database=QuanLyBaiThi;TrustServerCertificate=true";
+string fileStoragePath = @"D:\File";
 KLTN20T1020433.BusinessLayers.Configuration.Initialize(connectionString);
+KLTN20T1020433.BusinessLayers.Configuration.GetFileStoragePath(fileStoragePath);
 app.Run();
