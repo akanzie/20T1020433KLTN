@@ -15,12 +15,12 @@
 <body>
     <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-        data-sidebar-position="fixed" data-header-position="fixed">
+         data-sidebar-position="fixed" data-header-position="fixed">
         <aside class="left-sidebar">
             <!-- Sidebar scroll-->
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between"
-                    style="background-color: blue">
+                     style="background-color: blue">
                     <a href="../TeacherHome/Index" class="text-nowrap logo-img">
                         <img src="../Modernize-1.0.0/src/assets/images/logos/logo.png" width="180" alt="" />
                     </a>
@@ -142,15 +142,18 @@
                     <ul class="navbar-nav">
                         <li class="nav-item d-block d-xl-none">
                             <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse"
-                                href="javascript:void(0)">
+                               href="javascript:void(0)">
                                 <i class="ti ti-menu-2"></i>
                             </a>
                         </li>
                         <li class="nav-item">
                             <form class="d-flex">
                                 <input class="form-control me-2" type="search" placeholder="Kỳ thi" aria-label="Search">
-                                <button class="btn btn-primary" type="submit" style="width: 140px"><span><i
-                                            class="ti ti-search"></i></span></button>
+                                <button class="btn btn-primary" type="submit" style="width: 140px">
+                                    <span>
+                                        <i class="ti ti-search"></i>
+                                    </span>
+                                </button>
                             </form>
                         </li>
                     </ul>
@@ -178,27 +181,27 @@
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                   data-bs-toggle="dropdown" aria-expanded="false">
                                     <span class="d-none d-md-inline">Nguyễn Văn A</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-user d-inline d-md-none">
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         class="icon icon-tabler icons-tabler-outline icon-tabler-user d-inline d-md-none">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
                                         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                                     </svg>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
-                                    aria-labelledby="drop2">
+                                     aria-labelledby="drop2">
                                     <div class="message-body">
                                         <a href="javascript:void(0)"
-                                            class="d-flex align-items-center gap-2 dropdown-item">
+                                           class="d-flex align-items-center gap-2 dropdown-item">
                                             <i class="ti ti-user fs-6"></i>
                                             <p class="mb-0 fs-3">My Profile</p>
                                         </a>
                                         <a href="~/Account/Logout"
-                                            class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                           class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                                     </div>
                                 </div>
                             </li>
@@ -213,26 +216,28 @@
                         <div class="mb-3">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#studentModal">
+                                    data-bs-target="#studentModal">
                                 Chọn sinh viên khác
                             </button>
 
                             <!-- Modal -->
                             <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel"
-                                aria-hidden="true">
+                                 aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="studentModalLabel">Danh sách sinh viên</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                                    aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="Tìm kiếm..."
-                                                    aria-label="Tìm kiếm...">
-                                                <button class="btn btn-outline-secondary" type="button">Tìm
-                                                    kiếm</button>
+                                                       aria-label="Tìm kiếm...">
+                                                <button class="btn btn-outline-secondary" type="button">
+                                                    Tìm
+                                                    kiếm
+                                                </button>
                                             </div>
                                             <!-- Danh sách sinh viên -->
                                             <ul class="list-group">
@@ -244,18 +249,20 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Đóng</button>
+                                                    data-bs-dismiss="modal">
+                                                Đóng
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
-                        <div class="mb-3">
-                            <select class="">
+                        <div class="mb-3 ms-3">
+                            <select class="form-select">
                                 <option value="">Chọn kỳ thi</option>
                                 <option value="kithi1">Thi kết thúc học phần - Nhóm 1</option>
-                                <option value="kithi1">Thi kết thúc học phần - Nhóm 2</option>
+                                <option value="kithi2">Thi kết thúc học phần - Nhóm 2</option>
                             </select>
                         </div>
                     </div>
@@ -265,22 +272,16 @@
                 </div>
                 <div class="row mt-4">
                     <div class="col-md-6">
-                        <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
+                        <div class="col-lg mb-4 border rounded">
                             <div id="studentList">
                                 <!-- Danh sách sinh viên sẽ được cập nhật bởi JavaScript -->
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
+                        <div class="col-lg mb-4 border rounded">
                             <div class="mb-3 mt-2 ms-3 mx-3">
-                                <h4>Khác</h4>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="selectAllClassA">
-                                    <label class="form-check-label" for="selectAllClassA">
-                                        Chọn tất cả
-                                    </label>
-                                </div>
+                                <h4>Sinh viên đã chọn</h4>
                                 <div id="classAStudents">
                                     <span class="d-block">
                                         <input type="checkbox" class="form-check-input" id="student1">
@@ -294,12 +295,13 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+
+
         </div>
     </div>
-    
+
     <script>
         const examSelect = document.getElementById('examSelect');
         const studentListDiv = document.getElementById('studentList');
