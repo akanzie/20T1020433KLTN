@@ -1,5 +1,4 @@
 ﻿
-
 using KLTN20T1020433.Domain.Student;
 
 namespace KLTN20T1020433.Web.Models

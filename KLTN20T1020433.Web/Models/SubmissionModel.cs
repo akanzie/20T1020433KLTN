@@ -1,5 +1,4 @@
-﻿using KLTN20T1020433.Domain.Comment;
-using KLTN20T1020433.Domain.Submission;
+﻿using KLTN20T1020433.DomainModels.Entities; 
 
 namespace KLTN20T1020433.Web.Models
 {

@@ -1,6 +1,5 @@
-﻿
-
-using KLTN20T1020433.Domain.Test;
+﻿using KLTN20T1020433.DomainModels.Entities;
+using KLTN20T1020433.DomainModels.Enum;
 
 namespace KLTN20T1020433.Web.Models
 {
