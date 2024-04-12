@@ -1,7 +1,4 @@
-﻿using KLTN20T1020433.BusinessLayers;
-using KLTN20T1020433.DataLayers.SQLServer;
-using KLTN20T1020433.DomainModels.Entities;
-using KLTN20T1020433.Web.AppCodes;
+﻿using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
@@ -11,7 +8,7 @@ using System.Reflection;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
-    public class StudentTestController : Controller
+    public class TestController : Controller
     {
         const int PAGE_SIZE = 10;
         const string TEST_SEARCH = "test_search";

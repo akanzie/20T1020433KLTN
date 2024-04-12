@@ -1,7 +1,10 @@
-﻿using KLTN20T1020433.BusinessLayers;
+﻿
 using System.IO;
+using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Test;
+using KLTN20T1020433.Web.Configuration;
 using Microsoft.AspNetCore.Http;
-using KLTN20T1020433.DomainModels.Entities;
+
 
 namespace KLTN20T1020433.Web.AppCodes
 {
@@ -29,15 +32,13 @@ namespace KLTN20T1020433.Web.AppCodes
             string uniqueFileName = $"{id}_{file.FileName}";
             // Tạo đường dẫn đầy đủ cho tệp
 
-            string directoryPath = Path.Combine(Configuration.FileStoragePath, testId.ToString(), "Submission");
+            string directoryPath = Path.Combine(FileConfig.ServerStoragePath, testId.ToString(), "Submission");
 
             // Kiểm tra và tạo thư mục nếu nó không tồn tại
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
-            }
-
-            
+            }            
             string filePath = Path.Combine(directoryPath, uniqueFileName);
             // Lưu tệp vào đường dẫn được chỉ định
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -83,7 +84,7 @@ namespace KLTN20T1020433.Web.AppCodes
             string uniqueFileName = $"{id}_{file.FileName}";
             // Tạo đường dẫn đầy đủ cho tệp
 
-            string directoryPath = Path.Combine(Configuration.FileStoragePath, testId.ToString(), "Test");
+            string directoryPath = Path.Combine(FileConfig.ServerStoragePath, testId.ToString(), "Test");
 
             // Kiểm tra và tạo thư mục nếu nó không tồn tại
             if (!Directory.Exists(directoryPath))

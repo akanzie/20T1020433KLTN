@@ -15,6 +15,8 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddMvc();
+builder.Services.AddMvcCore();
 DatabaseConfig.Initialize(builder.Configuration.GetConnectionString("SQLServerConnectionString"));
 FileConfig.Initialize(builder.Configuration.GetSection(FileConfig.FILE_STORAGE_PATHS)["ServerStoragePath"]);
 var app = builder.Build();
@@ -31,8 +33,14 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "Student",     
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "Teacher",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=StudentHome}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 ApplicationContext.Configure
 (
     httpContextAccessor: app.Services.GetRequiredService<IHttpContextAccessor>(),

@@ -1,5 +1,5 @@
-﻿using KLTN20T1020433.BusinessLayers;
-using KLTN20T1020433.DomainModels.Enum;
+﻿using KLTN20T1020433.Domain.Enum;
+using KLTN20T1020433.Domain.Test;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KLTN20T1020433.Web.AppCodes

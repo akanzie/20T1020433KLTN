@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
-    public class TeacherTestController : Controller
+    public class TestController : Controller
     {
         const int TEST_PAGE_SIZE = 10;
         const string TEST_SEARCH = "test_search";

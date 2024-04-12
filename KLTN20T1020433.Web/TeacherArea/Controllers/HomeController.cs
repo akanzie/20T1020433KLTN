@@ -7,11 +7,11 @@ using KLTN20T1020433.BusinessLayers;
 
 namespace KLTN20T1020433.Web.Controllers
 {
-    public class TeacherHomeController : Controller
+    public class HomeController : Controller
     {
-        private readonly ILogger<TeacherHomeController> _logger;
+        private readonly ILogger<HomeController> _logger;
 
-        public TeacherHomeController(ILogger<TeacherHomeController> logger)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }

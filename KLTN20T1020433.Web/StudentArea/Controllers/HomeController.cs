@@ -1,11 +1,11 @@
-﻿using KLTN20T1020433.BusinessLayers;
+﻿
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
-    public class StudentHomeController : Controller
+    public class HomeController : Controller
     {
         const int PAGE_SIZE = 10;
         const string TEST_PAGINATION = "test_pagination";
