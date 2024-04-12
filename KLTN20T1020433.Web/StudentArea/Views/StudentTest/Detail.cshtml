@@ -1,0 +1,136 @@
+﻿@model KLTN20T1020433.Web.Models.TestModel
+@{
+    Layout = "~/Views/Shared/Student/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+
+        <div class="col-lg-8 col-md-12">
+            <div class="card">
+                <div class="card-header bg-light border-bottom border-primary">
+                    <h3 class="text-primary">
+                        @Model.Test.Title
+                    </h3>
+                    <div class="d-flex ">
+                        <p class="card-text"> @Model.Test.TeacherName</p>
+                        <p class="card-text ms-3"> @Model.Test.CreatedTime</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="card-text text-dark mb-0">
+
+                            @if (Model.Test.StartTime != null)
+                            {
+                                <b>
+                                    Bắt đầu @Model.Test.StartTime
+                                </b>
+                            }
+
+
+                        </p>
+                        <p class="card-text text-dark">
+                            @if (Model.Test.EndTime != null)
+                            {
+                                <b>Đến hạn @Model.Test.EndTime</b>
+                            }
+                            else
+                            {
+                                <b>Không có ngày đến hạn</b>
+                            }
+                        </p>
+                    </div>
+                </div>
+                @if (Model.Test.StartTime <= DateTime.Now || Model.Test.StartTime == null)
+                {
+                    <div class="card-body d-none d-lg-block">
+                        <p class="card-text">
+                            @Model.Test.Instruction
+                        </p>
+                        <div class="row">
+                            @foreach (var item in Model.Files)
+                            {
+                                <div class="col-lg-6 mb-3">
+                                    <div class="rounded-2 border border-dark-light pe-2">
+                                        <a href="~/StudentTest/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
+                                            <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
+                                                <img src="../assets/images/logos/favicon.png" class="img-file">
+                                            </div>
+                                            <div class="overflow-hidden">
+                                                <span class="text-truncate d-block">@item.OriginalName</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-body d-block d-lg-none">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <p class="card-text">
+                                    @Model.Test.Instruction
+                                </p>
+                            </div>
+                            <div class="col-md-6 mt-2">
+                                <div class="row">
+                                    @foreach (var item in Model.Files)
+                                    {
+                                        <div class="col-lg-6 mb-3">
+                                            <div class="rounded-2 border border-dark-light pe-2">
+                                                <a href="~/StudentTest/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
+                                                    <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
+                                                        <img src="../assets/images/logos/favicon.png" class="img-file">
+                                                    </div>
+                                                    <div class="overflow-hidden">
+                                                        <span class="text-truncate d-block">@item.OriginalName</span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card-body d-block">
+                        <p class="card-text">
+                            Chưa đến giờ làm bài!
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div id="submission">
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            getSubmission(@Model.Test.TestId);
+        });
+        function getSubmission(testId) {
+            var url = '@Url.Action("Submission", "StudentTest")';
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: { testId: testId },
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $("#submission").html(data);
+                }
+            });
+
+            return;
+        }
+    </script>
+}

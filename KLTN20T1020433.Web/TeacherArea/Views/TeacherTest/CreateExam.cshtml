@@ -1,0 +1,200 @@
+﻿@model KLTN20T1020433.DomainModels.Entities.Test
+@{
+    Layout = "~/Views/Shared/Teacher/_Layout.cshtml";
+}
+
+<div class="container-fluid ps-0 pe-0">
+    <!-- Row 1 -->
+
+    <form action="~/TeacherTest/SelectStudents" method="post">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center me-9">
+                    <h1 class="fs-8 fw-semibold align-items-center">Tạo kỳ thi</h1>
+                    <button type="submit" class="btn btn-primary" style="width: 150px;">Chọn sinh viên</button>
+                </div>
+                <div class="row">
+                    <!-- Cột trái -->
+                    <div class="col-lg-8 mt-4">
+                        <div class="col-lg mb-4 card">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Tiêu đề:</label>
+                                    <input type="text" class="form-control" id="title" required name="Title">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>                                    
+                                    <div contenteditable="true" class="text-editor card-subtitle d-inline-block">
+
+                                    </div>
+                                    <div class="text-start" style="background-color: var(--bs-secondary-bg)">
+                                        <button class="btn btn-primary m-1" onclick="document.execCommand('bold', false, null)"><strong>B</strong></button>
+                                        <button class="btn btn-primary m-1" onclick="document.execCommand('italic', false, null)"><em>I</em></button>
+                                        <button class="btn btn-primary m-1" onclick="document.execCommand('underline', false, null)"><u>U</u></button>
+                                    </div>
+                                    
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="isCheckIP" name="IsCheckIP">
+                                    <label class="form-check-label" for="isCheckIP">Kiểm tra IP</label>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="isConductedAtSchool" name="IsConductedAtSchool">
+                                    <label class="form-check-label" for="isConductedAtSchool">Thi trên máy trường</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg mb-4 card">
+                            <div class="card-body">
+                                <b class="mb-3">Đính kèm</b>
+                                <div id="test_files">
+                                </div>
+                                <form method="post" enctype="multipart/form-data" action="UploadTestFile">
+                                    <input type="file" class="d-none" multiple id="fileInput" />
+                                    <div class="mb-3 d-flex justify-content-center">
+                                        <button id="selectFileBtn" type="button" class="btn btn-primary">Tải lên</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải -->
+                    <div class="col-lg-4 mt-4 me-0">
+
+                        <div class="col-lg mb-4 card">
+                            <div class="card-body">
+                                <div class="">
+                                    <p class="form-label">Học phần:</p>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exam1" name="exams[]" value="exam1" checked>
+                                        <label class="form-check-label" for="exam1">
+                                            Lập trình Web
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exam1" name="exams[]" value="exam1">
+                                        <label class="form-check-label" for="exam1">
+                                            SQL
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg mb-4 card">
+                            <div class="card-body">
+                                <div class="">
+                                    <p class="form-label">Kỳ thi kết thúc học phần</p>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exam1" name="exams[]" value="exam1">
+                                        <label class="form-check-label" for="exam1">
+                                            Nhóm 1 - 7g30 20/03/2024
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exam1" name="exams[]" value="exam1">
+                                        <label class="form-check-label" for="exam1">
+                                            Nhóm 2 - 7g30 20/03/2024
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg card">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="start-time" class="form-label">Thời gian bắt đầu:</label>
+                                    <input type="datetime-local" class="form-control" id="start-time" required name="StartTime">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="deadline" class="form-label">Hạn nộp:</label>
+                                    <input type="datetime-local" class="form-control" id="deadline" required name="EndTime">
+                                </div>
+
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                    <label class="form-check-label" for="exampleCheck1">Đóng tính năng nộp bài sau ngày đến hạn</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        document.execCommand("defaultParagraphSeparator", false, "p");
+        $('#selectFileBtn').on('click', function () {
+            console.log("a")
+            $('#fileInput').click();
+        });
+        $(document).on('click', '.remove-button', function () {
+            console.log("b")
+            var fileId = $(this).data('fileid');
+            var url = '@Url.Action("RemoveTestFile", "TeacherTest")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { id: fileId },
+                success: function (response) {
+                    getFiles(response);
+                },
+                error: function (xhr, status, error) {
+                    alert("Your request is not valid!");
+                }
+            });
+        });
+        $('#fileInput').off('change').on('change', function () {
+            console.log("c")
+            var formData = new FormData();
+            var files = $(this)[0].files;
+            files.forEach(function (file) {
+                formData.append('files', file);
+            });
+            uploadFiles(formData);
+        });
+        $(document).ready(function () {
+            if (@Model.TestId != 0)
+                getFiles(@Model.TestId);
+
+        });
+        function uploadFiles(formData) {
+            console.log("d")
+            var url = '@Url.Action("UploadTestFile", "TeacherTest")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $('#fileInput').val('');
+                    getFiles(response);
+                },
+                error: function (xhr, status, error) {
+                    alert("Your request is not valid!");
+                }
+            });
+        }
+        function getFiles(testId) {
+            console.log("e")
+            var url = '@Url.Action("ListTestFiles", "TeacherTest")';
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: { testId: testId },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.responseText;
+                    alert(errorMessage);
+                },
+                success: function (data) {
+                    $("#test_files").html(data);
+                }
+            });
+        }
+    </script>
+}

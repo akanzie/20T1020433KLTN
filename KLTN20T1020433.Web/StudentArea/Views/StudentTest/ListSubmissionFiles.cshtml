@@ -1,0 +1,35 @@
+﻿@model KLTN20T1020433.Web.Models.SubmissionFileModel
+@{
+    Layout = null;
+}
+
+@foreach (var item in Model.Files)
+{
+    <div class="mb-2">
+        <div class="px-2 border rounded-2 overflow-hidden hstack">
+            <a href="~/StudentTest/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
+                <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
+                    <img src="~/assets/images/logos/favicon.png" class="img-file">
+                </div>
+                <div class="overflow-hidden">
+                    <span class="text-truncate d-block">@item.OriginalName</span>
+
+                </div>
+            </a>
+            @if (Model.Submission.Status == KLTN20T1020433.DomainModels.Enum.SubmissionStatus.NotSubmitted || Model.Submission.Status == KLTN20T1020433.DomainModels.Enum.SubmissionStatus.Absent)
+            {
+                <div style="width:48px; height: 48px" class="hstack border-0 rounded-circle cursor-pointer flex-shrink-0 overflow-hidden position-relative text-center justify-content-center">
+                    <button class="remove-button" type="button" data-fileid="@item.FileId">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"></path>
+                        </svg>
+                    </button>
+
+                </div>
+            }
+        </div>
+    </div>
+
+
+}
+
