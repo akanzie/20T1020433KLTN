@@ -8,13 +8,51 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <Compile Remove="Handler\Student\Commands\**" />
+    <Compile Remove="Handler\Student\Queries\**" />
     <Compile Remove="wwwroot\DashUI-1.0.0\**" />
+    <Content Remove="Controllers\**" />
+    <Content Remove="Handler\Student\Commands\**" />
+    <Content Remove="Handler\Student\Queries\**" />
     <Content Remove="wwwroot\DashUI-1.0.0\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Handler\Student\Commands\**" />
+    <EmbeddedResource Remove="Handler\Student\Queries\**" />
     <EmbeddedResource Remove="wwwroot\DashUI-1.0.0\**" />
+    <None Remove="Controllers\**" />
+    <None Remove="Handler\Student\Commands\**" />
+    <None Remove="Handler\Student\Queries\**" />
     <None Remove="wwwroot\DashUI-1.0.0\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Areas\Student\Views\Shared\_Header.cshtml" />
+    <None Include="Areas\Student\Views\Shared\_Layout.cshtml" />
+    <None Include="Areas\Student\Views\Shared\_Sidebar.cshtml" />
+    <None Include="Areas\Student\Views\Home\Index.cshtml" />
+    <None Include="Areas\Student\Views\Home\Pagination.cshtml" />
+    <None Include="Areas\Student\Views\Test\Detail.cshtml" />
+    <None Include="Areas\Student\Views\Test\ListSubmissionFiles.cshtml" />
+    <None Include="Areas\Student\Views\Test\ListTest.cshtml" />
+    <None Include="Areas\Student\Views\Test\Search.cshtml" />
+    <None Include="Areas\Student\Views\Test\Submission.cshtml" />
+    <None Include="Areas\Teacher\Views\Shared\_Header.cshtml" />
+    <None Include="Areas\Teacher\Views\Shared\_Layout.cshtml" />
+    <None Include="Areas\Teacher\Views\Shared\_Sidebar.cshtml" />
+    <None Include="Areas\Teacher\Views\Course\Detail.cshtml" />
+    <None Include="Areas\Teacher\Views\Course\ListStudent.cshtml" />
+    <None Include="Areas\Teacher\Views\Home\Index.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\CreateExam.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\CreateQuiz.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\Detail.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\ListSubmission.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\ListTest.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\ListTestFiles.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\SelectCourses.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\SelectStudents.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\Submission.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\Update.cshtml" />
     <None Include="wwwroot\Modernize-1.0.0\.gitignore" />
     <None Include="wwwroot\Modernize-1.0.0\README.md" />
     <None Include="wwwroot\Modernize-1.0.0\src\assets\css\icons\tabler-icons\fonts\tabler-icons.svg" />
@@ -526,10 +564,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Areas\Student\Data\" />
+    <Folder Include="Areas\Teacher\Data\" />
+    <Folder Include="Handler\Student\Test\Commands\" />
     <Folder Include="Handler\Test\" />
-    <Folder Include="Handler\Student\Commands\" />
-    <Folder Include="Handler\Student\Queries\" />
     <Folder Include="Handler\Teacher\" />
     <Folder Include="Mapper\" />
   </ItemGroup>

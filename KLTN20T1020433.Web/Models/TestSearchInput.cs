@@ -1,5 +1,6 @@
-﻿using KLTN20T1020433.Web.AppCodes;
-using KLTN20T1020433.DomainModels.Enum;
+﻿using KLTN20T1020433.Domain.Test;
+using KLTN20T1020433.Web.AppCodes;
+
 
 namespace KLTN20T1020433.Web.Models
 {
