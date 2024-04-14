@@ -1,7 +1,7 @@
 ﻿using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
-using KLTN20T1020433.Web.Areas.Student.Models.TestModel;
+using KLTN20T1020433.Web.Areas.Student.Models;
 using KLTN20T1020433.Web.Handler.Student.Test.Queries.GetSubmission;
 using KLTN20T1020433.Web.Handler.Student.Test.Queries.GetTest;
 using KLTN20T1020433.Web.Handler.Student.Test.Queries.GetTestFilesByTestId;

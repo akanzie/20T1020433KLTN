@@ -1,5 +1,5 @@
-﻿using KLTN20T1020433.Web.Areas.Student.Models.CommentModel;
-using KLTN20T1020433.Web.Areas.Student.Models.SubmissionModel;
+﻿using KLTN20T1020433.Web.Areas.Student.Models;
+using KLTN20T1020433.Web.Areas.Student.Models.CommentModel;
 
 namespace KLTN20T1020433.Web.Models
 {

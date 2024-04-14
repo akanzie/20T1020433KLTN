@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Web.Areas.Student.Models.TestModel;
+using KLTN20T1020433.Web.Areas.Student.Models;
 
 namespace KLTN20T1020433.Web.Mappings
 {
