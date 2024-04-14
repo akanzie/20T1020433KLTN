@@ -566,10 +566,11 @@
   <ItemGroup>
     <Folder Include="Areas\Student\Data\" />
     <Folder Include="Areas\Teacher\Data\" />
-    <Folder Include="Handler\Student\Test\Commands\" />
+    <Folder Include="Handler\Student\Test\Commands\Comment\" />
+    <Folder Include="Handler\Student\Test\Commands\Submission\" />
+    <Folder Include="Handler\Student\Test\Commands\Test\" />
     <Folder Include="Handler\Test\" />
     <Folder Include="Handler\Teacher\" />
-    <Folder Include="Mapper\" />
   </ItemGroup>
 
   <ItemGroup>

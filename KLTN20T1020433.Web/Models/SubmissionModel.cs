@@ -1,13 +1,11 @@
-﻿
-
-using KLTN20T1020433.Domain.Comment;
-using KLTN20T1020433.Domain.Submission;
+﻿using KLTN20T1020433.Web.Areas.Student.Models.CommentModel;
+using KLTN20T1020433.Web.Areas.Student.Models.SubmissionModel;
 
 namespace KLTN20T1020433.Web.Models
 {
     public class SubmissionModel
     {
-        public Submission Submission { get; set; }
-        public List<Comment>? Comments { get; set; } = null;
+        public GetSubmissionResponse Submission { get; set; }
+        public IEnumerable<GetCommentResponse> Comments { get; set; }
     }
 }

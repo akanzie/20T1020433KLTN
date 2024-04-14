@@ -1,6 +1,10 @@
+using AutoMapper;
+using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.Web.Areas.Student.Models.TestModel;
 using KLTN20T1020433.Web.Configuration;
 using System.Configuration;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews().AddMvcOptions(option =>
@@ -8,15 +12,28 @@ builder.Services.AddControllersWithViews().AddMvcOptions(option =>
     option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 }); 
 builder.Services.AddHttpClient();
+
 builder.Services.AddSession(option =>
 {
     option.IdleTimeout = TimeSpan.FromMinutes(60);
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
 });
+builder.Services.AddAutoMapperSetup();
+
+builder.Services.AddCustomizeDatabase();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+});
+
 builder.Services.AddHttpContextAccessor();
+
 DatabaseConfig.Initialize(builder.Configuration.GetConnectionString("SQLServerConnectionString"));
+
 FileConfig.Initialize(builder.Configuration.GetSection(FileConfig.FILE_STORAGE_PATHS)["ServerStoragePath"]);
+
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {

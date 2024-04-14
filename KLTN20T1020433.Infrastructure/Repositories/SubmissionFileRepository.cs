@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Infrastructure.Repositories
 {
-    internal class SubmissionFileRepository : _BaseRepository, ISubmissionFileRepository
+    public class SubmissionFileRepository : _BaseRepository, ISubmissionFileRepository
     {
         public SubmissionFileRepository(string connectionString) : base(connectionString)
         {

@@ -1,7 +1,13 @@
 ﻿using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.Web.Areas.Student.Models.TestModel;
+using KLTN20T1020433.Web.Handler.Student.Test.Queries.GetSubmission;
+using KLTN20T1020433.Web.Handler.Student.Test.Queries.GetTest;
+using KLTN20T1020433.Web.Handler.Student.Test.Queries.GetTestFilesByTestId;
 using KLTN20T1020433.Web.Models;
+using MediatR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using System.Net;
@@ -14,7 +20,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
     {
         const int PAGE_SIZE = 10;
         const string TEST_SEARCH = "test_search";
+        private readonly IMediator _mediator;
 
+        public TestController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
         public IActionResult ListTest()
         {
             Models.TestSearchInput? input = ApplicationContext.GetSessionData<TestSearchInput>(TEST_SEARCH);
@@ -60,12 +71,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public async Task<IActionResult> Detail(int id = 0)
         {
-            var test = await StudentService.GetTest(id);
+            var test = await _mediator.Send(new GetTestQuery { Id = id });
             if (test == null)
             {
                 return RedirectToAction("Index", "StudentHome");
             }
-            List<TestFile> files = await FileDataService.GetFilesOfTest(id);
+            IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetTestFilesByTestIdQuery { TestId = id });
             var model = new TestModel
             {
                 Test = test,
@@ -77,11 +88,11 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Submission(int testId = 0)
         {
             string studentId = "20T1020433";
-            var submission = await StudentService.GetSubmission(testId, studentId);
+            var submission = await _mediator.Send(new GetSubmissionQuery { TestId = testId, StudentId = studentId });
 
             if (submission != null)
             {
-                var comments = await StudentService.GetComments(submission.SubmissionId);
+                var comments = _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
 
                 var model = new SubmissionModel
                 {
@@ -91,10 +102,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
 
                 return PartialView(model);
             }
-            else
-            {
-                return RedirectToAction("Index", "StudentHome");
-            }
+            return RedirectToAction("Index", "StudentHome");
         }
         [HttpPost]
         public async Task<IActionResult> UploadSubmissionFile(List<IFormFile> files, int testId = 0, int submissionId = 0)
@@ -203,7 +211,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 return Json("Bạn không có quyền truy cập file.");
             }
-        }       
+        }
         public async Task<IActionResult> ListSubmissionFiles(int submissionId = 0)
         {
             var submission = await StudentService.GetSubmission(submissionId);

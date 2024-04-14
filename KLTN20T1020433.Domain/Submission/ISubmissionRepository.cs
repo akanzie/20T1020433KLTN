@@ -12,6 +12,7 @@ namespace KLTN20T1020433.Domain.Submission
         Task<Submission> GetByTestIdAndStudentId(int testId, string studentId);
         Task<Submission> GetById(int id);
         Task<int> Add(Submission data);
-        Task<bool> Update(Submission data);       
+        Task<bool> Update(Submission data);
+        Task<bool> Delete(int id);
     }
 }

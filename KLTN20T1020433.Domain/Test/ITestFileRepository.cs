@@ -12,7 +12,7 @@ namespace KLTN20T1020433.Domain.Test
 
         Task<bool> Delete(Guid fileId);
 
-        Task<IEnumerable<TestFile>> GetFileByTestId(int testId);
+        Task<IEnumerable<TestFile>> GetFilesByTestId(int testId);
 
         Task<TestFile> GetById(Guid id);
         Task<bool> CheckFileOwner(string teacherId, Guid fileId);
