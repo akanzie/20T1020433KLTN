@@ -1,6 +1,6 @@
 ﻿namespace KLTN20T1020433.Web.Areas.Student.Models
 {
-    public class GetTestFileResponse
+    public class GetSubmissionFile
     {
         public Guid FileId { get; set; }
         public string OriginalName { get; set; } = "";

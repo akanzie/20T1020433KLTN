@@ -22,8 +22,8 @@ namespace KLTN20T1020433.Web.Mappings
             {
                 // Đưa hết các cấu hình bạn muốn map giữa các object vào đây
                 // Thuộc tính FullName trong UserViewModel được kết hợp từ FirstName và LastName trong User
-                CreateMap<Test, GetTestResponse>();
-                CreateMap<TestFile, GetTestResponse>();
+                CreateMap<Test, GetTestByIdResponse>();
+                CreateMap<TestFile, GetTestByIdResponse>();
             }
         }
     }

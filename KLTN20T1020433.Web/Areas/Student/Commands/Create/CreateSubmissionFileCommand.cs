@@ -1,8 +1,12 @@
-﻿namespace KLTN20T1020433.Web.Areas.Student.Models
+﻿using MediatR;
+
+namespace KLTN20T1020433.Web.Areas.Student.Commands.Create
 {
-    public class GetTestFileResponse
+    public class CreateSubmissionFileCommand : IRequest<bool>
     {
         public Guid FileId { get; set; }
+        public int SubmissionId { get; set; }
+        public string FileName { get; set; } = "";
         public string OriginalName { get; set; } = "";
         public string FilePath { get; set; } = "";
         public string MimeType { get; set; }

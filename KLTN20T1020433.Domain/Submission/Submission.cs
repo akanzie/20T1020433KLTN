@@ -18,7 +18,7 @@ namespace KLTN20T1020433.Domain.Submission
         public DateTime SubmittedTime { get; set; }
         public string StudentId { get; set; }
         public int TestId { get; set; }
-        public String IPAddress { get; set; }
+        public string IPAddress { get; set; }
         public SubmissionStatus Status { get; set; }
         public string StatusDescription
         {

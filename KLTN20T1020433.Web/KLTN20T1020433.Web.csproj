@@ -558,9 +558,7 @@
   <ItemGroup>
     <Folder Include="Areas\Student\Data\" />
     <Folder Include="Areas\Teacher\Data\" />
-    <Folder Include="Areas\Student\Commands\Comment\" />
-    <Folder Include="Areas\Student\Commands\Submission\" />
-    <Folder Include="Areas\Student\Commands\Test\" />
+    <Folder Include="Areas\Teacher\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

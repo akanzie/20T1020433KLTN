@@ -19,7 +19,7 @@ namespace KLTN20T1020433.Web.Areas.Student.Queries.GetTestFilesByTestId
         public async Task<IEnumerable<GetTestFileResponse>> Handle(GetTestFilesByTestIdQuery request, CancellationToken cancellationToken)
         {
             var testFiles = await _testFileDB.GetFilesByTestId(request.TestId);
-            if (testFiles != null && testFiles.Any())
+            if (testFiles != null && !testFiles.Any())
             {
                 List<GetTestFileResponse> testResponse = new List<GetTestFileResponse>();
                 foreach (var file in testFiles)

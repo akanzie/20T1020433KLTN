@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Web.Areas.Student.Models.SubmissionModel;
+using KLTN20T1020433.Web.Areas.Student.Models;
 using MediatR;
 
 namespace KLTN20T1020433.Web.Areas.Student.Queries.GetSubmissionFilesBySubmissionId
@@ -18,7 +18,7 @@ namespace KLTN20T1020433.Web.Areas.Student.Queries.GetSubmissionFilesBySubmissio
         public async Task<IEnumerable<GetSubmissionFileResponse>> Handle(GetSubmissionFilesBySubmissionIdQuery request, CancellationToken cancellationToken)
         {
             var SubmissionFiles = await _SubmissionFileDB.GetFileBySubmissionId(request.SubmissionId);
-            if (SubmissionFiles != null && SubmissionFiles.Any())
+            if (SubmissionFiles != null && !SubmissionFiles.Any())
             {
                 List<GetSubmissionFileResponse> SubmissionResponse = new List<GetSubmissionFileResponse>();
                 foreach (var file in SubmissionFiles)
