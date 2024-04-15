@@ -13,8 +13,13 @@ namespace KLTN20T1020433.Web.Areas.Student.Commands.Delete
         }
         public async Task<bool> Handle(RemoveSubmissionFileCommand request, CancellationToken cancellationToken)
         {
-            var result = await _submissionFileDB.Delete(request.Id);
-
+            bool result = false;
+            if (!File.Exists(request.FilePath))
+            {
+                return result;
+            }
+            File.Delete(request.FilePath);
+            result = await _submissionFileDB.Delete(request.Id);
             return result;
         }
     }
