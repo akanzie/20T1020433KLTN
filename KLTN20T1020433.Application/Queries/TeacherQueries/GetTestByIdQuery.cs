@@ -3,7 +3,7 @@ using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
 
-namespace KLTN20T1020433.Web.Areas.Teacher.Queries.GetTestById
+namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetTestByIdQuery : IRequest<GetTestByIdResponse>
     {

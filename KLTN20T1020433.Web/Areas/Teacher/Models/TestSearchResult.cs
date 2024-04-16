@@ -1,7 +1,8 @@
-﻿using KLTN20T1020433.Application.DTOs.StudentDTOs;
+﻿using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Domain.Test;
+using KLTN20T1020433.Web.Models;
 
-namespace KLTN20T1020433.Web.Models
+namespace KLTN20T1020433.Web.Areas.Teacher.Models
 {
     public class TestSearchResult : BasePaginationResult
     {

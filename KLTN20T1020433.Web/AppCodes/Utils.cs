@@ -6,13 +6,7 @@ namespace KLTN20T1020433.Web.AppCodes
 {
     public static class Utils
     {
-        public static bool CheckIPAddress(IPAddress ipAddress)
-        {
-            if (ipAddress == null) return false;
-            else if (ipAddress.Address != 0)
-                return false;
-            return true;
-        }
+        
         public static string GetTestStatusDisplayName(TestStatus status)
         {
             switch (status)
@@ -60,9 +54,6 @@ namespace KLTN20T1020433.Web.AppCodes
             }
         }
 
-        internal static bool CheckIPAddressExists(IPAddress ipAddress)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

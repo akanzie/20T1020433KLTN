@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
 using KLTN20T1020433.Web.Areas.Student.Models;
+using KLTN20T1020433.Application.DTOs;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
@@ -49,7 +50,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
             var data = await _mediator.Send(input);
-            int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433" });
+            int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433", SearchValue=input.SearchValue, Status=input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type});
             var model = new TestSearchResult()
             {
                 Page = input.Page,
@@ -76,7 +77,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 return RedirectToAction("Index", "StudentHome");
             }
-            IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetTestFilesByTestIdQuery { TestId = id });
+            IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
             var model = new TestModel
             {
                 Test = test,
@@ -195,7 +196,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Download(Guid id)
         {
             string studentId = "20T1020433";
-            bool isAuthorized = await FileDataService.CheckFileAuthorize(studentId, id);
+            bool isAuthorized = false;// await FileDataService.CheckFileAuthorize(studentId, id);
             if (isAuthorized)
             {
                 GetSubmissionFileResponse fileInfo = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
@@ -222,7 +223,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = submissionId });
             if (submission != null)
             {
-                var files = await _mediator.Send(new GetSubmissionFilesBySubmissionIdQuery { SubmissionId = submissionId });
+                var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = submissionId });
                 var model = new SubmissionFileModel
                 {
                     Files = files,

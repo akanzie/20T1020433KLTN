@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.DTOs;
+using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Web.Areas.Teacher.Models;
-using KLTN20T1020433.Web.Models;
+
 using MediatR;
 
-namespace KLTN20T1020433.Web.Areas.Teacher.Queries.GetTestsBySearch
+namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetTestsBySearchQuery : GetTestsBySearchRequest, IRequest<IEnumerable<GetTestBySearchResponse>>
     {

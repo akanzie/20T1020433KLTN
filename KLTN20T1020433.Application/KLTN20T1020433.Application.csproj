@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\TeacherCommands\Create\" />
     <Folder Include="Constants\" />
   </ItemGroup>
 

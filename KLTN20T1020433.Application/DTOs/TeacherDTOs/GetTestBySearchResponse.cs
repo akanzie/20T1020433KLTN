@@ -11,5 +11,6 @@ namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
         public TestStatus Status { get; set; }
         public string StatusDescription { get; set; }
         public string TeacherName { get; set; }
+        public int CountStudent {  get; set; }
     }
 }

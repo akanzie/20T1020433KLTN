@@ -1,9 +1,17 @@
-﻿namespace KLTN20T1020433.Web.Areas.Teacher.Queries.GetTestFileById
+﻿using KLTN20T1020433.Application.DTOs;
+using MediatR;
+
+namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetTestFileByIdQuery
+    public class GetTestFileByIdQuery : IRequest<GetTestFileResponse>
     {
+        public Guid Id { get; set; }
     }
-    public class GetTestFileByIdQueryHandler
+    public class GetTestFileByIdQueryHandler : IRequestHandler<GetTestFileByIdQuery, GetTestFileResponse>
     {
+        public Task<GetTestFileResponse> Handle(GetTestFileByIdQuery request, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

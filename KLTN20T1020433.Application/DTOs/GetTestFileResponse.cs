@@ -1,4 +1,4 @@
-﻿namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
+﻿namespace KLTN20T1020433.Application.DTOs
 {
     public class GetTestFileResponse
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KLTN20T1020433.Application.Queries.TeacherQueries
+namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
 {
-    internal class GetSubmissionFilesBySubmissionIdQueryHandler
+    public class GetStudentResponse
     {
     }
 }
