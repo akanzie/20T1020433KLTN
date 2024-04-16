@@ -3,4 +3,7 @@
     public class DeleteTestCommand
     {
     }
+    public class DeleteTestCommandHandler
+    {
+    }
 }

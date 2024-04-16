@@ -1,6 +1,6 @@
 ﻿using KLTN20T1020433.Domain.Test;
 
-namespace KLTN20T1020433.Application.DTOs.StudentDTOs
+namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
 {
 
     public class GetTestByIdResponse
@@ -11,12 +11,10 @@ namespace KLTN20T1020433.Application.DTOs.StudentDTOs
         public TestType TestType { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public DateTime? LastUpdateTime { get; set; } = null;
         public bool IsCheckIP { get; set; }
         public bool IsConductedAtSchool { get; set; }
         public TestStatus Status { get; set; }
-        public string StatusDescription { get; set; }
-        public string TeacherName { get; set; }
     }
 
 }

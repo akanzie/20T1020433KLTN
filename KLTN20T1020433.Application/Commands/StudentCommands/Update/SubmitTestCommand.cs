@@ -20,14 +20,14 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         private readonly ISubmissionRepository _submissionDB;
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly ITestRepository _testDB;
-        private readonly IMapper _mapper;
+
         private readonly IMediator _mediator;
-        public SubmitTestCommandHandler(ISubmissionRepository submissionDB, ITestRepository testDB, ISubmissionFileRepository submissionFileDB, IMapper mapper, IMediator mediator)
+        public SubmitTestCommandHandler(ISubmissionRepository submissionDB, ITestRepository testDB, ISubmissionFileRepository submissionFileDB, IMediator mediator)
         {
             _submissionDB = submissionDB;
             _testDB = testDB;
             _submissionFileDB = submissionFileDB;
-            _mapper = mapper;
+            
             _mediator = mediator;
         }
         public async Task<bool> Handle(SubmitTestCommand request, CancellationToken cancellationToken)

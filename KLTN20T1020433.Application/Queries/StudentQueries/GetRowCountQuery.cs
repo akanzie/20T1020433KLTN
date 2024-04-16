@@ -17,12 +17,12 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     public class GetRowCountQueryHandler : IRequestHandler<GetRowCountQuery, int>
     {
         private readonly ITestRepository _testDB;
-        private readonly IMapper _mapper;
+        
 
-        public GetRowCountQueryHandler(ITestRepository testDB, IMapper mapper)
+        public GetRowCountQueryHandler(ITestRepository testDB)
         {
             _testDB = testDB;
-            _mapper = mapper;
+            
         }
         public async Task<int> Handle(GetRowCountQuery request, CancellationToken cancellationToken)
         {

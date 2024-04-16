@@ -3,4 +3,7 @@
     public class UpdateTestCommand
     {
     }
+    public class UpdateTestCommandHandler
+    {
+    }
 }

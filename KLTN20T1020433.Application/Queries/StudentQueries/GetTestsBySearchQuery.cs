@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using MediatR;
 using KLTN20T1020433.Application.DTOs;
+using KLTN20T1020433.Application.DTOs.StudentDTOs;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {

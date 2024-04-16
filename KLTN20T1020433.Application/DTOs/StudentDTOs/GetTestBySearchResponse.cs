@@ -8,6 +8,7 @@ namespace KLTN20T1020433.Application.DTOs.StudentDTOs
         public string Title { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        public TestStatus Status { get; set; }
         public string StatusDescription { get; set; }
         public string TeacherName { get; set; }
     }

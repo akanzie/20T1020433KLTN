@@ -17,13 +17,12 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly ISubmissionRepository _submissionDB;
         private readonly ITestRepository _testDB;
-        private readonly IMapper _mapper;
-        public CreateSubmissionFileCommandHandler(ISubmissionFileRepository submissionFileDB, ITestRepository testDB, ISubmissionRepository submissionDB, IMapper mapper)
+        public CreateSubmissionFileCommandHandler(ISubmissionFileRepository submissionFileDB, ITestRepository testDB, ISubmissionRepository submissionDB)
         {
             _submissionFileDB = submissionFileDB;
             _submissionDB = submissionDB;
             _testDB = testDB;
-            _mapper = mapper;
+
         }
         public async Task<bool> Handle(CreateSubmissionFileCommand request, CancellationToken cancellationToken)
         {

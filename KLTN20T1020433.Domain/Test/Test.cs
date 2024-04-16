@@ -14,7 +14,6 @@ namespace KLTN20T1020433.Domain.Test
     /// </summary>
     public class Test
     {
-
         public int TestId { get; set; }
         public string Title { get; set; } = "";
         public string Instruction { get; set; } = "";

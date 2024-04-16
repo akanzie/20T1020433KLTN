@@ -9,8 +9,6 @@
   <ItemGroup>
     <Folder Include="Commands\TeacherCommands\Create\" />
     <Folder Include="Constants\" />
-    <Folder Include="DTOs\TeacherDTOs\" />
-    <Folder Include="Queries\TeacherQueries\" />
   </ItemGroup>
 
   <ItemGroup>

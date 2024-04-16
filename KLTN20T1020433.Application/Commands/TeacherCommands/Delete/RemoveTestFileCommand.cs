@@ -3,4 +3,7 @@
     public class RemoveTestFileCommand
     {
     }
+    public class RemoveTestFileCommandHandler
+    {
+    }
 }

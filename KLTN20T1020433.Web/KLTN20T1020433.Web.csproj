@@ -557,11 +557,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Student\Data\" />
-    <Folder Include="Areas\Teacher\Commands\Create\" />
     <Folder Include="Areas\Teacher\Data\" />
-    <Folder Include="Areas\Teacher\Queries\GetStudentsByCourseId\" />
-    <Folder Include="Areas\Teacher\Queries\GetCoursesByTeacherId\" />
-    <Folder Include="Areas\Teacher\Queries\GetSubmissionFileById\" />
   </ItemGroup>
 
   <ItemGroup>
