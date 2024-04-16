@@ -1,15 +1,9 @@
 ﻿using KLTN20T1020433.Web.AppCodes;
-using KLTN20T1020433.Web.Areas.Student.Commands.Create;
-using KLTN20T1020433.Web.Areas.Student.Commands.Delete;
-using KLTN20T1020433.Web.Areas.Student.Commands.Update;
-using KLTN20T1020433.Web.Areas.Student.Models;
-using KLTN20T1020433.Web.Areas.Student.Queries.GetCommentsBySubmissionId;
-using KLTN20T1020433.Web.Areas.Student.Queries.GetSubmission;
-using KLTN20T1020433.Web.Areas.Student.Queries.GetSubmissionById;
-using KLTN20T1020433.Web.Areas.Student.Queries.GetSubmissionFileById;
-using KLTN20T1020433.Web.Areas.Student.Queries.GetSubmissionFilesBySubmissionId;
-using KLTN20T1020433.Web.Areas.Student.Queries.GetTest;
-using KLTN20T1020433.Web.Areas.Student.Queries.GetTestFilesByTestId;
+using KLTN20T1020433.Application.Commands.StudentCommands.Create;
+using KLTN20T1020433.Application.Commands.StudentCommands.Delete;
+using KLTN20T1020433.Application.Commands.StudentCommands.Update;
+using KLTN20T1020433.Application.DTOs.StudentDTOs;
+using KLTN20T1020433.Application.Queries.StudentQueries;
 using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
@@ -18,6 +12,7 @@ using Microsoft.CodeAnalysis;
 using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
+using KLTN20T1020433.Web.Areas.Student.Models;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
@@ -33,10 +28,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public IActionResult ListTest()
         {
-            Models.TestSearchInput? input = ApplicationContext.GetSessionData<TestSearchInput>(TEST_SEARCH);
+            GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(TEST_SEARCH);
             if (input == null)
             {
-                input = new TestSearchInput()
+                input = new GetTestsBySearchQuery()
                 {
                     Page = 1,
                     PageSize = PAGE_SIZE,
@@ -51,10 +46,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
             return View(input);
         }
-        public async Task<IActionResult> Search(TestSearchInput input)
+        public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
-            var data = await StudentService.GetTestsForStudentHome(input.Page, input.PageSize, input.StudentId ?? "20T1020433");
-            int rowCount = await StudentService.GetRowCount(input.StudentId ?? "20T1020433");
+            var data = await _mediator.Send(input);
+            int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433" });
             var model = new TestSearchResult()
             {
                 Page = input.Page,
@@ -82,7 +77,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return RedirectToAction("Index", "StudentHome");
             }
             IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetTestFilesByTestIdQuery { TestId = id });
-            var model = new TestModelResponse
+            var model = new TestModel
             {
                 Test = test,
                 Files = files
@@ -97,9 +92,9 @@ namespace KLTN20T1020433.Web.Controllers.Student
 
             if (submission != null)
             {
-                var comments = _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
+                var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
 
-                var model = new SubmissionModelResponse
+                var model = new SubmissionModel
                 {
                     Submission = submission,
                     Comments = comments
@@ -159,7 +154,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
                     var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = id });
-                    var model = new SubmissionModelResponse
+                    var model = new SubmissionModel
                     {
                         Submission = submission,
                         Comments = comments
@@ -187,7 +182,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
                     var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = id });
-                    var model = new SubmissionModelResponse
+                    var model = new SubmissionModel
                     {
                         Submission = submission,
                         Comments = comments

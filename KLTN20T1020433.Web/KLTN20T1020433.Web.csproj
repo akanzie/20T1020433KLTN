@@ -557,13 +557,15 @@
 
   <ItemGroup>
     <Folder Include="Areas\Student\Data\" />
+    <Folder Include="Areas\Teacher\Commands\Create\" />
     <Folder Include="Areas\Teacher\Data\" />
-    <Folder Include="Areas\Teacher\Queries\" />
+    <Folder Include="Areas\Teacher\Queries\GetStudentsByCourseId\" />
+    <Folder Include="Areas\Teacher\Queries\GetCoursesByTeacherId\" />
+    <Folder Include="Areas\Teacher\Queries\GetSubmissionFileById\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KLTN20T1020433.Domain\KLTN20T1020433.Domain.csproj" />
-    <ProjectReference Include="..\KLTN20T1020433.Infrastructure\KLTN20T1020433.Infrastructure.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.Application\KLTN20T1020433.Application.csproj" />
   </ItemGroup>
 
 </Project>

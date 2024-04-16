@@ -15,4 +15,3 @@ namespace KLTN20T1020433.Web.Configuration
         }
     }
 }
-}

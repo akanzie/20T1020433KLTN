@@ -124,5 +124,10 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 throw;
             }
         }
+
+        public Task<IEnumerable<TestFile>> GetFilesByTestId(int testId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

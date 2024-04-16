@@ -1,6 +1,8 @@
 ﻿
 
+using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Domain.Test;
+using KLTN20T1020433.Web.Areas.Student.Models;
 
 namespace KLTN20T1020433.Web.Models
 {
@@ -11,6 +13,6 @@ namespace KLTN20T1020433.Web.Models
         public DateTime? FromTime { get; set; } = null;
         public DateTime? ToTime { get; set; } = null;
 
-        public List<Test> Data { get; set; } = new List<Test>();
+        public IEnumerable<GetTestBySearchResponse> Data { get; set; }
     }
 }

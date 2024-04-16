@@ -1,6 +1,8 @@
 ﻿
+using KLTN20T1020433.Application.Queries.StudentQueries;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KLTN20T1020433.Web.Controllers.Student
@@ -9,7 +11,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
     {
         const int PAGE_SIZE = 10;
         const string TEST_PAGINATION = "test_pagination";
+        private readonly IMediator _mediator;
 
+        public HomeController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
         public IActionResult Index()
         {
             Models.TestPagination? input = ApplicationContext.GetSessionData<TestPagination>(TEST_PAGINATION);
@@ -28,8 +35,8 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Pagination(TestPagination input)
         {          
             
-            var data = await StudentService.GetTestsForStudentHome(input.Page, input.PageSize, input.StudentId ?? "20T1020433");
-            int rowCount = await StudentService.GetRowCount(input.StudentId ?? "20T1020433");
+            var data = await _mediator.Send(new GetTestsBySearchQuery { Page = input.Page, PageSize = input.PageSize, StudentId = input.StudentId ?? "20T1020433" });
+            int rowCount = await _mediator.Send( new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433" });
             var model = new TestSearchResult()
             {
                 Page = input.Page,

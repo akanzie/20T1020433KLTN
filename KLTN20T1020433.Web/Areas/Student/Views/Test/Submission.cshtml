@@ -1,6 +1,5 @@
-﻿
-
-@model KLTN20T1020433.Web.Models.SubmissionModel
+﻿@using KLTN20T1020433.Domain.Submission
+@model KLTN20T1020433.Web.Areas.Student.Models.SubmissionModelResponse
 @{
     Layout = null;
 }
@@ -22,13 +21,13 @@
                     <input type="hidden" name="SubmissionId" value="@Model.Submission.SubmissionId" />
                     <input type="hidden" name="TestId" value="@Model.Submission.TestId" />
                     <input type="file" class="d-none" multiple id="fileInput" />
-                    @if (Model.Submission.Status == KLTN20T1020433.DomainModels.Enum.SubmissionStatus.NotSubmitted)
+                    @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                     {
                         <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
                     }
                 </form>
 
-                @if (Model.Submission.Status == KLTN20T1020433.DomainModels.Enum.SubmissionStatus.NotSubmitted)
+                @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                 {
                     <button class="btn btn-primary mt-4 form-control" type="button" onclick="submit(@Model.Submission.SubmissionId)" id="submitBtn">Nộp bài</button>
                 }

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\TeacherCommands\Create\" />
+    <Folder Include="Constants\" />
+    <Folder Include="DTOs\TeacherDTOs\" />
+    <Folder Include="Queries\TeacherQueries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KLTN20T1020433.Domain\KLTN20T1020433.Domain.csproj" />
+    <ProjectReference Include="..\KLTN20T1020433.Infrastructure\KLTN20T1020433.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
