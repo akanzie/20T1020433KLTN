@@ -1,15 +1,13 @@
-using AutoMapper;
-using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Configuration;
-using System.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews().AddMvcOptions(option =>
 {
     option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
-}); 
+});
 builder.Services.AddHttpClient();
 
 builder.Services.AddSession(option =>
@@ -23,9 +21,7 @@ builder.Services.AddAutoMapperSetup();
 builder.Services.AddCustomizeDatabase();
 
 builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-});
+    cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
 builder.Services.AddHttpContextAccessor();
 
@@ -45,15 +41,19 @@ app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 app.UseAuthorization();
-app.MapControllerRoute(
-    name: "Student",     
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-app.MapControllerRoute(
+app.MapAreaControllerRoute(
+    name: "Student",
+    areaName: "Student",
+    pattern: "Student/{controller=Home}/{action=Index}/{id?}"
+    );
+app.MapAreaControllerRoute(
     name: "Teacher",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    areaName: "Teacher",
+    pattern: "Teacher/{controller=Home}/{action=Index}/{id?}"
+    );
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 ApplicationContext.Configure
 (
     httpContextAccessor: app.Services.GetRequiredService<IHttpContextAccessor>(),

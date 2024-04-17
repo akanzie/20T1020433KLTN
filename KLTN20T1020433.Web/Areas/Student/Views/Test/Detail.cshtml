@@ -1,6 +1,6 @@
 ﻿@model KLTN20T1020433.Web.Areas.Student.Models.TestModel
 @{
-    Layout = "~/Views/Shared/Student/_Layout.cshtml";
+    Layout = "~/Areas/Student/Views/Shared/_Layout.cshtml";
 }
 <div class="container-fluid">
     <!--  Row 1 -->
@@ -51,7 +51,7 @@
                             {
                                 <div class="col-lg-6 mb-3">
                                     <div class="rounded-2 border border-dark-light pe-2">
-                                        <a href="~/StudentTest/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
+                                        <a href="~/Test/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
                                             <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
                                                 <img src="../assets/images/logos/favicon.png" class="img-file">
                                             </div>
@@ -77,7 +77,7 @@
                                     {
                                         <div class="col-lg-6 mb-3">
                                             <div class="rounded-2 border border-dark-light pe-2">
-                                                <a href="~/StudentTest/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
+                                                <a href="~/Test/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
                                                     <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
                                                         <img src="../assets/images/logos/favicon.png" class="img-file">
                                                     </div>
@@ -116,7 +116,7 @@
             getSubmission(@Model.Test.TestId);
         });
         function getSubmission(testId) {
-            var url = '@Url.Action("Submission", "StudentTest")';
+            var url = '@Url.Action("Submission", "Test")';
 
             $.ajax({
                 url: url,

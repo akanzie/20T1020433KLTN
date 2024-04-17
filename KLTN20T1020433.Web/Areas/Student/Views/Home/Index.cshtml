@@ -1,6 +1,6 @@
 ﻿@model KLTN20T1020433.Web.Models.TestPagination
 @{
-    Layout = "~/Views/Shared/Student/_Layout.cshtml";
+    Layout = "~/Areas/Student/Views/Shared/_Layout.cshtml";
 }
 <div class="container-fluid" style="padding-bottom: 10px">
     <!--  Row 1 -->
@@ -36,7 +36,7 @@
             doSearch(@Model.Page);
         });
         function doSearch(page) {
-            var url = '@Url.Action("Pagination", "StudentHome")';
+            var url = '@Url.Action("Pagination", "Home")';
             var postData = [];
             postData.push({ "name": "page", "value": page }, { "name": "pageSize", "value": 10 }, { "name": "studentId", "value": '20T1020433' });
             $.ajax({

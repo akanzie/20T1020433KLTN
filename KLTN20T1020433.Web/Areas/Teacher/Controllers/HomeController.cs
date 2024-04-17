@@ -8,6 +8,7 @@ using System.Diagnostics;
 
 namespace KLTN20T1020433.Web.Controllers
 {
+    [Area("Teacher")]
     public class HomeController : Controller
     {
 
