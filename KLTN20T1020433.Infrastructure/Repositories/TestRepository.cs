@@ -169,8 +169,53 @@ namespace KLTN20T1020433.Infrastructure.Repositories
 
         public async Task<IEnumerable<Test>> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<Test> listTests = new List<Test>();
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var sql = @"
+            with cte as
+            (
+                select t.*, ROW_NUMBER() over (order by StartTime) as RowNumber
+                from Tests t
+                where t.StudentId = @studentId
+                and (@searchValue = '' or t.Title like '%' + @searchValue + '%')
+                and (@testType is null or t.TestType = @testType)
+                and (@testStatus is null or t.Status = @testStatus)
+                and (@fromTime is null or t.StartTime >= @fromTime)
+                and (@toTime is null or t.EndTime <= @toTime)
+            )
+
+            select * from cte
+            where (@pageSize = 0)
+                or (RowNumber between (@page - 1) * @pageSize + 1 and @page * @pageSize)
+            order by RowNumber;";
+
+                    var parameters = new
+                    {
+                        page = page,
+                        pageSize = pageSize,
+                        studentId = studentId,
+                        searchValue = searchValue ?? "",
+                        testType = testType,
+                        testStatus = testStatus,
+                        fromTime = fromTime,
+                        toTime = toTime
+                    };
+
+                    listTests = (await connection.QueryAsync<Test>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+                }
+
+                return listTests;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi truy vấn danh sách bài kiểm tra của sinh viên: " + e.Message);
+                throw;
+            }
         }
+
 
         public async Task<IEnumerable<Test>> GetTestsOfTeacher(int page = 1, int pageSize = 0, string teacherId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
         {

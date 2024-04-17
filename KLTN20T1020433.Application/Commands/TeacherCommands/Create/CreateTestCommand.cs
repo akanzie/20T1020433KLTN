@@ -36,6 +36,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         {
             Test test = _mapper.Map<Test>(request);
             test.CreatedTime = DateTime.Now;
+            test.LastUpdateTime = DateTime.Now;
             int testId = await _testDB.Add(test);
             return testId;
         }
