@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Domain.Comment;
 using KLTN20T1020433.Domain.Submission;
@@ -7,7 +8,7 @@ using KLTN20T1020433.Web.Areas.Student.Models;
 
 namespace KLTN20T1020433.Web.Mappings
 {
-    public class AutoMapperConfig 
+    public class AutoMapperConfig
     {
         public static List<Profile> RegisterMappings()
         {
@@ -30,7 +31,6 @@ namespace KLTN20T1020433.Web.Mappings
                 CreateMap<Submission, GetSubmissionResponse>();
                 CreateMap<SubmissionFile, GetSubmissionFileResponse>();
                 CreateMap<TestFile, GetTestFileResponse>();
-                CreateMap<Test, GetTestByIdResponse>();
             }
         }
     }

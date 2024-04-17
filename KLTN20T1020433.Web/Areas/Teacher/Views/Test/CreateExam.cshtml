@@ -1,4 +1,4 @@
-﻿@model KLTN20T1020433.DomainModels.Entities.Test
+﻿@model KLTN20T1020433.Application.Commands.TeacherCommands.Create.CreateTestCommand
 @{
     Layout = "~/Views/Shared/Teacher/_Layout.cshtml";
 }
@@ -23,16 +23,15 @@
                                     <input type="text" class="form-control" id="title" required name="Title">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>                                    
+                                    <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>
                                     <div contenteditable="true" class="text-editor card-subtitle d-inline-block">
-
                                     </div>
                                     <div class="text-start" style="background-color: var(--bs-secondary-bg)">
                                         <button class="btn btn-primary m-1" onclick="document.execCommand('bold', false, null)"><strong>B</strong></button>
                                         <button class="btn btn-primary m-1" onclick="document.execCommand('italic', false, null)"><em>I</em></button>
                                         <button class="btn btn-primary m-1" onclick="document.execCommand('underline', false, null)"><u>U</u></button>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="mb-3 form-check">
                                     <input type="checkbox" class="form-check-input" id="isCheckIP" name="IsCheckIP">
@@ -158,8 +157,8 @@
             uploadFiles(formData);
         });
         $(document).ready(function () {
-            if (@Model.TestId != 0)
-                getFiles(@Model.TestId);
+            if (1 == 1)
+                getFiles(1);
 
         });
         function uploadFiles(formData) {

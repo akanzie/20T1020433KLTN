@@ -1,5 +1,5 @@
 ﻿@using KLTN20T1020433.Domain.Submission
-@model KLTN20T1020433.Web.Areas.Student.Models.SubmissionModelResponse
+@model KLTN20T1020433.Web.Areas.Student.Models.SubmissionModel
 @{
     Layout = null;
 }
@@ -12,7 +12,7 @@
 
             </div>
         </div>
-        <div class="card-body pt-0" >
+        <div class="card-body pt-0">
             <!-- Hiển thị file bài nộp của sinh viên -->
             <div class="mb-3">
                 <div id="submission_files">
@@ -81,7 +81,7 @@
             type: 'POST',
             data: { id: fileId },
             success: function (response) {
-                getFiles(@Model.Submission.SubmissionId);                
+                getFiles(@Model.Submission.SubmissionId);
             },
             error: function (xhr, status, error) {
                 alert("Your request is not valid!");
@@ -116,7 +116,7 @@
             contentType: false,
             success: function (response) {
                 $('#fileInput').val('');
-                getFiles(@Model.Submission.SubmissionId);                
+                getFiles(@Model.Submission.SubmissionId);
             },
             error: function (xhr, status, error) {
                 alert("Your request is not valid!");
@@ -130,7 +130,7 @@
             type: "GET",
             data: { submissionId: submissionId },
             error: function () {
-                var errorMessage = xhr.responseText; 
+                var errorMessage = xhr.responseText;
                 alert(errorMessage);
             },
             success: function (data) {
@@ -149,7 +149,7 @@
                 getFiles(submissionId);
             },
             error: function (xhr, status, error) {
-                var errorMessage = xhr.responseText; 
+                var errorMessage = xhr.responseText;
                 alert(errorMessage);
             }
         });
@@ -166,7 +166,7 @@
                 getFiles(submissionId);
             },
             error: function (xhr, status, error) {
-                var errorMessage = xhr.responseText; 
+                var errorMessage = xhr.responseText;
                 alert(errorMessage);
             }
         });

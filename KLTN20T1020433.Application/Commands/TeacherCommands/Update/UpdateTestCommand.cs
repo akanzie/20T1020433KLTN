@@ -1,15 +1,45 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using KLTN20T1020433.Domain.Test;
+using MediatR;
 
 namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Update
 {
     public class UpdateTestCommand : IRequest<bool>
     {
+        public int TestId { get; set; }
+        public string Title { get; set; } = "";
+        public string Instruction { get; set; } = "";
+        public bool IsCheckIP { get; set; } = false;
+        public bool IsConductedAtSchool { get; set; } = false;
+        public DateTime? StartTime { get; set; } = null;
+        public DateTime? EndTime { get; set; } = null;
+
     }
     public class UpdateTestCommandHandler : IRequestHandler<UpdateTestCommand, bool>
     {
-        public Task<bool> Handle(UpdateTestCommand request, CancellationToken cancellationToken)
+        private readonly ITestRepository _testDB;
+        private readonly IMapper _mapper;
+        public UpdateTestCommandHandler(ITestRepository testDB, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _testDB = testDB;
+            _mapper = mapper;
+        }
+        public async Task<bool> Handle(UpdateTestCommand request, CancellationToken cancellationToken)
+        {
+            Test test = await _testDB.GetById(request.TestId);
+            if (test != null)
+            {
+                test.Title = request.Title;
+                test.Instruction = request.Instruction;
+                test.IsCheckIP = request.IsCheckIP;
+                test.IsConductedAtSchool = request.IsConductedAtSchool;
+                test.StartTime = request.StartTime;
+                test.EndTime = request.EndTime;
+                test.LastUpdateTime = DateTime.Now;
+                if (await _testDB.Update(test))
+                    return true;
+            }
+            return false;
         }
     }
 }

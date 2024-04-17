@@ -7,6 +7,7 @@ using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Web.Areas.Teacher.Models;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
 using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
+using AutoMapper;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -16,10 +17,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         const string TEST_SEARCH = "test_search";
         const string TESTID = "testId";
         private readonly IMediator _mediator;
-
-        public TestController(IMediator mediator)
+        private readonly IMapper _mapper;
+        public TestController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
         public async Task<IActionResult> Detail(int testId = 0)
         {
@@ -68,9 +70,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             ViewBag.Title = "Tạo bài thi";
             ViewBag.IsEdit = false;
             var testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
-            var model = new Test()
+            var model = new CreateTestCommand()
             {
-                TestId = testId,
                 TestType = TestType.Exam
             };
 
@@ -99,9 +100,9 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
             string teacherId = "";
-            int rowCount = await _mediator.Send(new GetRowCountQuery{ TeacherId= input.TeacherId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
+            int rowCount = await _mediator.Send(new GetRowCountQuery { TeacherId = input.TeacherId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
 
-            var data = await _mediator.Send (input);
+            var data = await _mediator.Send(input);
 
             var model = new TestSearchResult()
             {
@@ -189,21 +190,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 int testId = 0;
                 if (ApplicationContext.GetDataInt32(TESTID) == null || ApplicationContext.GetDataInt32(TESTID) == 0)
                 {
-                    Test test = new Test()
-                    {
-                        TeacherId = teacherId,
-                        TestType = TestType.Exam,
-                        Status = TestStatus.Creating,
-                        CreatedTime = DateTime.Now,
-                    };
-                    testId = await _mediator.Send(new CreateTestCommand { });
-                    ApplicationContext.SetInt32(TESTID, testId);                    
+                    testId = await _mediator.Send(new CreateTestCommand { TeacherId = teacherId, TestType = TestType.Exam, TestStatus = TestStatus.Creating });
+                    ApplicationContext.SetInt32(TESTID, testId);
                 }
                 else
                 {
                     testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
                 }
-                
+
                 foreach (var item in files)
                 {
                     TestFile testFile = await FileUtils.SaveTestFileAsync(item, testId);
@@ -212,37 +206,19 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(testId);
             }
         }
-        public async Task<IActionResult> SelectStudents(Test model)
+        public async Task<IActionResult> SelectStudents(CreateTestCommand command)
         {
-            
+
             int testId = 0;
             if (ApplicationContext.GetDataInt32(TESTID) != null && ApplicationContext.GetDataInt32(TESTID) != 0)
             {
                 testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
-                model.TestId = testId;
-                //model.TeacherId = test!.TeacherId;                
-                model.TestType = TestType.Exam;
-                model.Status = TestStatus.Creating;
-                model.CreatedTime = DateTime.Now;
-                bool result = await _mediator.Send(new UpdateTestCommand { });
+                var updateTestCommmand = _mapper.Map<UpdateTestCommand>(command);
+                await _mediator.Send(updateTestCommmand);
             }
             else
-            {                
-                var test = new Test
-                {
-                    Title = model.Title,
-                    Instruction = model.Instruction,
-                    IsCheckIP = model.IsCheckIP,
-                    IsConductedAtSchool = model.IsConductedAtSchool,
-                    StartTime = model.StartTime,
-                    EndTime = model.EndTime,
-                    TeacherId = model.TeacherId,
-                    CreatedTime = DateTime.Now,
-                    TestType = TestType.Exam,
-
-                };
-                testId = await _mediator.Send(new CreateTestCommand { });
+            {
+                testId = await _mediator.Send(command);
                 HttpContext.Session.SetInt32(TESTID, testId);
             }
 
@@ -254,7 +230,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
             if (test != null)
             {
-                var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = testId });               
+                var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = testId });
 
                 var model = new TestFileModel
                 {

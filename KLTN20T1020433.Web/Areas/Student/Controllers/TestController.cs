@@ -1,19 +1,15 @@
-﻿using KLTN20T1020433.Web.AppCodes;
-using KLTN20T1020433.Application.Commands.StudentCommands.Create;
+﻿using KLTN20T1020433.Application.Commands.StudentCommands.Create;
 using KLTN20T1020433.Application.Commands.StudentCommands.Delete;
 using KLTN20T1020433.Application.Commands.StudentCommands.Update;
+using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Application.Queries.StudentQueries;
+using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.Web.Areas.Student.Models;
 using KLTN20T1020433.Web.Models;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using System.Net;
-using System.Net.WebSockets;
-using System.Reflection;
-using KLTN20T1020433.Web.Areas.Student.Models;
-using KLTN20T1020433.Application.DTOs;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
@@ -50,7 +46,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
             var data = await _mediator.Send(input);
-            int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433", SearchValue=input.SearchValue, Status=input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type});
+            int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433", SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
             var model = new TestSearchResult()
             {
                 Page = input.Page,
@@ -179,7 +175,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress;
 
-                if (await _mediator.Send(new CancelSubmissionCommand { SubmissionId = id}))
+                if (await _mediator.Send(new CancelSubmissionCommand { SubmissionId = id }))
                 {
                     submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
                     var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = id });
