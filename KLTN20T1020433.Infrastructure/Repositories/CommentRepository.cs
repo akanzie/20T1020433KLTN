@@ -20,9 +20,6 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             int id = 0;
             using (var connection = await OpenConnectionAsync())
             {
-                var sql = @"INSERT INTO Comments (Body, TeacherId, SubmissionId, CommentedTime) 
-                    VALUES (@Body, @TeacherId, @SubmissionId, @CommentedTime);
-                    SELECT SCOPE_IDENTITY()";
                 var parameters = new
                 {
                     Body = data.Body,
@@ -30,7 +27,8 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     SubmissionId = data.SubmissionId,
                     CommentedTime = data.CommentedTime
                 };
-                id = await connection.ExecuteScalarAsync<int>(sql: sql, param: parameters, commandType: CommandType.Text);
+                id = await connection.ExecuteScalarAsync<int>(
+                    "AddComment", parameters, commandType: CommandType.StoredProcedure);
             }
             return id;
         }
@@ -39,12 +37,12 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             bool result = false;
             using (var connection = await OpenConnectionAsync())
             {
-                var sql = "DELETE FROM Comments WHERE CommentId = @CommentId";
                 var parameters = new
                 {
                     CommentId = id
                 };
-                result = await connection.ExecuteAsync(sql, param: parameters) > 0;                
+                result = await connection.ExecuteAsync(
+                    "DeleteComment", parameters, commandType: CommandType.StoredProcedure) > 0;
             }
             return result;
         }
@@ -54,13 +52,12 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             Comment? data = null;
             using (var connection = await OpenConnectionAsync())
             {
-                var sql = "SELECT * FROM Comments WHERE CommentId = @CommentId";
                 var parameters = new
                 {
                     CommentId = id
                 };
-                data = await connection.QueryFirstOrDefaultAsync<Comment>(sql: sql, param: parameters, commandType: CommandType.Text);
-                
+                data = await connection.QueryFirstOrDefaultAsync<Comment>(
+                    "GetCommentById", parameters, commandType: CommandType.StoredProcedure);
             }
             return data;
         }
@@ -71,13 +68,12 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             List<Comment> comments = new List<Comment>();
             using (var connection = await OpenConnectionAsync())
             {
-                var sql = @"SELECT * FROM Comments WHERE SubmissionId = @SubmissionId";
                 var parameters = new
                 {
                     SubmissionId = submissionId
                 };
-                comments = (await connection.QueryAsync<Comment>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
-                
+                comments = (await connection.QueryAsync<Comment>(
+                    "GetCommentsBySubmissionId", parameters, commandType: CommandType.StoredProcedure)).ToList();
             }
             return comments;
         }
@@ -87,19 +83,16 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             bool result = false;
             using (var connection = await OpenConnectionAsync())
             {
-                var sql = @"UPDATE Comments 
-                    SET Body = @Body, TeacherId = @TeacherId, SubmissionId = @SubmissionId, CommentedTime = @CommentedTime
-                    WHERE CommentId = @CommentId";
                 var parameters = new
                 {
+                    CommentId = data.CommentId,
                     Body = data.Body,
                     TeacherId = data.TeacherId,
                     SubmissionId = data.SubmissionId,
-                    CommentedTime = data.CommentedTime,
-                    CommentId = data.CommentId
+                    CommentedTime = data.CommentedTime
                 };
-                result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
-                
+                result = await connection.ExecuteAsync(
+                    "UpdateComment", parameters, commandType: CommandType.StoredProcedure) > 0;
             }
 
             return result;

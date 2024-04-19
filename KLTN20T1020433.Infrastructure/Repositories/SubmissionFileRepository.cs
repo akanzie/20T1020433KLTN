@@ -19,10 +19,9 @@ namespace KLTN20T1020433.Infrastructure.Repositories
         {
             try
             {
+                bool result = false;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"INSERT INTO SubmissionFiles (FileId, SubmissionId, FileName, FilePath, MimeType, Size, OriginalName)
-                VALUES (@FileId, @SubmissionId, @FileName, @FilePath, @MimeType, @Size, @OriginalName)";
                     var parameters = new
                     {
                         FileId = file.FileId,
@@ -33,9 +32,11 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         SubmissionId = file.SubmissionId,
                         OriginalName = file.OriginalName ?? ""
                     };
-                    await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text);
+
+                    // Call the stored procedure
+                    result = await connection.ExecuteAsync("AddSubmissionFile", parameters, commandType: CommandType.StoredProcedure) > 0;
                 }
-                return true;
+                return result;
             }
             catch (Exception ex)
             {
@@ -63,12 +64,13 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 bool result = false;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"DELETE FROM SubmissionFiles WHERE FileId = @FileId";
                     var parameters = new
                     {
                         FileId = fileId
                     };
-                    result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+
+                    // Call the stored procedure
+                    result = await connection.ExecuteAsync("DeleteSubmissionFile", parameters, commandType: CommandType.StoredProcedure) > 0;
                 }
                 return result;
             }

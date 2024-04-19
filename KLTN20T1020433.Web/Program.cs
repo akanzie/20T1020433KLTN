@@ -18,16 +18,16 @@ builder.Services.AddSession(option =>
 });
 builder.Services.AddAutoMapperSetup();
 
+DatabaseConfig.Initialize(builder.Configuration.GetConnectionString("SQLServerConnectionString"));
+
+
 builder.Services.AddCustomizeDatabase();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-
+    
 builder.Services.AddHttpContextAccessor();
 
-DatabaseConfig.Initialize(builder.Configuration.GetConnectionString("SQLServerConnectionString"));
-
-FileConfig.Initialize(builder.Configuration.GetSection(FileConfig.FILE_STORAGE_PATHS)["ServerStoragePath"]);
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())

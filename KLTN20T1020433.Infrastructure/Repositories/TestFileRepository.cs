@@ -19,11 +19,9 @@ namespace KLTN20T1020433.Infrastructure.Repositories
         {
             try
             {
+                bool result = false;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"insert into TestFiles (FileId, FileName, FilePath, MimeType, Size, OriginalName,
-                            TestId) 
-                        values (@FileId,@FileName,@FilePath,@MimeType,@Size,@OriginalName,@TestId)";
                     var parameters = new
                     {
                         FileId = file.FileId,
@@ -34,9 +32,9 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         OriginalName = file.OriginalName ?? "",
                         TestId = file.TestId
                     };
-                    await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text);
+                    result = await connection.ExecuteAsync("AddTestFile", parameters, commandType: CommandType.StoredProcedure) > 0;
                 }
-                return true;
+                return result;
             }
             catch (Exception ex)
             {
@@ -57,12 +55,13 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 bool result = false;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"delete from TestFiles where FileID = @FileID";
                     var parameters = new
                     {
-                        FileID = fileId
+                        FileId = fileId
                     };
-                    result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: System.Data.CommandType.Text) > 0;
+
+                    // Call the stored procedure
+                    result = await connection.ExecuteAsync("DeleteTestFile", parameters, commandType: CommandType.StoredProcedure) > 0;
                 }
                 return result;
             }
@@ -80,12 +79,13 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 TestFile? data = null;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"select * from TestFiles where FileID = @FileID";
                     var parameters = new
                     {
                         FileId = id
                     };
-                    data = await connection.QueryFirstOrDefaultAsync<TestFile>(sql: sql, param: parameters, commandType: System.Data.CommandType.Text);
+
+                    // Call the stored procedure
+                    data =  await connection.QueryFirstOrDefaultAsync<TestFile>("GetTestFileById", parameters, commandType: CommandType.StoredProcedure);
                 }
                 return data;
             }
@@ -94,40 +94,28 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 Console.WriteLine("Đã xảy ra lỗi khi truy vấn tệp kiểm tra: " + ex.Message);
                 throw;
             }
-        }
+        }        
 
-        public async Task<IEnumerable<TestFile>> GetFileByTestId(int testId)
+        public async Task<IEnumerable<TestFile>> GetFilesByTestId(int testId)
         {
             try
             {
-                List<TestFile> list = new List<TestFile>();
-
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"select tf.*
-                        from TestFiles as tf
-                            join Tests as t on tf.testId = t.testId
-                        where tf.testId = @TestId";
-
                     var parameters = new
                     {
-                        TestId = testId,
+                        TestId = testId
                     };
 
-                    list = (await connection.QueryAsync<TestFile>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+                    // Call the stored procedure
+                    return await connection.QueryAsync<TestFile>("GetTestFilesByTestId", parameters, commandType: CommandType.StoredProcedure);
                 }
-                return list;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Đã xảy ra lỗi khi truy vấn danh sách các tệp của bài kiểm tra: " + ex.Message);
                 throw;
             }
-        }
-
-        public Task<IEnumerable<TestFile>> GetFilesByTestId(int testId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

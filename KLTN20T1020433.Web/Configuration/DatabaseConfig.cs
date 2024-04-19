@@ -6,7 +6,7 @@
         public static string SQLServerConnectionString { get; private set; } = "";
         public static void Initialize(string connectionString)
         {
-            DatabaseConfig.SQLServerConnectionString = connectionString;
+            SQLServerConnectionString = connectionString;
         }
     }
 }

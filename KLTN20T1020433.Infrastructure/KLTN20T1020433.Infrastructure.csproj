@@ -17,4 +17,8 @@
     <ProjectReference Include="..\KLTN20T1020433.Domain\KLTN20T1020433.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SQL\" />
+  </ItemGroup>
+
 </Project>

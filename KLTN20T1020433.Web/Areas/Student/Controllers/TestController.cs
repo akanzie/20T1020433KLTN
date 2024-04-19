@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
+    [Area("Student")]
     public class TestController : Controller
     {
         const int PAGE_SIZE = 10;

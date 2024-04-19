@@ -22,9 +22,6 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 int id = 0;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"INSERT INTO Submissions (StudentId, TestId, SubmittedTime, IPAddress, Status)
-                VALUES (@StudentId, @TestId, @SubmittedTime, @IPAddress, @Status);
-                SELECT SCOPE_IDENTITY()";
                     var parameters = new
                     {
                         StudentId = data.StudentId,
@@ -33,7 +30,11 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         IPAddress = data.IPAddress,
                         Status = data.Status.ToString()
                     };
-                    id = await connection.ExecuteScalarAsync<int>(sql: sql, param: parameters, commandType: CommandType.Text);
+                    id = await connection.ExecuteScalarAsync<int>(
+                        "AddSubmission",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
                 }
                 return id;
             }
@@ -51,12 +52,15 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 bool result = false;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"DELETE FROM Submissions WHERE SubmissionId = @SubmissionId";
                     var parameters = new
                     {
-                        FileId = id
+                        SubmissionId = id
                     };
-                    result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                    result = await connection.ExecuteAsync(
+                        "DeleteSubmission",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    ) > 0;
                 }
                 return result;
             }
@@ -74,12 +78,15 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 Submission? submission = null;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"SELECT * FROM Submissions WHERE SubmissionId = @SubmissionId";
                     var parameters = new
                     {
                         SubmissionId = id
                     };
-                    submission = await connection.QueryFirstOrDefaultAsync<Submission>(sql: sql, param: parameters, commandType: CommandType.Text);
+                    submission = await connection.QueryFirstOrDefaultAsync<Submission>(
+                        "GetSubmissionById",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
                 }
                 return submission;
             }
@@ -97,13 +104,16 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 Submission? submission = null;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"SELECT * FROM Submissions WHERE TestId = @TestId AND StudentId = @StudentId";
                     var parameters = new
                     {
                         TestId = testId,
                         StudentId = studentId
                     };
-                    submission = await connection.QueryFirstOrDefaultAsync<Submission>(sql: sql, param: parameters, commandType: CommandType.Text);
+                    submission = await connection.QueryFirstOrDefaultAsync<Submission>(
+                        "GetSubmissionByTestIdAndStudentId",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
                 }
                 return submission;
             }
@@ -121,12 +131,15 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 List<Submission> submissions = new List<Submission>();
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"SELECT * FROM Submissions WHERE TestId = @TestId";
                     var parameters = new
                     {
                         TestId = testId
                     };
-                    submissions = (await connection.QueryAsync<Submission>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+                    submissions = (await connection.QueryAsync<Submission>(
+                        "GetSubmissionsByTestId",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    )).ToList();
                 }
                 return submissions;
             }
@@ -144,17 +157,18 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 bool result = false;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"UPDATE Submissions
-                SET SubmittedTime = @SubmittedTime, IPAddress = @IPAddress, Status = @Status
-                WHERE SubmissionId = @SubmissionId";
                     var parameters = new
                     {
+                        SubmissionId = data.SubmissionId,
                         SubmittedTime = data.SubmittedTime,
                         IPAddress = data.IPAddress,
-                        Status = data.Status.ToString(),
-                        SubmissionId = data.SubmissionId
+                        Status = data.Status.ToString()
                     };
-                    result = await connection.ExecuteAsync(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                    result = await connection.ExecuteAsync(
+                        "UpdateSubmission",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    ) > 0;
                 }
                 return result;
             }
