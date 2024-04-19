@@ -31,6 +31,7 @@ namespace KLTN20T1020433.Web.Mappings
                 CreateMap<Submission, GetSubmissionResponse>();
                 CreateMap<SubmissionFile, GetSubmissionFileResponse>();
                 CreateMap<TestFile, GetTestFileResponse>();
+                CreateMap<Test, GetTestBySearchResponse>();
             }
         }
     }

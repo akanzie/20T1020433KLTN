@@ -1,6 +1,7 @@
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,11 +19,8 @@ builder.Services.AddSession(option =>
 });
 builder.Services.AddAutoMapperSetup();
 
-DatabaseConfig.Initialize(builder.Configuration.GetConnectionString("SQLServerConnectionString"));
-
-
-builder.Services.AddCustomizeDatabase();
-
+builder.Services.AddCustomizeDatabase(builder.Configuration.GetConnectionString("SQLServerConnectionString"));
+builder.Services.AddConfig(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     

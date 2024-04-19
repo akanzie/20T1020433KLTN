@@ -22,7 +22,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         public async Task<IEnumerable<GetSubmissionFileResponse>> Handle(GetFilesBySubmissionIdQuery request, CancellationToken cancellationToken)
         {
             var SubmissionFiles = await _SubmissionFileDB.GetFileBySubmissionId(request.SubmissionId);
-            if (SubmissionFiles != null && !SubmissionFiles.Any())
+            if (SubmissionFiles != null && SubmissionFiles.Any())
             {
                 List<GetSubmissionFileResponse> SubmissionResponse = new List<GetSubmissionFileResponse>();
                 foreach (var file in SubmissionFiles)

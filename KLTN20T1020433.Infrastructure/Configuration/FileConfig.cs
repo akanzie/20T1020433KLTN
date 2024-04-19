@@ -1,12 +1,15 @@
-﻿namespace KLTN20T1020433.Web.Configuration
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KLTN20T1020433.Infrastructure.Configuration
 {
-    public static class FileConfig
+    public class FileConfig 
     {
-        public const string FILE_STORAGE_PATHS = "FileStoragePaths";
-        public static string ServerStoragePath { get; set; } = "";
-        public static void Initialize(string path)
-        {
-            FileConfig.ServerStoragePath = path;
-        }
+        public const string FILE_CONFIG = "FileConfig";
+        public string FileStoragePath { get; set; } = String.Empty;
     }
 }

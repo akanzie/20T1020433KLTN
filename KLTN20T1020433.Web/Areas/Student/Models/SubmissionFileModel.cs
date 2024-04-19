@@ -5,7 +5,7 @@ namespace KLTN20T1020433.Web.Areas.Student.Models
 {
     public class SubmissionFileModel
     {
-        public SubmissionStatus Status { get; set; }
+        public SubmissionStatus? Status { get; set; }
         public IEnumerable<GetSubmissionFileResponse> Files { get; set; }
     }
 }

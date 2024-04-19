@@ -26,11 +26,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         public async Task<IActionResult> Detail(int testId = 0)
         {
             var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
-            if (test == null)
+            if (test.TestId == 0)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
-
             var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = testId });
             var model = new TestModel()
             {
@@ -200,8 +199,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
                 foreach (var item in files)
                 {
-                    TestFile testFile = await FileUtils.SaveTestFileAsync(item, testId);
-                    await _mediator.Send(new CreateTestFileCommand { });
+
+                    await _mediator.Send(new CreateTestFileCommand { File = item, TestId = testId });
                 }
                 return Json(testId);
             }

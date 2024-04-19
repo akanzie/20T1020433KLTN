@@ -24,7 +24,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         public async Task<IEnumerable<GetTestBySearchResponse>> Handle(GetTestsBySearchQuery request, CancellationToken cancellationToken)
         {
             var tests = await _testDB.GetTestsOfTeacher(request.Page, request.PageSize, request.TeacherId, request.SearchValue, request.Type, request.Status, request.FromTime, request.ToTime);
-            if (tests != null && !tests.Any())
+            if (tests != null && tests.Any())
             {
                 List<GetTestBySearchResponse> testResponse = new List<GetTestBySearchResponse>();
                 foreach (var item in tests)

@@ -23,6 +23,8 @@ namespace KLTN20T1020433.Application.Services
                     return "Đã kết thúc";
                 case TestStatus.Canceled:
                     return "Đã bị hủy";
+                case TestStatus.Creating:
+                    return "Đang tạo";
                 default:
                     return "";
             }

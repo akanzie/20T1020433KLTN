@@ -69,18 +69,23 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public async Task<IActionResult> Detail(int id = 0)
         {
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
-            if (test == null)
+            string studentId = "20T1020433";
+            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = studentId });
+            if (submission.SubmissionId != 0)
             {
-                return RedirectToAction("Index", "StudentHome");
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
+                if (test.TestId != 0)
+                {
+                    IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
+                    var model = new TestModel
+                    {
+                        Test = test,
+                        Files = files
+                    };
+                    return View(model);
+                }
             }
-            IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
-            var model = new TestModel
-            {
-                Test = test,
-                Files = files
-            };
-            return View(model);
+            return RedirectToAction("Index", "Home");
 
         }
         public async Task<IActionResult> Submission(int testId = 0)
@@ -88,7 +93,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             string studentId = "20T1020433";
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = studentId });
 
-            if (submission != null)
+            if (submission.SubmissionId != 0)
             {
                 var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
 
@@ -100,7 +105,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
 
                 return PartialView(model);
             }
-            return RedirectToAction("Index", "StudentHome");
+            return Json("Không tìm thấy bài nộp.");
         }
         [HttpPost]
         public async Task<IActionResult> UploadSubmissionFile(List<IFormFile> files, int submissionId = 0)
@@ -111,31 +116,33 @@ namespace KLTN20T1020433.Web.Controllers.Student
             {
                 foreach (var item in files)
                 {
-                    if (await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submissionId })) ;
+                    if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submissionId })))
+                        return Json("Có lỗi khi lưu file");
                 }
+                return Json("Tải file lên thành công.");
             }
-            return Json("Tải file lên thành công.");
         }
         [HttpPost]
         public async Task<IActionResult> RemoveSubmissionFile(Guid id)
         {
-            GetSubmissionFileResponse file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
-            if (file == null)
+            var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+            if (file.FileId == null)
                 return Json("Không tìm thấy file");
             else
             {
-                await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, FilePath = file.FilePath });
-            }
-            return Json("Xóa file thành công.");
+                if(await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, FilePath = file.FilePath }))
+                    return Json("Xóa file thành công.");
+                return Json("Có lỗi khi xóa file");
+            }            
         }
         [HttpPost]
         public async Task<IActionResult> Submit(int id)
         {
             var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
-            if (submission != null)
+            if (submission.SubmissionId != 0)
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress;
-                GetTestByIdResponse test = await _mediator.Send(new GetTestByIdQuery { Id = submission.TestId });
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = submission.TestId });
                 if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(ipAddress))
                 {
                     return BadRequest("Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.");
@@ -172,7 +179,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         {
             var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
 
-            if (submission != null)
+            if (submission.SubmissionId != 0)
             {
                 var ipAddress = HttpContext.Connection.RemoteIpAddress;
 
@@ -218,7 +225,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> ListSubmissionFiles(int submissionId = 0)
         {
             var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = submissionId });
-            if (submission != null)
+            if (submission.SubmissionId != 0)
             {
                 var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = submissionId });
                 var model = new SubmissionFileModel

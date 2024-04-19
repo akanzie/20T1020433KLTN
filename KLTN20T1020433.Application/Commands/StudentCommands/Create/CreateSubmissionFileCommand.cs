@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Web.Configuration;
+using KLTN20T1020433.Infrastructure.Configuration;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
 {
@@ -17,12 +18,13 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly ISubmissionRepository _submissionDB;
         private readonly ITestRepository _testDB;
-        public CreateSubmissionFileCommandHandler(ISubmissionFileRepository submissionFileDB, ITestRepository testDB, ISubmissionRepository submissionDB)
+        private readonly FileConfig _fileOptions;
+        public CreateSubmissionFileCommandHandler(ISubmissionFileRepository submissionFileDB, ITestRepository testDB, ISubmissionRepository submissionDB, IOptions<FileConfig> options)
         {
             _submissionFileDB = submissionFileDB;
             _submissionDB = submissionDB;
             _testDB = testDB;
-
+            _fileOptions = options.Value;
         }
         public async Task<bool> Handle(CreateSubmissionFileCommand request, CancellationToken cancellationToken)
         {
@@ -34,7 +36,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
             string uniqueFileName = $"{id}_{request.File.FileName}";
             Submission submission = await _submissionDB.GetById(request.SubmissionId);
             Test test = await _testDB.GetById(submission.TestId);
-            string directoryPath = Path.Combine(FileConfig.ServerStoragePath, test.Title, "Submission");
+            string directoryPath = Path.Combine(_fileOptions.FileStoragePath, test.Title, "Submission");
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);

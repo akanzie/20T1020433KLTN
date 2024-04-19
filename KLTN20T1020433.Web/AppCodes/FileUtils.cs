@@ -23,43 +23,6 @@ namespace KLTN20T1020433.Web.AppCodes
 
         
 
-        public static async Task<TestFile> SaveTestFileAsync(IFormFile file, int testId)
-        {
-            if (file == null || file.Length == 0)
-            {
-                throw new ArgumentException("Invalid file.");
-            }
-            Guid id = Guid.NewGuid();
-            // Tạo một tên tệp duy nhất
-            string uniqueFileName = $"{id}_{file.FileName}";
-            // Tạo đường dẫn đầy đủ cho tệp
-
-            string directoryPath = Path.Combine(FileConfig.ServerStoragePath, testId.ToString(), "Test");
-
-            // Kiểm tra và tạo thư mục nếu nó không tồn tại
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-
-
-            string filePath = Path.Combine(directoryPath, uniqueFileName);
-            // Lưu tệp vào đường dẫn được chỉ định
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            // Tạo đối tượng File từ thông tin của IFormFile
-            return new TestFile
-            {
-                FileId = id,
-                FileName = uniqueFileName,
-                FilePath = filePath,
-                MimeType = file.ContentType,
-                Size = file.Length,
-                TestId = testId,
-                OriginalName = file.FileName
-            };
-        }
+        
     }
 }

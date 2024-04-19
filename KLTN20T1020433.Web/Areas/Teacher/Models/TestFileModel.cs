@@ -6,7 +6,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Models
 {
     public class TestFileModel
     {
-        public TestStatus Status { get; set; }
+        public TestStatus? Status { get; set; }
         public IEnumerable<GetTestFileResponse> Files { get; set; }
     }
 }

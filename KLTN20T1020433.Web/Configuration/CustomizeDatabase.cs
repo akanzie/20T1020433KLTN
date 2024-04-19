@@ -14,9 +14,8 @@ namespace KLTN20T1020433.Web.Configuration
 {
     public static class CustomizeDatabase
     {
-        public static void AddCustomizeDatabase(this IServiceCollection services)
+        public static void AddCustomizeDatabase(this IServiceCollection services, string connectionString)
         {
-            var connectionString = DatabaseConfig.SQLServerConnectionString;
             services.AddScoped<ITestRepository>(provider =>
             { 
                 return new TestRepository(connectionString); 
