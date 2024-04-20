@@ -38,7 +38,7 @@ namespace KLTN20T1020433.Web.Areas.Student.Controllers
             string time = DateTime.Now.ToString("yyyyMMddHHmmss");
             string token = await _mediator.Send(new GetTokenQuery { Host = host, Code = code, Time = time });
             ApplicationContext.SetString(Constants.ACCESS_TOKEN, token);
-            var studentProfile = await _mediator.Send(new GetStudentProfileByTokenQuery { Token = token });
+            var studentProfile = await _mediator.Send(new GetStudentProfileByTokenQuery { Signature = token, Token = token });
             WebUserData userData = new WebUserData()
             {
                 UserId = studentProfile.StudentId,                
