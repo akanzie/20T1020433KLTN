@@ -101,5 +101,34 @@ namespace KLTN20T1020433.Web.AppCodes
             }
             return null;
         }
+        public static void SetString(string key, string value)
+        {
+            try
+            {
+                _httpContextAccessor?.HttpContext?.Session.SetString(key, value);
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Đọc dữ liệu từ session
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static string? GetDataString(string key)
+        {
+            try
+            {
+                return _httpContextAccessor?.HttpContext?.Session.GetString(key);
+            }
+            catch
+            {
+
+            }
+            return null;
+        }
     }
 }

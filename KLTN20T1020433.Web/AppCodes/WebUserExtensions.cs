@@ -19,20 +19,13 @@ namespace KLTN20T1020433.Web.AppCodes
                 var userData = new WebUserData();
 
                 userData.UserId = principal.FindFirstValue(nameof(userData.UserId));
-                userData.UserName = principal.FindFirstValue(nameof(userData.UserName));
                 userData.DisplayName = principal.FindFirstValue(nameof(userData.DisplayName));
                 userData.Email = principal.FindFirstValue(nameof(userData.Email));
-                userData.Photo = principal.FindFirstValue(nameof(userData.Photo));
 
                 userData.ClientIP = principal.FindFirstValue(nameof(userData.ClientIP));
                 userData.SessionId = principal.FindFirstValue(nameof(userData.SessionId));
-                userData.AdditionalData = principal.FindFirstValue(nameof(userData.AdditionalData));
 
-                userData.Roles = new List<string>();
-                foreach (var claim in principal.FindAll(ClaimTypes.Role))
-                {
-                    userData.Roles.Add(claim.Value);
-                }
+                userData.Role = principal.FindFirstValue(nameof(userData.Role));               
 
                 return userData;
             }

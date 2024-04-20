@@ -555,6 +555,7 @@
   <ItemGroup>
     <Folder Include="Areas\Student\Data\" />
     <Folder Include="Areas\Teacher\Data\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
   <ItemGroup>

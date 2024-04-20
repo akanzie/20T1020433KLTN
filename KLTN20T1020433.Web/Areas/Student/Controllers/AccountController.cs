@@ -1,6 +1,11 @@
 ﻿using KLTN20T1020433.Application.Configuration;
+using KLTN20T1020433.Application.Queries;
+using KLTN20T1020433.Application.Queries.StudentQueries;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Web.AppCodes;
+using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -12,11 +17,11 @@ namespace KLTN20T1020433.Web.Areas.Student.Controllers
     public class AccountController : Controller
     {
         private readonly ApiConfig _apiOptions;
-        private readonly HttpClient _httpClient;
-        public AccountController(IOptions<ApiConfig> apiOptions, HttpClient httpClient)
+        private readonly IMediator _mediator;
+        public AccountController(IOptions<ApiConfig> apiOptions, IMediator mediator)
         {
             _apiOptions = apiOptions.Value;
-            _httpClient = httpClient;
+            _mediator = mediator;
         }
 
         public IActionResult Login()
@@ -30,30 +35,29 @@ namespace KLTN20T1020433.Web.Areas.Student.Controllers
             {
                 return View("Error");
             }
-
             string time = DateTime.Now.ToString("yyyyMMddHHmmss");
-
-            string signature = Utils.CalculateSignature(_apiOptions.AppId, _apiOptions.SecretKey, time); // Tính chữ ký bằng cách gọi hàm CalculateSignature
-
-            // Tạo tham số truyền vào lời gọi API
-            string apiUrl = $"{host}?code={code}&time={time}&signature={signature}";
-            HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
-            if (response.IsSuccessStatusCode)
+            string token = await _mediator.Send(new GetTokenQuery { Code = code, Time = time });
+            ApplicationContext.SetString(Constants.ACCESS_TOKEN, token);
+            var studentProfile = await _mediator.Send(new GetStudentProfileByTokenQuery { Token = token });
+            WebUserData userData = new WebUserData()
             {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                UserId = studentProfile.StudentId,                
+                DisplayName = studentProfile.LastName + " " + studentProfile.FirstName,
+                Email = studentProfile.Email,                
+                ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                SessionId = HttpContext.Session.Id,                
+                Role = studentProfile.Role
+            };
+            await HttpContext.SignInAsync(userData.CreatePrincipal());
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.Clear();
 
-                // Lưu trữ token vào biến session hoặc cache để sử dụng sau này
-                string token = responseData.Data.Token;
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                // Handle error
-                return StatusCode((int)response.StatusCode);
-
-            }
+            return RedirectToAction("Login");
         }
     }
 }

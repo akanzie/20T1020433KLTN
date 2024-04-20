@@ -71,7 +71,7 @@ namespace KLTN20T1020433.Application.Services
         {
             throw new NotImplementedException();
         }
-        private static string CalculateSignature(string appId, string secretKey, string time)
+        public static string CalculateSignature(string appId, string secretKey, string time)
         {
             string data = $"{appId}{secretKey}{time}";
 
