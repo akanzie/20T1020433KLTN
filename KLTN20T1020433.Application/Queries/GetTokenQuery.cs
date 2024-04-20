@@ -14,6 +14,7 @@ namespace KLTN20T1020433.Application.Queries
 {
     public class GetTokenQuery : IRequest<string>
     {
+        public string Host { get; set; }
         public string Code { get; set; }
         public string Time { get; set; }
     }
@@ -30,7 +31,7 @@ namespace KLTN20T1020433.Application.Queries
         public async Task<string> Handle(GetTokenQuery request, CancellationToken cancellationToken)
         {
             string signature = Utils.CalculateSignature(_apiOptions.AppId, _apiOptions.SecretKey, request.Time);
-            string apiUrl = $"{_apiOptions.Host}?code={request.Code}&time={request.Time}&signature={signature}";
+            string apiUrl = $"{request.Host}?code={request.Code}&time={request.Time}&signature={signature}";
             HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
 
             if (response.IsSuccessStatusCode)
