@@ -2,11 +2,10 @@
 using System.IO;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Web.Configuration;
 using Microsoft.AspNetCore.Http;
 
 
-namespace KLTN20T1020433.Web.AppCodes
+namespace KLTN20T1020433.Application.Services
 {
     public static class FileUtils
     {     

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace KLTN20T1020433.Web.AppCodes
+namespace KLTN20T1020433.Application.Services
 {
     public static class Converter
     {
@@ -22,5 +22,6 @@ namespace KLTN20T1020433.Web.AppCodes
                 return null;
             }
         }
+
     }
 }

@@ -8,13 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\**" />
     <Compile Remove="wwwroot\DashUI-1.0.0\**" />
-    <Content Remove="Controllers\**" />
     <Content Remove="wwwroot\DashUI-1.0.0\**" />
-    <EmbeddedResource Remove="Controllers\**" />
     <EmbeddedResource Remove="wwwroot\DashUI-1.0.0\**" />
-    <None Remove="Controllers\**" />
     <None Remove="wwwroot\DashUI-1.0.0\**" />
   </ItemGroup>
 

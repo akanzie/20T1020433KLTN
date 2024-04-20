@@ -4,8 +4,8 @@ namespace KLTN20T1020433.Web.AppCodes
 {
     public class Constants
     {
-        public const string HOST = "https://ums-dev.husc.edu.vn/apigateway";
-        public const string APP_ID = "TestApp";
-        public const string REDIRECT_URI = "http://localhost:8080/login";
+        public const string REDIRECT_URI = "https://localhost:44336/Student/Account/Callback";
+        public const string STUDENT_ROLE = "student";
+        public const string TEACHER_ROLE = "teacher";
     }
 }
