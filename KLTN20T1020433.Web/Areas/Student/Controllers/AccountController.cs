@@ -14,6 +14,7 @@ using System.Net.Http;
 
 namespace KLTN20T1020433.Web.Areas.Student.Controllers
 {
+    [Area("Student")]
     public class AccountController : Controller
     {
         private readonly ApiConfig _apiOptions;

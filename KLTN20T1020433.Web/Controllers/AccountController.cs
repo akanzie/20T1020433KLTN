@@ -1,6 +1,14 @@
-﻿using KLTN20T1020433.Application.Services;
+﻿using KLTN20T1020433.Application.Configuration;
+using KLTN20T1020433.Application.Queries.StudentQueries;
+using KLTN20T1020433.Application.Queries;
+using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Configuration;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -11,16 +19,18 @@ namespace KLTN20T1020433.Web.Controllers
 {
     public class AccountController : Controller
     {
-        
-        private readonly HttpClient _httpClient;
-        public AccountController(HttpClient httpClient)
+
+        private readonly ApiConfig _apiOptions;
+        private readonly IMediator _mediator;
+        public AccountController(IOptions<ApiConfig> apiOptions, IMediator mediator)
         {
-            _httpClient = httpClient;
+            _apiOptions = apiOptions.Value;
+            _mediator = mediator;
         }
 
         public IActionResult Login()
         {
-            string loginUrl = $"{HOST}/auth/account/authorize?app_id={APP_ID}&redirect_uri={REDIRECT_URI}";
+            string loginUrl = $"{_apiOptions.Host}/auth/account/authorize?app_id={_apiOptions.AppId}&redirect_uri={Constants.REDIRECT_URI}&role={Constants.STUDENT_ROLE}";
             return Redirect(loginUrl);
         }
         public async Task<IActionResult> Callback(string code, string host)
@@ -29,45 +39,29 @@ namespace KLTN20T1020433.Web.Controllers
             {
                 return View("Error");
             }
-
             string time = DateTime.Now.ToString("yyyyMMddHHmmss");
-
-            string signature = Utils.CalculateSignature(APP_ID, SECRET_KEY, time); // Tính chữ ký bằng cách gọi hàm CalculateSignature
-
-            // Tạo tham số truyền vào lời gọi API
-            string apiUrl = $"{host}?code={code}&time={time}&signature={signature}";
-            HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
-            if (response.IsSuccessStatusCode)
+            var getTokenResponse = await _mediator.Send(new GetTokenQuery { Host = host, Code = code, Time = time });
+            ApplicationContext.SetSessionData(Constants.ACCESS_TOKEN, getTokenResponse);
+            var studentProfile = await _mediator.Send(new GetStudentProfileByTokenQuery { GetTokenResponse = getTokenResponse });
+            WebUserData userData = new WebUserData()
             {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-
-                // Lưu trữ token vào biến session hoặc cache để sử dụng sau này
-                string token = responseData.Data.Token;
-
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                // Handle error
-                return StatusCode((int)response.StatusCode);
-
-            }
+                UserId = studentProfile.StudentId,
+                DisplayName = studentProfile.LastName + " " + studentProfile.FirstName,
+                Email = studentProfile.Email,
+                ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                SessionId = HttpContext.Session.Id,
+                Role = studentProfile.Role
+            };
+            await HttpContext.SignInAsync(userData.CreatePrincipal());
+            return RedirectToAction("Index", "Home", new { area = "Student" });
         }
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.Clear();
 
-        
-    }
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-    public class ApiResponse
-    {
-        public int Code { get; set; }
-        public string Msg { get; set; }
-        public DataObject Data { get; set; }
-    }
-
-    public class DataObject
-    {
-        public string AppId { get; set; }
-        public string Token { get; set; }
+            return RedirectToAction("Login");
+        }
     }
 }

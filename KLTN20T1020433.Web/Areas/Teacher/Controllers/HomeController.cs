@@ -1,5 +1,4 @@
 ﻿using KLTN20T1020433.Application.Queries.TeacherQueries;
-using KLTN20T1020433.Domain.Course;
 using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

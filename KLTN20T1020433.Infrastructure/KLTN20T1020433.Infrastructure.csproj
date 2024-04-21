@@ -7,6 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="SQL\**" />
+    <EmbeddedResource Remove="SQL\**" />
+    <None Remove="SQL\**" />
+  </ItemGroup>
+
   <ItemGroup>    
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
@@ -16,10 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KLTN20T1020433.Domain\KLTN20T1020433.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SQL\" />
   </ItemGroup>
 
 </Project>

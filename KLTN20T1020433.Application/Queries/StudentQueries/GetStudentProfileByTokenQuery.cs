@@ -1,5 +1,6 @@
 ﻿using KLTN20T1020433.Application.Configuration;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
+using KLTN20T1020433.Application.Services;
 using MediatR;
 using Microsoft.Extensions.Options;
 using System;
@@ -18,27 +19,16 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     }
     public class GetStudentProfileByTokenQueryHandler : IRequestHandler<GetStudentProfileByTokenQuery, GetStudentProfileResponse>
     {
-        private readonly HttpClient _httpClient;
-        private readonly ApiConfig _apiOptions;
+        private readonly ApiService _apiService;
 
-        public GetStudentProfileByTokenQueryHandler(HttpClient httpClient, IOptions<ApiConfig> apiOptions)
+        public GetStudentProfileByTokenQueryHandler(ApiService apiService)
         {
-            _httpClient = httpClient;
-            _apiOptions = apiOptions.Value;
+            _apiService = apiService;
         }
         public async Task<GetStudentProfileResponse> Handle(GetStudentProfileByTokenQuery request, CancellationToken cancellationToken)
-        {            
-            var requestAPI = new HttpRequestMessage(HttpMethod.Get, $"{_apiOptions.Host}/account/v1/profile");
-            requestAPI.Headers.Add("ums-token", request.GetTokenResponse.Token);
-            requestAPI.Headers.Add("ums-application", _apiOptions.AppId);
-            requestAPI.Headers.Add("ums-time", _apiOptions.SecretKey);
-            requestAPI.Headers.Add("ums-signature", request.GetTokenResponse.Signature);
-            var content = new StringContent(string.Empty);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            requestAPI.Content = content;
-            var response = await _httpClient.SendAsync(requestAPI);
-            response.EnsureSuccessStatusCode();
-            string jsonResponse = await response.Content.ReadAsStringAsync();
+        {
+            string endpoint = "account/v1/profile";
+            string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
             GetStudentProfileResponse profile = JsonSerializer.Deserialize<GetStudentProfileResponse>(jsonResponse);
             return profile;
         }

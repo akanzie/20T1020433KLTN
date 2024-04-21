@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Comment;
-using KLTN20T1020433.Domain.Course;
-using KLTN20T1020433.Domain.Student;
+
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Teacher;
+
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Infrastructure.Repositories;
 using Microsoft.AspNetCore.SignalR;
@@ -36,22 +35,6 @@ namespace KLTN20T1020433.Web.Configuration
             {
                 return new CommentRepository(connectionString);
             });
-        }
-        public static void AddCustomizeApi(this IServiceCollection services, string baseUrl)
-        {
-            
-            services.AddScoped<ICourseRepository>(provider =>
-            {
-                return new CourseRepository(baseUrl);
-            });
-            services.AddScoped<ITeacherRepository>(provider =>
-            {
-                return new TeacherRepository(baseUrl);
-            });
-            services.AddScoped<IStudentRepository>(provider =>
-            {
-                return new StudentRepository(baseUrl);
-            });
-        }
+        }        
     }
 }

@@ -1,6 +1,4 @@
 ﻿
-using KLTN20T1020433.Domain.Student;
-
 namespace KLTN20T1020433.Web.Models
 {
     public abstract class BasePaginationResult
@@ -26,14 +24,5 @@ namespace KLTN20T1020433.Web.Models
 
         }
     }
-
-    /// <summary>
-    /// Kết quả tìm kiếm và lấy danh sách khách hàng
-    /// </summary>
-    public class StudentSearchResult : BasePaginationResult
-    {
-        public List<Student>? Data { get; set; }
-    }   
-
 
 }

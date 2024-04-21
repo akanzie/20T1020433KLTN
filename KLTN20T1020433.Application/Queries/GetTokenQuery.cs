@@ -1,6 +1,6 @@
 ﻿
+using KLTN20T1020433.Application.Configuration;
 using KLTN20T1020433.Application.Services;
-using KLTN20T1020433.Infrastructure.Configuration;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -39,8 +39,7 @@ namespace KLTN20T1020433.Application.Queries
             {
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-
-                return new GetTokenResponse { Signature = signature, Token = responseData.Data.Token };
+                return new GetTokenResponse { Signature = signature, Token = responseData.Data.Token.ToString() };
             }
             else
             {

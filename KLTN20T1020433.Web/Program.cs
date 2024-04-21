@@ -1,5 +1,7 @@
+﻿using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using System.Reflection;
@@ -10,6 +12,14 @@ builder.Services.AddControllersWithViews().AddMvcOptions(option =>
     option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 });
 builder.Services.AddHttpClient();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(option =>
+                {
+                    option.Cookie.Name = "AuthenticationCookie";
+                    option.LoginPath = "/Account/Login";
+                    option.AccessDeniedPath = "/Account/AccessDenined"; //Người sử dụng không thỏa mãn quyền
+                    option.ExpireTimeSpan = TimeSpan.FromMinutes(120);  //Thời gian timeout của một phiên đăng nhập
+                });
 
 builder.Services.AddSession(option =>
 {
@@ -23,9 +33,8 @@ builder.Services.AddCustomizeDatabase(builder.Configuration.GetConnectionString(
 builder.Services.AddConfig(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-    
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddScoped<ApiService>();
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
@@ -38,6 +47,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapAreaControllerRoute(
     name: "Student",

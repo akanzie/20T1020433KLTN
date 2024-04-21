@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
 using System;
 using System.Collections.Generic;

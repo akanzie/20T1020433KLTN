@@ -1,6 +1,6 @@
-﻿using KLTN20T1020433.Domain.Submission;
+﻿using KLTN20T1020433.Application.Configuration;
+using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Infrastructure.Configuration;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
