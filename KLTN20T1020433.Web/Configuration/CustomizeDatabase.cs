@@ -36,17 +36,21 @@ namespace KLTN20T1020433.Web.Configuration
             {
                 return new CommentRepository(connectionString);
             });
+        }
+        public static void AddCustomizeApi(this IServiceCollection services, string baseUrl)
+        {
+            
             services.AddScoped<ICourseRepository>(provider =>
             {
-                return new CourseRepository(connectionString);
+                return new CourseRepository(baseUrl);
             });
             services.AddScoped<ITeacherRepository>(provider =>
             {
-                return new TeacherRepository(connectionString);
+                return new TeacherRepository(baseUrl);
             });
             services.AddScoped<IStudentRepository>(provider =>
             {
-                return new StudentRepository(connectionString);
+                return new StudentRepository(baseUrl);
             });
         }
     }

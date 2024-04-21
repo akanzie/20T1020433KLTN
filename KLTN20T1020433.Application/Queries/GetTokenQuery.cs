@@ -1,5 +1,6 @@
-﻿using KLTN20T1020433.Application.Configuration;
+﻿
 using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Infrastructure.Configuration;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -12,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries
 {
-    public class GetTokenQuery : IRequest<string>
+    public class GetTokenQuery : IRequest<GetTokenResponse>
     {
         public string Host { get; set; }
         public string Code { get; set; }
         public string Time { get; set; }
     }
-    public class GetTokenQueryHandler : IRequestHandler<GetTokenQuery, string>
+    public class GetTokenQueryHandler : IRequestHandler<GetTokenQuery, GetTokenResponse>
     {
         private readonly HttpClient _httpClient;
         private readonly ApiConfig _apiOptions;
@@ -28,7 +29,7 @@ namespace KLTN20T1020433.Application.Queries
             _httpClient = httpClient;
             _apiOptions = apiOptions.Value;
         }
-        public async Task<string> Handle(GetTokenQuery request, CancellationToken cancellationToken)
+        public async Task<GetTokenResponse> Handle(GetTokenQuery request, CancellationToken cancellationToken)
         {
             string signature = Utils.CalculateSignature(_apiOptions.AppId, _apiOptions.SecretKey, request.Time);
             string apiUrl = $"{request.Host}?code={request.Code}&time={request.Time}&signature={signature}";
@@ -39,7 +40,7 @@ namespace KLTN20T1020433.Application.Queries
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
 
-                return responseData.Data.Token;
+                return new GetTokenResponse { Signature = signature, Token = responseData.Data.Token };
             }
             else
             {

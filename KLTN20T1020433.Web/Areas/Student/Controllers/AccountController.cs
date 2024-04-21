@@ -36,16 +36,16 @@ namespace KLTN20T1020433.Web.Areas.Student.Controllers
                 return View("Error");
             }
             string time = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string token = await _mediator.Send(new GetTokenQuery { Host = host, Code = code, Time = time });
-            ApplicationContext.SetString(Constants.ACCESS_TOKEN, token);
-            var studentProfile = await _mediator.Send(new GetStudentProfileByTokenQuery { Signature = token, Token = token });
+            var getTokenResponse = await _mediator.Send(new GetTokenQuery { Host = host, Code = code, Time = time });
+            ApplicationContext.SetSessionData(Constants.ACCESS_TOKEN, getTokenResponse);
+            var studentProfile = await _mediator.Send(new GetStudentProfileByTokenQuery { GetTokenResponse = getTokenResponse });
             WebUserData userData = new WebUserData()
             {
-                UserId = studentProfile.StudentId,                
+                UserId = studentProfile.StudentId,
                 DisplayName = studentProfile.LastName + " " + studentProfile.FirstName,
-                Email = studentProfile.Email,                
+                Email = studentProfile.Email,
                 ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                SessionId = HttpContext.Session.Id,                
+                SessionId = HttpContext.Session.Id,
                 Role = studentProfile.Role
             };
             await HttpContext.SignInAsync(userData.CreatePrincipal());

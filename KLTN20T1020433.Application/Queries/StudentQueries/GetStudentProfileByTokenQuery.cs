@@ -14,8 +14,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
     public class GetStudentProfileByTokenQuery : IRequest<GetStudentProfileResponse>
     {
-        public string Token { get; set; }
-        public string Signature { get; set; }
+        public GetTokenResponse GetTokenResponse { get; set; }
     }
     public class GetStudentProfileByTokenQueryHandler : IRequestHandler<GetStudentProfileByTokenQuery, GetStudentProfileResponse>
     {
@@ -30,10 +29,10 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         public async Task<GetStudentProfileResponse> Handle(GetStudentProfileByTokenQuery request, CancellationToken cancellationToken)
         {            
             var requestAPI = new HttpRequestMessage(HttpMethod.Get, $"{_apiOptions.Host}/account/v1/profile");
-            requestAPI.Headers.Add("ums-token", request.Token);
+            requestAPI.Headers.Add("ums-token", request.GetTokenResponse.Token);
             requestAPI.Headers.Add("ums-application", _apiOptions.AppId);
             requestAPI.Headers.Add("ums-time", _apiOptions.SecretKey);
-            requestAPI.Headers.Add("ums-signature", request.Signature);
+            requestAPI.Headers.Add("ums-signature", request.GetTokenResponse.Signature);
             var content = new StringContent(string.Empty);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             requestAPI.Content = content;
