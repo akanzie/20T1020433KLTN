@@ -19,32 +19,31 @@ namespace KLTN20T1020433.Web.Controllers.Student
     public class TestController : Controller
     {
         const int PAGE_SIZE = 10;
-        const string TEST_SEARCH = "test_search";
+
         private readonly IMediator _mediator;
 
         public TestController(IMediator mediator)
         {
             _mediator = mediator;
         }
-        public IActionResult ListTest()
+        public IActionResult ListTest(string SearchValue = "")
         {
-            GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(TEST_SEARCH);
+            GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
             if (input == null)
             {
                 input = new GetTestsBySearchQuery()
                 {
                     Page = 1,
                     PageSize = PAGE_SIZE,
-                    Scholastic = "",
+                    AcademicYear = "",
                     Semester = 0,
                     FromTime = null,
                     ToTime = null,
-                    SearchValue = "",
+                    SearchValue = SearchValue,
                     Status = null,
                     Type = null,
                     StudentId = "20T1020433"
                 };
-
             }
             return View(input);
         }
@@ -66,7 +65,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             };
 
             // Lưu lại vào session điều kiện tìm kiếm
-            ApplicationContext.SetSessionData(TEST_SEARCH, input);
+            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
 
             return View(model);
 

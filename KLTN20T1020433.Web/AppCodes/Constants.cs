@@ -6,5 +6,6 @@
         public const string STUDENT_ROLE = "SINHVIEN";
         public const string TEACHER_ROLE = "GIANGVIEN";
         public const string ACCESS_TOKEN = "AccessToken";
+        public const string TEST_SEARCH = "TestSearch";
     }
 }
