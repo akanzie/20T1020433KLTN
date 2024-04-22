@@ -28,6 +28,11 @@ namespace KLTN20T1020433.Web.Controllers
         }
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = User.GetUserData();
+                return user.Role == Constants.STUDENT_ROLE ? RedirectToAction("Index", "Home", new { area = "Student" }) : RedirectToAction("Index", "Home", new { area = "Teacher" });
+            }
             string loginUrl = $"{_apiOptions.Host}/auth/account/authorize?app_id={_apiOptions.AppId}&redirect_uri={Constants.REDIRECT_URI}";
             return Redirect(loginUrl);
         }
@@ -50,8 +55,8 @@ namespace KLTN20T1020433.Web.Controllers
                 SessionId = HttpContext.Session.Id,
                 Role = profile.PhanLoai
             };
-            await HttpContext.SignInAsync(userData.CreatePrincipal());            
-            return RedirectToAction("Index", "Home", new { area = "Student" });
+            await HttpContext.SignInAsync(userData.CreatePrincipal());
+            return profile.PhanLoai == Constants.STUDENT_ROLE ? RedirectToAction("Index", "Home", new { area = "Student" }) : RedirectToAction("Index", "Home", new { area = "Teacher" });
         }
         public async Task<IActionResult> Logout()
         {

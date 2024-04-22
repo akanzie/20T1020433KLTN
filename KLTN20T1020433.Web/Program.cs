@@ -16,8 +16,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 .AddCookie(option =>
                 {
                     option.Cookie.Name = "AuthenticationCookie";
-                    option.LoginPath = "/Account/Login";
-                    option.AccessDeniedPath = "/Account/AccessDenined"; //Người sử dụng không thỏa mãn quyền
+                    option.LoginPath = "/Account/Login";                    
                     option.ExpireTimeSpan = TimeSpan.FromMinutes(120);  //Thời gian timeout của một phiên đăng nhập
                 });
 
@@ -62,7 +61,7 @@ app.MapAreaControllerRoute(
     );
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 ApplicationContext.Configure
 (
     httpContextAccessor: app.Services.GetRequiredService<IHttpContextAccessor>(),
