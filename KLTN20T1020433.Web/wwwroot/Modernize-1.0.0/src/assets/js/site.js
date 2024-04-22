@@ -1,7 +1,4 @@
-// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
 
-// Write your JavaScript code.
 <script>
     // Lắng nghe sự kiện click vào nút toggle và thêm/xóa class "show" từ sidebar
     document.getElementById('sidebarToggle').addEventListener('click', function() {
@@ -9,7 +6,7 @@
     sidebar.classList.toggle('show');
 });
 
-    // Lấy tham chiếu đến các checkbox
+
     const selectAllCheckbox = document.getElementById('selectAllClass1');
     const itemCheckboxes = document.querySelectorAll('#class1Students input[type="checkbox"]');
 
@@ -71,6 +68,11 @@
         }
     });
 });
-
+    window.addEventListener('click', function(event) {
+    var modal = document.getElementById('myModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+});
 
 </script>

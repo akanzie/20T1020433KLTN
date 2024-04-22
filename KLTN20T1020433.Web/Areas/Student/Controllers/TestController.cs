@@ -35,6 +35,8 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     Page = 1,
                     PageSize = PAGE_SIZE,
+                    Scholastic = "",
+                    Semester = 0,
                     FromTime = null,
                     ToTime = null,
                     SearchValue = "",
