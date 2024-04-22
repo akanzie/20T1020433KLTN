@@ -19,7 +19,6 @@ namespace KLTN20T1020433.Web.Controllers
 {
     public class AccountController : Controller
     {
-
         private readonly ApiConfig _apiOptions;
         private readonly IMediator _mediator;
         public AccountController(IOptions<ApiConfig> apiOptions, IMediator mediator)
@@ -27,10 +26,9 @@ namespace KLTN20T1020433.Web.Controllers
             _apiOptions = apiOptions.Value;
             _mediator = mediator;
         }
-
         public IActionResult Login()
         {
-            string loginUrl = $"{_apiOptions.Host}/auth/account/authorize?app_id={_apiOptions.AppId}&redirect_uri={Constants.REDIRECT_URI}&role={Constants.STUDENT_ROLE}";
+            string loginUrl = $"{_apiOptions.Host}/auth/account/authorize?app_id={_apiOptions.AppId}&redirect_uri={Constants.REDIRECT_URI}";
             return Redirect(loginUrl);
         }
         public async Task<IActionResult> Callback(string code, string host)
@@ -42,17 +40,17 @@ namespace KLTN20T1020433.Web.Controllers
             string time = DateTime.Now.ToString("yyyyMMddHHmmss");
             var getTokenResponse = await _mediator.Send(new GetTokenQuery { Host = host, Code = code, Time = time });
             ApplicationContext.SetSessionData(Constants.ACCESS_TOKEN, getTokenResponse);
-            var studentProfile = await _mediator.Send(new GetStudentProfileByTokenQuery { GetTokenResponse = getTokenResponse });
+            var profile = await _mediator.Send(new GetProfileByTokenQuery { GetTokenResponse = getTokenResponse });
             WebUserData userData = new WebUserData()
             {
-                UserId = studentProfile.StudentId,
-                DisplayName = studentProfile.LastName + " " + studentProfile.FirstName,
-                Email = studentProfile.Email,
+                UserId = profile.Role == Constants.STUDENT_ROLE ? profile.StudentId : profile.TeacherId,
+                DisplayName = profile.LastName + " " + profile.FirstName,
+                Email = profile.Email,
                 ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
                 SessionId = HttpContext.Session.Id,
-                Role = studentProfile.Role
+                Role = profile.Role
             };
-            await HttpContext.SignInAsync(userData.CreatePrincipal());
+            await HttpContext.SignInAsync(userData.CreatePrincipal());            
             return RedirectToAction("Index", "Home", new { area = "Student" });
         }
         public async Task<IActionResult> Logout()

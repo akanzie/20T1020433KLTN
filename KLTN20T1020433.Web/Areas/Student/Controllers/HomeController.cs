@@ -3,11 +3,13 @@ using KLTN20T1020433.Application.Queries.StudentQueries;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KLTN20T1020433.Web.Controllers.Student
 {
     [Area("Student")]
+    [Authorize]
     public class HomeController : Controller
     {
         const int PAGE_SIZE = 10;

@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.DTOs.StudentDTOs
 {
-    public class GetProfileResponse
+    public class GetTeacherProfileResponse
     {
         [JsonProperty("PhanLoai")]
         public string Role { get; set; }
-        [JsonProperty("MaSinhVien")]
-        public string StudentId { get; set; }
         [JsonProperty("MaGiangVien")]
-        public string TeacherId { get; set; }
+        public string StudentId { get; set; }
         [JsonProperty("Ho")]
         public string LastName { get; set; }
         [JsonProperty("Ten")]

@@ -1,6 +1,7 @@
 ﻿using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Web.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,6 +9,7 @@ using System.Diagnostics;
 namespace KLTN20T1020433.Web.Controllers
 {
     [Area("Teacher")]
+    [Authorize]
     public class HomeController : Controller
     {
 

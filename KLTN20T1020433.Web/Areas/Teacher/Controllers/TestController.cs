@@ -9,9 +9,12 @@ using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
 using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
 using AutoMapper;
 using KLTN20T1020433.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
+    [Area("Teacher")]
+    [Authorize]
     public class TestController : Controller
     {
         const int TEST_PAGE_SIZE = 10;
