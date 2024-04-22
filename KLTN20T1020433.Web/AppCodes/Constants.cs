@@ -1,6 +1,4 @@
-﻿using static System.Net.WebRequestMethods;
-
-namespace KLTN20T1020433.Web.AppCodes
+﻿namespace KLTN20T1020433.Web.AppCodes
 {
     public class Constants
     {

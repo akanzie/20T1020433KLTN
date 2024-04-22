@@ -43,12 +43,12 @@ namespace KLTN20T1020433.Web.Controllers
             var profile = await _mediator.Send(new GetProfileByTokenQuery { GetTokenResponse = getTokenResponse });
             WebUserData userData = new WebUserData()
             {
-                UserId = profile.Role == Constants.STUDENT_ROLE ? profile.StudentId : profile.TeacherId,
-                DisplayName = profile.LastName + " " + profile.FirstName,
+                UserId = profile.PhanLoai == Constants.STUDENT_ROLE ? profile.MaSinhVien : profile.MaGiangVien,
+                DisplayName = profile.Ho + " " + profile.Ten,
                 Email = profile.Email,
                 ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
                 SessionId = HttpContext.Session.Id,
-                Role = profile.Role
+                Role = profile.PhanLoai
             };
             await HttpContext.SignInAsync(userData.CreatePrincipal());            
             return RedirectToAction("Index", "Home", new { area = "Student" });
