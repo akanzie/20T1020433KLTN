@@ -1,4 +1,5 @@
 ﻿using KLTN20T1020433.Application.Queries.TeacherQueries;
+using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ namespace KLTN20T1020433.Web.Controllers
 {
     [Area("Teacher")]
     [Authorize]
+    [TeacherOnlyFilter]
     public class HomeController : Controller
     {
 

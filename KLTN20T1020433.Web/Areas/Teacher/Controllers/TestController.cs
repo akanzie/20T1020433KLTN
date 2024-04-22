@@ -15,6 +15,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 {
     [Area("Teacher")]
     [Authorize]
+    [TeacherOnlyFilter]
     public class TestController : Controller
     {
         const int TEST_PAGE_SIZE = 10;
