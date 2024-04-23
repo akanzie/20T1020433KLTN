@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="~/Student/Test/Search" method="get" data-container="#searchResult">
         <div class="d-flex">
-            @Html.DropDownListFor(m => m.Status, SelectListHelper.GetTestStatus(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
+            @Html.DropDownListFor(m => m.Status, SelectListHelper.GetTestStatusForStudent(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
             @Html.DropDownListFor(m => m.Type, SelectListHelper.GetTestType(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
         </div>
         <div class="d-flex">
@@ -15,7 +15,6 @@
             <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime">
             <label for="toTime" class="input-group-text">Đến ngày:</label>
             <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
-
             <button class="btn btn-outline-primary" type="submit">
                 Lọc
             </button>
@@ -43,10 +42,12 @@
             var url = $(formSearchInput).prop("action");
             var container = $(formSearchInput).data("container");
             var postData = $(formSearchInput).serializeArray();
+            var searchValue = $('#searchValue').val();
             postData.push(
                 { "name": "page", "value": page },
                 { "name": "FromTime", "value": $('#fromTime').val() },
-                { "name": "ToTime", "value": $('#toTime').val() }
+                { "name": "ToTime", "value": $('#toTime').val() },
+                { "name": "SearchValue", "value": searchValue }
             );
             $.ajax({
                 url: url,

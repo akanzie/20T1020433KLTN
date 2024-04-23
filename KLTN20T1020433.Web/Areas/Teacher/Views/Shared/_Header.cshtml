@@ -1,60 +1,91 @@
-﻿<header class="app-header" style="border-bottom: .0625rem solid #e0e0e0; padding: 0px 10px">
-    <nav class="navbar navbar-expand-lg navbar-light">
+﻿@using KLTN20T1020433.Application.Queries.TeacherQueries
+@using KLTN20T1020433.Web.AppCodes
+<header class="app-header p-0 border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light ps-2">
         <ul class="navbar-nav">
             <li class="nav-item d-block d-xl-none">
                 <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
                     <i class="ti ti-menu-2"></i>
                 </a>
             </li>
-            <li class="nav-item">
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Kỳ thi" aria-label="Search">
-                    <button class="btn btn-primary" type="submit" style="width: 140px"><span><i class="ti ti-search"></i></span></button>
+            <li class="nav-item d-flex align-items-center">
+                <form class="d-flex" method="post" action="~/Teacher/Test/ListTest">
+                    @{
+                        GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
+                        string searchValue = "";
+                        if (input != null)
+                        {
+                            searchValue = input.SearchValue;
+                        }
+                    }
+                    <input class="form-control me-2" type="search" placeholder="Kỳ thi" aria-label="Search" name="SearchValue" value="@searchValue">
+                    <button class="btn btn-primary" type="submit" style="width: 100px"><span><i class="ti ti-search"></i></span></button>
                 </form>
             </li>
         </ul>
-
-        <div class="navbar-collapse justify-content-end px-0" id="navbarNav" style="flex-basis: content">
-            <ul class="navbar-nav d-flex align-items-center justify-content-end">
+        <div class="collapse navbar-collapse justify-content-end px-0" id="navbarNav" style="flex-basis: content">
+            <ul class="navbar-nav d-flex align-items-center">
                 <li class="nav-item d-none d-sm-flex">
-                    <div class="d-inline-flex">
-                        <label for="semester">Học kỳ:</label>
-                        <select class="form-select" id="semester">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-                    </div>
-                    <div class="d-inline-flex">
-                        <label for="academic_year">Năm học:</label>
-                        <select class="form-select" id="academic_year">
-                            <option value="2021-2022">2021-2022</option>
-                            <option value="2022-2023">2022-2023</option>
-                            <option value="2023-2024">2023-2024</option>
-                            <option value="2024-2025">2024-2025</option>
-                        </select>
-                    </div>
+                    <span class="fw-semibold btn" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Học kỳ: 1, Năm học: 2023-2024</span>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="d-none d-md-inline">Nguyễn Văn A</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user d-inline d-md-none">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                        </svg>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
-                        <div class="message-body">
-                            <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                                <i class="ti ti-user fs-6"></i>
-                                <p class="mb-0 fs-3">My Profile</p>
+                @{
+                    var userData = User.GetUserData();
+                    if (userData != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <span class="d-none d-md-inline fw-semibold">@userData.DisplayName</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user d-inline d-md-none">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                </svg>
                             </a>
-                            <a href="~/Account/Logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
-                        </div>
-                    </div>
-                </li>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                <div class="message-body">
+                                    <a href="~/Account/Logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
             </ul>
         </div>
     </nav>
 </header>
+<div class="modal fade" id="selectSemesterModal" tabindex="-1" aria-labelledby="selectSemesterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectSemesterLabel">Chọn học kỳ và năm học</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="Semester">Học kỳ:</label>
+                        <select class="form-select" id="Semester" name="Semester">
+                            <option value="1">Học kỳ 1</option>
+                            <option value="2">Học kỳ 2</option>
+                            <option value="3">Học kỳ 3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="Scholastic">Năm học:</label>
+                        <select class="form-select" id="Scholastic" name="Scholastic">
+                            <option value="2023-2024">2022-2023</option>
+                            <option value="2023-2024">2023-2024</option>
+                            <option value="2024-2025">2024-2025</option>
+                            <option value="2025-2026">2025-2026</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="SaveSemester">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>

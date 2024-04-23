@@ -67,8 +67,7 @@ namespace KLTN20T1020433.Web.Controllers
             return RedirectToAction("Login");
         }
         public IActionResult AccessDenied()
-        {
-           
+        {           
             return View();
         }
     }

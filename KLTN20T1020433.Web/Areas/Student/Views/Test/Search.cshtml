@@ -14,18 +14,19 @@
                                 <h5 class="mb-0">@item.Title</h5>
                                 <p class="mb-0">@item.TeacherName</p>
                             </div>
-
-                            <p class="mb-0 text-muted">
-                                @if (@item.EndTime != null)
-                                {
-                                    <b>Đến hạn @item.EndTime</b>
-                                }
-                                else
-                                {
-                                    <b>Không có ngày đến hạn.</b>
-                                }
-                            </p>
-
+                            
+                                <p class="mb-0 text-muted">
+                                    @if (@item.EndTime != null)
+                                    {
+                                        <b>Đến hạn @item.EndTime</b>
+                                    }
+                                    else
+                                    {
+                                        <b>Không có ngày đến hạn.</b>
+                                    }
+                                </p>
+                                
+                            
                         </div>
                     </a>
                 </li>

@@ -22,6 +22,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public IActionResult Index()
         {
+            var user = User.GetUserData();
             Models.TestPagination? input = ApplicationContext.GetSessionData<TestPagination>(TEST_PAGINATION);
             if (input == null)
             {
@@ -29,17 +30,17 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     Page = 1,
                     PageSize = PAGE_SIZE,
-                    StudentId = "20T1020433"
+                    StudentId = user.UserId
                 };
 
             }
             return View(input);
         }
         public async Task<IActionResult> Pagination(TestPagination input)
-        {          
-            
-            var data = await _mediator.Send(new GetTestsBySearchQuery { Page = input.Page, PageSize = input.PageSize, StudentId = input.StudentId ?? "20T1020433" });
-            int rowCount = await _mediator.Send( new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433" });
+        {
+            var user = User.GetUserData();
+            var data = await _mediator.Send(new GetTestsBySearchQuery { Page = input.Page, PageSize = input.PageSize, StudentId = user.UserId });
+            int rowCount = await _mediator.Send( new GetRowCountQuery { StudentId = user.UserId });
             var model = new TestSearchResult()
             {
                 Page = input.Page,

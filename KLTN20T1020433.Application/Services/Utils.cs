@@ -12,7 +12,7 @@ namespace KLTN20T1020433.Application.Services
 {
     public static class Utils
     {
-        public static string GetTestStatusDisplayName(TestStatus status)
+        public static string GetTestStatusDisplayNameForStudent(TestStatus status)
         {
             switch (status)
             {
@@ -22,10 +22,24 @@ namespace KLTN20T1020433.Application.Services
                     return "Đang diễn ra";
                 case TestStatus.Finished:
                     return "Đã kết thúc";
-                case TestStatus.Canceled:
-                    return "Đã bị hủy";
+                default:
+                    return "";
+            }
+        }
+        public static string GetTestStatusDisplayNameForTeacher(TestStatus status)
+        {
+            switch (status)
+            {
+                case TestStatus.Upcoming:
+                    return "Chưa bắt đầu";
+                case TestStatus.Ongoing:
+                    return "Đang diễn ra";
+                case TestStatus.Finished:
+                    return "Đã kết thúc";
                 case TestStatus.Creating:
                     return "Đang tạo";
+                case TestStatus.Canceled:
+                    return "Đã bị hủy";
                 default:
                     return "";
             }

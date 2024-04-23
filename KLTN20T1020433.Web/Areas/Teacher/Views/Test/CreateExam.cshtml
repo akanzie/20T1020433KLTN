@@ -134,7 +134,7 @@
         $(document).on('click', '.remove-button', function () {
             console.log("b")
             var fileId = $(this).data('fileid');
-            var url = '@Url.Action("RemoveTestFile", "TeacherTest")';
+            var url = '@Url.Action("RemoveTestFile", "Test")';
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -163,7 +163,7 @@
         });
         function uploadFiles(formData) {
             console.log("d")
-            var url = '@Url.Action("UploadTestFile", "TeacherTest")';
+            var url = '@Url.Action("UploadTestFile", "Test")';
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -181,7 +181,7 @@
         }
         function getFiles(testId) {
             console.log("e")
-            var url = '@Url.Action("ListTestFiles", "TeacherTest")';
+            var url = '@Url.Action("ListTestFiles", "Test")';
             $.ajax({
                 url: url,
                 type: "GET",

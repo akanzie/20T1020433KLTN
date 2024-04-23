@@ -2,7 +2,7 @@
 using KLTN20T1020433.Domain.Comment;
 
 using KLTN20T1020433.Domain.Submission;
-
+using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Infrastructure.Repositories;
 using Microsoft.AspNetCore.SignalR;
@@ -34,6 +34,10 @@ namespace KLTN20T1020433.Web.Configuration
             services.AddScoped<ICommentRepository>(provider =>
             {
                 return new CommentRepository(connectionString);
+            });
+            services.AddScoped<ITeacherRepository>(provider =>
+            {
+                return new TeacherRepository(connectionString);
             });
         }        
     }

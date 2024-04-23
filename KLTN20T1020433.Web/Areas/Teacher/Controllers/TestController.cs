@@ -19,8 +19,6 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
     public class TestController : Controller
     {
         const int TEST_PAGE_SIZE = 10;
-        const string TEST_SEARCH = "test_search";
-        const string TESTID = "testId";
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         public TestController(IMediator mediator, IMapper mapper)
@@ -60,7 +58,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             ViewBag.Title = "Tạo bài kiểm tra";
             ViewBag.IsEdit = false;
-            var testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
             var model = new Test()
             {
                 TestId = testId,
@@ -73,7 +71,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             ViewBag.Title = "Tạo bài thi";
             ViewBag.IsEdit = false;
-            var testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
             var model = new CreateTestCommand()
             {
                 TestType = TestType.Exam
@@ -83,7 +81,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         }
         public IActionResult ListTest()
         {
-            var input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(TEST_SEARCH);
+            var input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
             if (input == null)
             {
                 input = new GetTestsBySearchQuery()
@@ -103,8 +101,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         }
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
-            string teacherId = "";
-            int rowCount = await _mediator.Send(new GetRowCountQuery { TeacherId = input.TeacherId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
+            var user = User.GetUserData();
+            int rowCount = await _mediator.Send(new GetRowCountQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
 
             var data = await _mediator.Send(input);
 
@@ -118,7 +116,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             };
 
             // Lưu lại vào session điều kiện tìm kiếm
-            ApplicationContext.SetSessionData(TEST_SEARCH, input);
+            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
 
             return View(model);
         }
@@ -133,7 +131,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             //    FileUtils.DeleteFile(file.FilePath);
             //    await FileDataService.RemoveTestFile(id);
             //}
-            var testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
             return Json(testId);
         }
         public IActionResult SelectCourses()
@@ -159,7 +157,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         }
         public async Task<IActionResult> Download(Guid id)
         {
-            string studentId = "20T1020433";
+            var user = User.GetUserData();
             bool isAuthorized = false; //await FileDataService.CheckFileAuthorize(studentId, id);
             if (isAuthorized)
             {
@@ -192,14 +190,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             else
             {
                 int testId = 0;
-                if (ApplicationContext.GetDataInt32(TESTID) == null || ApplicationContext.GetDataInt32(TESTID) == 0)
+                if (ApplicationContext.GetDataInt32(Constants.TESTID) == null || ApplicationContext.GetDataInt32(Constants.TESTID) == 0)
                 {
                     testId = await _mediator.Send(new CreateTestCommand { TeacherId = teacherId, TestType = TestType.Exam, TestStatus = TestStatus.Creating });
-                    ApplicationContext.SetInt32(TESTID, testId);
+                    ApplicationContext.SetInt32(Constants.TESTID, testId);
                 }
                 else
                 {
-                    testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+                    testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
                 }
 
                 foreach (var item in files)
@@ -214,16 +212,16 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
 
             int testId = 0;
-            if (ApplicationContext.GetDataInt32(TESTID) != null && ApplicationContext.GetDataInt32(TESTID) != 0)
+            if (ApplicationContext.GetDataInt32(Constants.TESTID) != null && ApplicationContext.GetDataInt32(Constants.TESTID) != 0)
             {
-                testId = ApplicationContext.GetDataInt32(TESTID) ?? 0;
+                testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
                 var updateTestCommmand = _mapper.Map<UpdateTestCommand>(command);
                 await _mediator.Send(updateTestCommmand);
             }
             else
             {
                 testId = await _mediator.Send(command);
-                HttpContext.Session.SetInt32(TESTID, testId);
+                HttpContext.Session.SetInt32(Constants.TESTID, testId);
             }
 
             return View(testId);

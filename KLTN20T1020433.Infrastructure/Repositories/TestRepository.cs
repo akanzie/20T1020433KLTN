@@ -47,7 +47,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<int> CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             try
             {
@@ -58,8 +58,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
-                        TestType = testType.ToString() ?? "",
-                        TestStatus = testStatus.ToString() ?? "",
+                        TestType = testType.ToString() ?? "",                        
                         FromTime = fromTime ?? null,
                         ToTime = toTime ?? null
                     };
@@ -151,7 +150,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
         }
 
 
-        public async Task<IEnumerable<Test>> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType? testType = null, TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<IEnumerable<Test>> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType? testType = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             try
             {
@@ -164,8 +163,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         PageSize = pageSize,
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
-                        TestType = testType.ToString() ?? "",
-                        TestStatus = testStatus.ToString() ?? "",
+                        TestType = testType.ToString() ?? "",                        
                         FromTime = fromTime ?? null,
                         ToTime = toTime ?? null
                     };

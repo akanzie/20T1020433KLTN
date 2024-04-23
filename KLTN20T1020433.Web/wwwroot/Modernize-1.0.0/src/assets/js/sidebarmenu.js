@@ -20,7 +20,7 @@ $(function () {
 
     var element = $("ul#sidebarnav a").filter(function () {
 
-        return this.href === url || this.href === path || (path === "Student" && this.href.includes("Student"); // || url.href.indexOf(this.href) === 0;
+        return this.href === url || this.href === path; // || url.href.indexOf(this.href) === 0;
     });
     element.parentsUntil(".sidebar-nav").each(function (index) {
       if ($(this).is("li") && $(this).children("a").length !== 0) {

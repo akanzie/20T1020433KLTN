@@ -8,7 +8,7 @@ namespace KLTN20T1020433.Web.AppCodes
 {
     public class SelectListHelper
     {
-        public static List<SelectListItem> GetTestStatus()
+        public static List<SelectListItem> GetTestStatusForStudent()
         {
             List<SelectListItem> list = new List<SelectListItem>();
 
@@ -20,13 +20,38 @@ namespace KLTN20T1020433.Web.AppCodes
 
             foreach (TestStatus item in Enum.GetValues(typeof(TestStatus)))
             {
-                list.Add(new SelectListItem()
+                if (Utils.GetTestStatusDisplayNameForStudent(item) != "")
                 {
-                    Value = item.ToString(),
-                    Text = Utils.GetTestStatusDisplayName(item)
-                });
+                    list.Add(new SelectListItem()
+                    {
+                        Value = item.ToString(),
+                        Text = Utils.GetTestStatusDisplayNameForStudent(item)
+                    });
+                }
             }
 
+            return list;
+        }
+        public static List<SelectListItem> GetTestStatusForTeacher()
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+
+            list.Add(new SelectListItem()
+            {
+                Value = "",
+                Text = "-- Trạng thái --"
+            });
+            foreach (TestStatus item in Enum.GetValues(typeof(TestStatus)))
+            {
+                if (Utils.GetTestStatusDisplayNameForStudent(item) != "")
+                {
+                    list.Add(new SelectListItem()
+                    {
+                        Value = item.ToString(),
+                        Text = Utils.GetTestStatusDisplayNameForTeacher(item)
+                    });
+                }
+            }
             return list;
         }
         public static List<SelectListItem> GetTestType()

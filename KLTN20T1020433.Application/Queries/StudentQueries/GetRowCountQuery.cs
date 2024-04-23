@@ -27,7 +27,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         public async Task<int> Handle(GetRowCountQuery request, CancellationToken cancellationToken)
         {
 
-            int rowCount = await _testDB.CountTestsOfStudent(request.StudentId, request.SearchValue, request.Type, request.Status, request.FromTime, request.ToTime);
+            int rowCount = await _testDB.CountTestsOfStudent(request.StudentId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
 
             return rowCount;
         }

@@ -8,7 +8,7 @@
                     <i class="ti ti-menu-2"></i>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-flex align-items-center">
                 <form class="d-flex" method="post" action="~/Student/Test/ListTest">
                     @{
                         GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
@@ -18,7 +18,7 @@
                             searchValue = input.SearchValue;
                         }
                     }
-                    <input class="form-control me-2" type="search" placeholder="Kỳ thi" aria-label="Search" name="SearchValue" value="@searchValue">
+                    <input class="form-control me-2" type="search" placeholder="Kỳ thi" aria-label="Search" name="SearchValue" value="@searchValue" id="searchValue">
                     <button class="btn btn-primary" type="submit" style="width: 100px"><span><i class="ti ti-search"></i></span></button>
                 </form>
             </li>
@@ -34,7 +34,7 @@
                     if (userData != null)
                     {
                         <li class="nav-item dropdown">
-                            <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                            <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 <span class="d-none d-md-inline fw-semibold">@userData.DisplayName</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user d-inline d-md-none">
@@ -45,10 +45,6 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                                 <div class="message-body">
-                                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                                        <i class="ti ti-user fs-6"></i>
-                                        <p class="mb-0 fs-3">My Profile</p>
-                                    </a>
                                     <a href="~/Account/Logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                                 </div>
                             </div>

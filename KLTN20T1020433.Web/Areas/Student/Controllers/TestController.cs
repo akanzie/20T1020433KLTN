@@ -26,8 +26,9 @@ namespace KLTN20T1020433.Web.Controllers.Student
         {
             _mediator = mediator;
         }
-        public IActionResult ListTest(string SearchValue = "")
+        public IActionResult ListTest(string searchValue = "")
         {
+            var user = User.GetUserData();
             GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
             if (input == null)
             {
@@ -39,18 +40,32 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     Semester = 0,
                     FromTime = null,
                     ToTime = null,
-                    SearchValue = SearchValue,
+                    SearchValue = searchValue,
                     Status = null,
                     Type = null,
-                    StudentId = "20T1020433"
+                    StudentId = user.UserId
                 };
             }
+            else
+            {
+                input.SearchValue = searchValue;
+            }
+            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
             return View(input);
         }
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
+            var user = User.GetUserData();
             var data = await _mediator.Send(input);
-            int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = input.StudentId ?? "20T1020433", SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
+            int rowCount = await _mediator.Send(new GetRowCountQuery
+            {
+                StudentId = user.UserId,
+                SearchValue = input.SearchValue,
+                Status = input.Status,
+                FromTime = input.FromTime,
+                ToTime = input.ToTime,
+                Type = input.Type
+            });
             var model = new TestSearchResult()
             {
                 Page = input.Page,
@@ -72,8 +87,8 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public async Task<IActionResult> Detail(int id = 0)
         {
-            string studentId = "20T1020433";
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = studentId });
+            var user = User.GetUserData();
+            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = user.UserId });
             if (submission.SubmissionId != 0)
             {
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
@@ -93,8 +108,8 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public async Task<IActionResult> Submission(int testId = 0)
         {
-            string studentId = "20T1020433";
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = studentId });
+            var user = User.GetUserData();
+            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
 
             if (submission.SubmissionId != 0)
             {
@@ -133,10 +148,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return Json("Không tìm thấy file");
             else
             {
-                if(await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, FilePath = file.FilePath }))
+                if (await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, FilePath = file.FilePath }))
                     return Json("Xóa file thành công.");
                 return Json("Có lỗi khi xóa file");
-            }            
+            }
         }
         [HttpPost]
         public async Task<IActionResult> Submit(int id)
@@ -202,7 +217,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public async Task<IActionResult> Download(Guid id)
         {
-            string studentId = "20T1020433";
+            var user = User.GetUserData();
             bool isAuthorized = false;// await FileDataService.CheckFileAuthorize(studentId, id);
             if (isAuthorized)
             {
