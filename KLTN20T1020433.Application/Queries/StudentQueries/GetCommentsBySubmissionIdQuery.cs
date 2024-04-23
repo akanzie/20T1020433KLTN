@@ -8,6 +8,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     public class GetCommentsBySubmissionIdQuery : IRequest<IEnumerable<GetCommentResponse>>
     {
         public int SubmissionId { get; set; }
+        public string StudentId { get; set; }
     }
     public class GetCommentsBySubmissionIdQueryHandler : IRequestHandler<GetCommentsBySubmissionIdQuery, IEnumerable<GetCommentResponse>>
     {
