@@ -11,17 +11,20 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     }
     public class GetSubmissionFilesBySubmissionIdQueryHandler : IRequestHandler<GetFilesBySubmissionIdQuery, IEnumerable<GetSubmissionFileResponse>>
     {
-        private readonly ISubmissionFileRepository _SubmissionFileDB;
+        private readonly ISubmissionFileRepository _submissionFileDB;
+        private readonly ISubmissionRepository _submissionDB;
         private readonly IMapper _mapper;
 
-        public GetSubmissionFilesBySubmissionIdQueryHandler(ISubmissionFileRepository SubmissionFileDB, IMapper mapper)
+        public GetSubmissionFilesBySubmissionIdQueryHandler(ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IMapper mapper)
         {
-            _SubmissionFileDB = SubmissionFileDB;
+            _submissionFileDB = submissionFileDB;
+            _submissionDB = submissionDB;
             _mapper = mapper;
         }
         public async Task<IEnumerable<GetSubmissionFileResponse>> Handle(GetFilesBySubmissionIdQuery request, CancellationToken cancellationToken)
         {
-            var SubmissionFiles = await _SubmissionFileDB.GetFileBySubmissionId(request.SubmissionId);
+
+            var SubmissionFiles = await _submissionFileDB.GetFileBySubmissionId(request.SubmissionId);
             if (SubmissionFiles != null && SubmissionFiles.Any())
             {
                 List<GetSubmissionFileResponse> SubmissionResponse = new List<GetSubmissionFileResponse>();

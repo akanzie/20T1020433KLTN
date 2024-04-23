@@ -11,7 +11,7 @@ namespace KLTN20T1020433.Domain.Submission
         Task<IEnumerable<SubmissionFile>> GetFileBySubmissionId(int submisionId);
         Task<bool> Add(SubmissionFile file);
         Task<bool> Delete(Guid fileId);
-        Task<SubmissionFile> GetById(Guid id);
+        Task<SubmissionFile?> GetById(Guid id);
         Task<bool> CheckFileAuthorize(string studentId, Guid id);
     }
 }

@@ -74,14 +74,14 @@ namespace KLTN20T1020433.Application.Services
                     return "";
             }
         }
-        public static bool CheckIPAddress(IPAddress ipAddress)
+        public static bool CheckIPAddress(string ipAddress)
         {
             if (ipAddress == null) return false;
-            else if (ipAddress.Address != 0)
+            else if (ipAddress == "")
                 return false;
             return true;
         }
-        public static bool CheckIPAddressExists(IPAddress ipAddress)
+        public static bool CheckIPAddressExists(string ipAddress)
         {
             throw new NotImplementedException();
         }

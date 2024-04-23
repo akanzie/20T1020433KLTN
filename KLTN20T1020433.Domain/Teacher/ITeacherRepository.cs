@@ -8,7 +8,7 @@ namespace KLTN20T1020433.Domain.Teacher
 {
     public interface ITeacherRepository
     {
-        Task<Teacher> GetTeacherById(string id);
+        Task<Teacher?> GetTeacherById(string id);
         Task<bool> Add(Teacher teacher);
     }
 }

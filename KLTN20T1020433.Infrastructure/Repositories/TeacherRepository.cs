@@ -42,7 +42,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 throw;
             }
         }
-        public async Task<Teacher> GetTeacherById(string id)
+        public async Task<Teacher?> GetTeacherById(string id)
         {
             try
             {

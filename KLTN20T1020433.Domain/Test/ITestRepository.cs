@@ -18,7 +18,7 @@ namespace KLTN20T1020433.Domain.Test
            TestStatus? testStatus = null, DateTime? fromTime = null, DateTime? toTime = null);
         Task<int> CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null,
            DateTime? fromTime = null, DateTime? toTime = null);       
-        Task<Test> GetById(int testId);       
+        Task<Test?> GetById(int testId);       
         Task<int> Add(Test data);        
         Task<bool> Update(Test data);        
         Task<bool> Delete(int testID); 

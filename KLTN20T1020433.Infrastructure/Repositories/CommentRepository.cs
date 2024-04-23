@@ -47,7 +47,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<Comment> GetById(int id)
+        public async Task<Comment?> GetById(int id)
         {
             Comment? data = null;
             using (var connection = await OpenConnectionAsync())

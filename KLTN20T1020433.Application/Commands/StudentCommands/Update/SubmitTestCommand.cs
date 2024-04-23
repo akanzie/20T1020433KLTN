@@ -12,7 +12,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         public int SubmissionId { get; set; }
         public bool IsCheckIP { get; set; }
         public DateTime? TestEndTime { get; set; } = null;
-        public IPAddress IPAddress { get; set; }
+        public string IPAddress { get; set; }
         public DateTime SubmittedTime { get; set; }
     }
     public class SubmitTestCommandHandler : IRequestHandler<SubmitTestCommand, bool>

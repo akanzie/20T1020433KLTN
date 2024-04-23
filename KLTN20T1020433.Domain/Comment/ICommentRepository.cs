@@ -8,7 +8,7 @@ namespace KLTN20T1020433.Domain.Comment
 {
     public interface ICommentRepository
     {
-        Task<Comment> GetById(int id);
+        Task<Comment?> GetById(int id);
         Task<int> Add(Comment data);
         Task<bool> Update(Comment data);
         Task<bool> Delete(int id);

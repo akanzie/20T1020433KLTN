@@ -72,7 +72,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<TestFile> GetById(Guid id)
+        public async Task<TestFile?> GetById(Guid id)
         {
             try
             {
