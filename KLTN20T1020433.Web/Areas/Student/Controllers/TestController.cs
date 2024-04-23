@@ -18,7 +18,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
     [Authorize]
     public class TestController : Controller
     {
-        const int PAGE_SIZE = 10;
+        const int PAGE_SIZE = 1;
 
         private readonly IMediator _mediator;
 
