@@ -10,12 +10,12 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     {
         public int TestId { get; set; }
     }
-    public class GetTestFilesByTestIdQueryHandler : IRequestHandler<GetFilesByTestIdQuery, IEnumerable<GetTestFileResponse>>
+    public class GetFilesByTestIdQueryHandler : IRequestHandler<GetFilesByTestIdQuery, IEnumerable<GetTestFileResponse>>
     {
         private readonly ITestFileRepository _testFileDB;
         private readonly IMapper _mapper;
 
-        public GetTestFilesByTestIdQueryHandler(ITestFileRepository testFileDB, IMapper mapper)
+        public GetFilesByTestIdQueryHandler(ITestFileRepository testFileDB, IMapper mapper)
         {
             _testFileDB = testFileDB;
             _mapper = mapper;

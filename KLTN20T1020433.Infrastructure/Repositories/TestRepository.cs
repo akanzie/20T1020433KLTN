@@ -127,7 +127,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<Test> GetById(int testId)
+        public async Task<Test?> GetById(int testId)
         {
             try
             {

@@ -14,7 +14,7 @@ namespace KLTN20T1020433.Domain.Test
 
         Task<IEnumerable<TestFile>> GetFilesByTestId(int testId);
 
-        Task<TestFile> GetById(Guid id);
+        Task<TestFile?> GetById(Guid id);
         Task<bool> CheckFileOwner(string teacherId, Guid fileId);
     }
 }

@@ -71,7 +71,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<Submission> GetById(int id)
+        public async Task<Submission?> GetById(int id)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<Submission> GetByTestIdAndStudentId(int testId, string studentId)
+        public async Task<Submission?> GetByTestIdAndStudentId(int testId, string studentId)
         {
             try
             {
