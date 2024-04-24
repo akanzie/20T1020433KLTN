@@ -1,9 +1,13 @@
 ﻿using Dapper;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Teacher;
+using KLTN20T1020433.Domain.Test;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,9 +49,30 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public Task<int> CountSubmissions(int testId = 0, string searchValue = "", SubmissionStatus? status = null)
+        public async Task<int> CountSubmissions(int testId = 0, string searchValue = "", SubmissionStatus? status = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int count = 0;
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var parameters = new
+                    {
+                        TestId = testId,
+                        SearchValue = searchValue ?? "",
+                        SubmissionStatus = status.ToString() ?? "",
+
+                    };
+                    count = await connection.ExecuteScalarAsync<int>(
+                        "CountSubmissions", parameters, commandType: CommandType.StoredProcedure);
+                }
+                return count;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi đếm số lượng bài kiểm tra của sinh viên: " + ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> Delete(int id)
@@ -129,9 +154,35 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public Task<IEnumerable<Submission>> GetSubmissionsBySearch(int page = 1, int pageSize = 0, int testId = 0, string searchValue = "", SubmissionStatus? status = null)
+        public async Task<IEnumerable<Submission>> GetSubmissionsBySearch(int page = 1, int pageSize = 0, int testId = 0, string searchValue = "", SubmissionStatus? status = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<Submission> listSubmissions = new List<Submission>();
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var parameters = new
+                    {
+                        Page = page,
+                        PageSize = pageSize,
+                        TestId = testId,
+                        SearchValue = searchValue ?? "",
+                        SubmissionStatus = status.ToString() ?? "",
+                    };
+                    var result = await connection.QueryAsync<Submission>(
+                        "GetSubmissions",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
+                    listSubmissions = result.ToList();
+                }
+                return listSubmissions;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi lấy danh sách bài kiểm tra của giáo viên: " + ex.Message);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Submission>> GetSubmissionsByTestId(int testId)

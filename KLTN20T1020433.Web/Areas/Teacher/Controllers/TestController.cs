@@ -10,6 +10,7 @@ using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
 using AutoMapper;
 using KLTN20T1020433.Application.Services;
 using Microsoft.AspNetCore.Authorization;
+using KLTN20T1020433.Web.Models;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -114,6 +115,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         }
         public IActionResult ListTest()
         {
+            var user = User.GetUserData();
             var input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
             if (input == null)
             {
@@ -126,6 +128,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     Type = null,
                     FromTime = null,
                     ToTime = null,
+                    TeacherId = user.UserId,
+                    AcademicYear = "",
+                    Semester = 0
+                    
                     //ToTime = string.Format("{0:dd/MM/yyyy} - {1:dd/MM/yyyy}",DateTime.Today.AddMonths(-1), DateTime.Today)
                 };
             }
@@ -141,10 +147,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
             var model = new TestSearchResult()
             {
-                Page = input.Page,
+                Page = input.Page,             
                 PageSize = input.PageSize,
                 SearchValue = input.SearchValue ?? "",
                 RowCount = rowCount,
+                FromTime = input.FromTime,
+                ToTime = input.ToTime,
+                Status = input.Status,
+                Type = input.Type,
                 Data = data
             };
 

@@ -18,8 +18,8 @@
                 <div id="submission_files">
                 </div>
                 <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
-                    <input type="hidden" name="SubmissionId" value="@Model.Submission.SubmissionId" />
-                    <input type="hidden" name="TestId" value="@Model.Submission.TestId" />
+                    @Html.HiddenFor(m => m.Submission.SubmissionId)
+                    @Html.HiddenFor(m => m.Submission.TestId)      
                     <input type="file" class="d-none" multiple id="fileInput" />
                     @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                     {

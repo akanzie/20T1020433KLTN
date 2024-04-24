@@ -1,77 +1,68 @@
-﻿@*  @using KLTN20T1020433.Web
- @{
-     ViewData["Title"] = "ListExam";
-     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
- }
+﻿@using KLTN20T1020433.Web.AppCodes
+@model KLTN20T1020433.Application.Queries.TeacherQueries.GetTestsBySearchQuery
+@{
+    ViewData["Title"] = "ListExam";
+    Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
+}
 
- <div class="container-fluid">
-     <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="~/Test/Search" method="get" data-container="#searchResult">
-         <div class="d-flex">
-             @Html.DropDownListFor(m => m.TestStatus, SelectListHelper.GetTestStatus(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
-             @Html.DropDownListFor(m => m.TestType, SelectListHelper.GetTestType(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
-         </div>
-         <div class="d-flex">
-             <label for="fromTime" class="input-group-text">Từ ngày:</label>
-             <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime">
-             <label for="toTime" class="input-group-text">Đến ngày:</label>
-             <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
+<div class="container-fluid">
+    <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="~/Teacher/Test/Search" method="get" data-container="#searchResult">
+        <div class="d-flex">
+            @Html.DropDownListFor(m => m.Status, SelectListHelper.GetTestStatusForTeacher(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
+            @Html.DropDownListFor(m => m.Type, SelectListHelper.GetTestType(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
+        </div>
+        <div class="d-flex">
+            <label for="fromTime" class="input-group-text">Từ ngày:</label>
+            <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime">
+            <label for="toTime" class="input-group-text">Đến ngày:</label>
+            <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
 
-             <button class="btn btn-outline-primary" type="submit">
-                 Lọc
-             </button>
-         </div>
-         @Html.HiddenFor(m => m.PageSize)
-     </form>
-     <div class="row">
-         <div class="col">
-             <ul class="list-unstyled">
-                 <li class="card mb-3">
-                     <div class="card-link p-3">
-                         <div class="d-flex justify-content-between align-items-center">
-                             <a href="~/TeacherExam/Detail">
-                                 <h5 class="mb-0">Thi kết thúc học phần - Lập trình web - Nhóm 1,2,3</h5>
-                                 <p class="mb-0">Nguyễn Văn A</p>
-                             </a>
-                             <div class="dropdown">
-                                 <button class="btn btn-link" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
-                                         aria-expanded="false">
-                                     <!-- Biểu tượng ba chấm (ellipsis) -->
-                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                          class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                                         <path d="M5 1.5a.5.5 0 0 1 .5-.5h.5a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-.5a.5.5 0 0 1-.5-.5v-13zm5 0a.5.5 0 0 1 .5-.5h.5a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-.5a.5.5 0 0 1-.5-.5v-13zm-5-1a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h.5a1 1 0 0 0 1-1v-13a1 1 0 0 0-1-1zm5 0a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h.5a1 1 0 0 0 1-1v-13a1 1 0 0 0-1-1z" />
-                                     </svg>
-                                 </button>
-                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                     <li><a class="dropdown-item" href="TeacherExam/Update/1">Chỉnh sửa</a></li>
-                                     <li><a class="dropdown-item" href="TeacherExam/Delete/1">Xóa</a></li>
-                                 </ul>
-                             </div>
-                         </div>
-                     </div>
-                 </li>
-                 <li class="card mb-3">
-                     <a href="exam.html" class="card-link p-3">
-                         <div class="d-flex justify-content-between align-items-center">
-                             <div>
-                                 <h5 class="mb-0">Kiểm tra giữa kỳ</h5>
-                             </div>
-                             <p class="mb-0 text-muted">Đến hạn: 2024-03-15</p>
-                         </div>
-                     </a>
-                 </li>
-                 <li class="card mb-3">
-                     <a href="exam.html" class="card-link p-3">
-                         <div class="d-flex justify-content-between align-items-center">
-                             <div>
-                                 <h5 class="mb-0">Kỳ thi 1</h5>
-                             </div>
-                             <p class="mb-0 text-muted">Đến hạn: 2024-03-15</p>
-                         </div>
-                     </a>
-                 </li>
-             </ul>
-         </div>
-     </div>
- </div>
+            <button class="btn btn-outline-primary" type="submit">
+                Lọc
+            </button>
+        </div>
+        @Html.HiddenFor(m => m.PageSize)
+        @Html.HiddenFor(m => m.TeacherId)
+    </form> 
+    <div id="searchResult">
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#formSearch").submit(function (e) {
+                e.preventDefault();
+                doSearch(this, 1);
+                return;
+            });
 
- *@
+            doSearch("#formSearch", @Model.Page);
+        });
+
+        function doSearch(formSearchInput, page) {
+            var url = $(formSearchInput).prop("action");
+            var container = $(formSearchInput).data("container");
+            var postData = $(formSearchInput).serializeArray();
+            var searchValue = $('#searchValue').val();
+            postData.push(
+                { "name": "page", "value": page },
+                { "name": "FromTime", "value": $('#fromTime').val() },
+                { "name": "ToTime", "value": $('#toTime').val() },
+                { "name": "SearchValue", "value": searchValue }
+            );
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $(container).html(data);
+                }
+            });
+
+            return;
+        }
+    </script>
+}

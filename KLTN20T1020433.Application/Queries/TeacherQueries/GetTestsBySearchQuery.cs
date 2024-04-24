@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
+using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
 
 using MediatR;
@@ -15,10 +17,13 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     {
         private readonly ITestRepository _testDB;
         private readonly IMapper _mapper;
-
-        public GetTestsBySearchQueryHandler(ITestRepository testDB, IMapper mapper)
+        private readonly ITeacherRepository _teacherDB;
+        private readonly ISubmissionRepository _submissionDB;
+        public GetTestsBySearchQueryHandler(ITestRepository testDB, ITeacherRepository teacherDB, ISubmissionRepository submissionDB, IMapper mapper)
         {
             _testDB = testDB;
+            _teacherDB = teacherDB;
+            _submissionDB = submissionDB;
             _mapper = mapper;
         }
         public async Task<IEnumerable<GetTestBySearchResponse>> Handle(GetTestsBySearchQuery request, CancellationToken cancellationToken)
@@ -30,6 +35,10 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 foreach (var item in tests)
                 {
                     GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);
+                    Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
+                    getTestResponse.TeacherName = teacher.TeacherName;
+                    int countStudents = await _submissionDB.CountSubmissions(item.TestId);
+                    getTestResponse.CountStudents = countStudents;
                     testResponse.Add(getTestResponse);
                 }
                 return testResponse;
