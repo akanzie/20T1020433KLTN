@@ -12,13 +12,11 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     public class GetSubmissionFilesBySubmissionIdQueryHandler : IRequestHandler<GetFilesBySubmissionIdQuery, IEnumerable<GetSubmissionFileResponse>>
     {
         private readonly ISubmissionFileRepository _submissionFileDB;
-        private readonly ISubmissionRepository _submissionDB;
         private readonly IMapper _mapper;
 
-        public GetSubmissionFilesBySubmissionIdQueryHandler(ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IMapper mapper)
+        public GetSubmissionFilesBySubmissionIdQueryHandler(ISubmissionFileRepository submissionFileDB, IMapper mapper)
         {
             _submissionFileDB = submissionFileDB;
-            _submissionDB = submissionDB;
             _mapper = mapper;
         }
         public async Task<IEnumerable<GetSubmissionFileResponse>> Handle(GetFilesBySubmissionIdQuery request, CancellationToken cancellationToken)

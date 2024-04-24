@@ -29,11 +29,11 @@
 
                 @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                 {
-                    <button class="btn btn-primary mt-4 form-control" type="button" onclick="submit(@Model.Submission.SubmissionId)" id="submitBtn">Nộp bài</button>
+                    <button id="submitBtn" class="btn btn-primary mt-4 form-control" type="button">Nộp bài</button>
                 }
                 else
                 {
-                    <button class="btn btn-primary mt-4 form-control" type="button" onclick="cancel(@Model.Submission.SubmissionId)" id="cancelBtn">Hủy nộp bài</button>
+                    <button id="cancelBtn" class="btn btn-primary mt-4 form-control" type="button">Hủy nộp bài</button>
                 }
 
             </div>
@@ -87,6 +87,12 @@
                 removeFile(fileId);
             });
 
+            $('#submitBtn').on('click', function () {
+                submit(testId);
+            });
+            $('#cancelBtn').on('click', function () {
+                cancel(testId);
+            });
             $('#fileInput').off('change').on('change', function () {
                 uploadFiles();
             });

@@ -59,8 +59,8 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
                         TestType = testType.ToString() ?? "",                        
-                        FromTime = fromTime ?? null,
-                        ToTime = toTime ?? null
+                        FromTime = fromTime,
+                        ToTime = toTime
                     };
                     count = await connection.ExecuteScalarAsync<int>(
                         "CountTestsOfStudent", parameters, commandType: CommandType.StoredProcedure);
@@ -85,8 +85,8 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         TeacherId = teacherId ?? "",
                         SearchValue = searchValue ?? "",
-                        TestType = testType,
-                        TestStatus = testStatus,
+                        TestType = testType.ToString() ?? "",
+                        TestStatus = testStatus.ToString() ?? "",
                         FromTime = fromTime,
                         ToTime = toTime
                     };
@@ -164,8 +164,8 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
                         TestType = testType.ToString() ?? "",                        
-                        FromTime = fromTime ?? null,
-                        ToTime = toTime ?? null
+                        FromTime = fromTime,
+                        ToTime = toTime
                     };
                     var result = await connection.QueryAsync<Test>(
                         "GetTestsOfStudent",
@@ -197,8 +197,8 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         PageSize = pageSize,
                         TeacherId = teacherId,
                         SearchValue = searchValue ?? "",
-                        TestType = testType,
-                        TestStatus = testStatus,
+                        TestType = testType.ToString() ?? "",
+                        TestStatus = testStatus.ToString() ?? "",
                         FromTime = fromTime,
                         ToTime = toTime
                     };

@@ -19,7 +19,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
     [Authorize]
     public class TestController : Controller
     {
-        const int PAGE_SIZE = 1;
+        const int PAGE_SIZE = 10;
 
         private readonly IMediator _mediator;
 
@@ -86,16 +86,16 @@ namespace KLTN20T1020433.Web.Controllers.Student
             return View(model);
 
         }
-        public async Task<IActionResult> Detail(int testId = 0)
+        public async Task<IActionResult> Detail(int id = 0)
         {
             var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = user.UserId! });
             if (submission.SubmissionId != 0)
             {
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
                 if (test.TestId != 0)
                 {
-                    IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = testId });
+                    IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
                     var model = new TestModel
                     {
                         Test = test,
@@ -226,13 +226,36 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
             return RedirectToAction("Forbidden", "Error");
         }
-        public async Task<IActionResult> Download(Guid id, int testId)
+        public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
             if (submission.SubmissionId != 0)
             {
                 GetSubmissionFileResponse file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                if (file == null)
+                {
+                    return BadRequest();
+                }
+                string filePath = file.FilePath;
+                string mimeType = file.MimeType;
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return Json("Không tìm thấy file");
+                }
+                byte[] fileBytes = await FileUtils.ReadFileAsync(filePath);
+                return File(fileBytes, mimeType, file.OriginalName);
+
+            }
+            return RedirectToAction("Forbidden", "Error");
+        }
+        public async Task<IActionResult> DownloadTestFile(Guid id, int testId)
+        {
+            var user = User.GetUserData();
+            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+            if (submission.SubmissionId != 0)
+            {
+                GetTestFileResponse file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
                 if (file == null)
                 {
                     return BadRequest();
@@ -259,9 +282,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 var model = new SubmissionFileModel
                 {
                     Files = files,
+                    TestId = testId,
                     Status = submission.Status
                 };
-                return PartialView(model);
+                return PartialView(model);  
             }
             return RedirectToAction("Forbidden", "Error");
         }
