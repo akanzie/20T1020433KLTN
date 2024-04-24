@@ -26,14 +26,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             _mediator = mediator;
             _mapper = mapper;
         }
-        public async Task<IActionResult> Detail(int testId = 0)
+        public async Task<IActionResult> Detail(int id = 0)
         {
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+            var user = User.GetUserData();
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = id , TeacherID = user.UserId});
             if (test.TestId == 0)
             {
                 return RedirectToAction("Index", "Home");
             }
-            var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = testId });
+            var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
             var model = new TestModel()
             {
                 Test = test,
@@ -43,15 +44,36 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View(model);
 
         }
-        public async Task<IActionResult> ListSubmissionAsync(int testId = 0)
+        public async Task<IActionResult> ListSubmission(int testId = 0)
         {
             var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
-            if (test == null)
+            if (test.TestId == 0)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             var model = await _mediator.Send(new GetSubmissionsByTestIdQuery { TestId = testId });
+            return View(model);
+        }
+        public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input)
+        {
+            var user = User.GetUserData();
+            int rowCount = await _mediator.Send(new GetRowCountTestsQuery { });
+
+            var data = await _mediator.Send(input);
+
+            var model = new SubmissonSearchResult()
+            {
+                Page = input.Page,
+                PageSize = input.PageSize,
+                SearchValue = input.SearchValue ?? "",
+                RowCount = rowCount,
+                Data = data
+            };
+
+            // Lưu lại vào session điều kiện tìm kiếm
+            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
+
             return View(model);
         }
         public IActionResult CreateQuiz()
@@ -102,7 +124,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
             var user = User.GetUserData();
-            int rowCount = await _mediator.Send(new GetRowCountQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
+            int rowCount = await _mediator.Send(new GetRowCountTestsQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
 
             var data = await _mediator.Send(input);
 

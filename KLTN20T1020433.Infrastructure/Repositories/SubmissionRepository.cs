@@ -45,6 +45,11 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
+        public Task<int> CountSubmissions(int testId = 0, string searchValue = "", SubmissionStatus? status = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> Delete(int id)
         {
             try
@@ -124,7 +129,12 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Submission>> GetSubmissionByTestId(int testId)
+        public Task<IEnumerable<Submission>> GetSubmissionsBySearch(int page = 1, int pageSize = 0, int testId = 0, string searchValue = "", SubmissionStatus? status = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Submission>> GetSubmissionsByTestId(int testId)
         {
             try
             {

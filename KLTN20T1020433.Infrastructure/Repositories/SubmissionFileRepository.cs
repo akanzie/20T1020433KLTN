@@ -80,7 +80,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 throw;
             }
         }
-        public async Task<IEnumerable<SubmissionFile>> GetFileBySubmissionId(int submissionId)
+        public async Task<IEnumerable<SubmissionFile>> GetFilesBySubmissionId(int submissionId)
         {
             try
             {

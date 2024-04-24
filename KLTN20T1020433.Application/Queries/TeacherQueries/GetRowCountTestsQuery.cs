@@ -5,7 +5,7 @@ using MediatR;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetRowCountQuery : IRequest<int>
+    public class GetRowCountTestsQuery : IRequest<int>
     {
         public string SearchValue { get; set; } = "";
         public string TeacherId { get; set; }
@@ -14,17 +14,16 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         public DateTime? FromTime { get; set; } = null;
         public DateTime? ToTime { get; set; } = null;
     }
-    public class GetRowCountQueryHandler : IRequestHandler<GetRowCountQuery, int>
+    public class GetRowCountTestsQueryHandler : IRequestHandler<GetRowCountTestsQuery, int>
     {
-        private readonly ITestRepository _testDB;
-        
+        private readonly ITestRepository _testDB;       
 
-        public GetRowCountQueryHandler(ITestRepository testDB)
+        public GetRowCountTestsQueryHandler(ITestRepository testDB)
         {
             _testDB = testDB;
             
         }
-        public async Task<int> Handle(GetRowCountQuery request, CancellationToken cancellationToken)
+        public async Task<int> Handle(GetRowCountTestsQuery request, CancellationToken cancellationToken)
         {
 
             int rowCount = await _testDB.CountTestsOfStudent(request.TeacherId, request.SearchValue, request.Type, request.FromTime, request.ToTime);

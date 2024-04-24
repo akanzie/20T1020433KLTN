@@ -63,7 +63,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
         }
        
 
-        public async Task<IEnumerable<Comment>> GetCommentBySubmissionId(int submissionId)
+        public async Task<IEnumerable<Comment>> GetCommentsBySubmissionId(int submissionId)
         {
             List<Comment> comments = new List<Comment>();
             using (var connection = await OpenConnectionAsync())

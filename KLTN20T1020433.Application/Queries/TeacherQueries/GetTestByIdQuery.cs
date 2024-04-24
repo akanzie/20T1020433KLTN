@@ -8,6 +8,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     public class GetTestByIdQuery : IRequest<GetTestByIdResponse>
     {
         public int Id { get; set; }
+        public string TeacherID { get; set; }
     }
     public class GetTestByIdQueryHandler : IRequestHandler<GetTestByIdQuery, GetTestByIdResponse>
     {
@@ -25,8 +26,11 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             var test = await _testDB.GetById(request.Id);
             if (test != null)
             {
-                GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
-                return testResponse;
+                if (request.TeacherID == test.TeacherId)
+                {
+                    GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
+                    return testResponse;
+                }
             }
             return new GetTestByIdResponse();
         }

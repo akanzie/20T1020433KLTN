@@ -21,7 +21,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         }
         public async Task<IEnumerable<GetCommentResponse>> Handle(GetCommentsBySubmissionIdQuery request, CancellationToken cancellationToken)
         {
-            var comments = await _commentDB.GetCommentBySubmissionId(request.SubmissionId);
+            var comments = await _commentDB.GetCommentsBySubmissionId(request.SubmissionId);
             if (comments != null && comments.Any())
             {
                 List<GetCommentResponse> commentResponses = new List<GetCommentResponse>();

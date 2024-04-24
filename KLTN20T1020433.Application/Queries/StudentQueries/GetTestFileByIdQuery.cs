@@ -1,4 +1,7 @@
-﻿using KLTN20T1020433.Application.DTOs;
+﻿using AutoMapper;
+using KLTN20T1020433.Application.DTOs;
+using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Test;
 using MediatR;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
@@ -9,9 +12,24 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     }
     public class GetTestFileByIdQueryHandler : IRequestHandler<GetTestFileByIdQuery, GetTestFileResponse>
     {
-        public Task<GetTestFileResponse> Handle(GetTestFileByIdQuery request, CancellationToken cancellationToken)
+        private readonly ITestFileRepository _testFileDB;
+        private readonly IMapper _mapper;
+
+        public GetTestFileByIdQueryHandler(ITestFileRepository testFileDB, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _testFileDB = testFileDB;
+
+            _mapper = mapper;
+        }
+        public async Task<GetTestFileResponse> Handle(GetTestFileByIdQuery request, CancellationToken cancellationToken)
+        {
+            var file = await _testFileDB.GetById(request.Id);
+            if (file != null)
+            {
+                GetTestFileResponse fileResponse = _mapper.Map<GetTestFileResponse>(file);
+                return fileResponse;
+            }
+            return new GetTestFileResponse();
         }
     }
 }

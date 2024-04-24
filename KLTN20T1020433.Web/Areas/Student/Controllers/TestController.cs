@@ -104,7 +104,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return View(model);
                 }
             }
-            return View("NotFound", "Error");
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> Submission(int testId = 0)
@@ -144,7 +144,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return Json("Tải file lên thành công.");
                 }
             }
-            return RedirectToAction("Forbidden", "Error");
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost]
         public async Task<IActionResult> RemoveSubmissionFile(Guid id, int testId = 0)
@@ -163,7 +163,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return Json("Có lỗi khi xóa file");
                 }
             }
-            return RedirectToAction("Forbidden", "Error");
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost]
         public async Task<IActionResult> Submit(int testId)
@@ -202,7 +202,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return BadRequest("Bạn chưa gửi file.");
                 }
             }
-            return RedirectToAction("Forbidden", "Error");
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost]
         public async Task<IActionResult> Cancel(int testId)
@@ -224,7 +224,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return PartialView("Submission", model);
                 }
             }
-            return RedirectToAction("Forbidden", "Error");
+            return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId)
         {
@@ -247,7 +247,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return File(fileBytes, mimeType, file.OriginalName);
 
             }
-            return RedirectToAction("Forbidden", "Error");
+            return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> DownloadTestFile(Guid id, int testId)
         {
@@ -270,7 +270,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return File(fileBytes, mimeType, file.OriginalName);
 
             }
-            return RedirectToAction("Forbidden", "Error");
+            return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> ListSubmissionFiles(int testId = 0)
         {
@@ -287,7 +287,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 };
                 return PartialView(model);  
             }
-            return RedirectToAction("Forbidden", "Error");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

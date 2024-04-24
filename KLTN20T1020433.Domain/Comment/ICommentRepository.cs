@@ -12,6 +12,6 @@ namespace KLTN20T1020433.Domain.Comment
         Task<int> Add(Comment data);
         Task<bool> Update(Comment data);
         Task<bool> Delete(int id);
-        Task<IEnumerable<Comment>> GetCommentBySubmissionId(int submissionId);
+        Task<IEnumerable<Comment>> GetCommentsBySubmissionId(int submissionId);
     }
 }
