@@ -51,14 +51,25 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             {
                 return RedirectToAction("Index", "Home");
             }
+            var input = ApplicationContext.GetSessionData<GetSubmissionsBySearchQuery>(Constants.SUBMISSION_SEARCH);
+            if (input == null)
+            {
+                input = new GetSubmissionsBySearchQuery()
+                {
+                    Page = 1,
+                    PageSize = TEST_PAGE_SIZE,
+                    SearchValue = "",
+                    Status = null,      
+                    //ToTime = string.Format("{0:dd/MM/yyyy} - {1:dd/MM/yyyy}",DateTime.Today.AddMonths(-1), DateTime.Today)
+                };
+            }
+            return View(input);
 
-            var model = await _mediator.Send(new GetSubmissionsByTestIdQuery { TestId = testId });
-            return View(model);
         }
         public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input)
         {
             var user = User.GetUserData();
-            int rowCount = await _mediator.Send(new GetRowCountTestsQuery { });
+            int rowCount = await _mediator.Send(new GetRowCountSubmissionsQuery { });
 
             var data = await _mediator.Send(input);
 
@@ -72,7 +83,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             };
 
             // Lưu lại vào session điều kiện tìm kiếm
-            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
+            ApplicationContext.SetSessionData(Constants.SUBMISSION_SEARCH, input);
 
             return View(model);
         }

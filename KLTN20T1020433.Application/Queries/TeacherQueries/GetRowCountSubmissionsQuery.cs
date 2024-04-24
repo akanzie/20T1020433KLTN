@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetRowCountSubmissionQuery : IRequest<int>
+    public class GetRowCountSubmissionsQuery : IRequest<int>
     {
         public string SearchValue { get; set; } = "";
         public int TestId { get; set; }        
         public SubmissionStatus? Status { get; set; } = null;  
     }
-    public class GetRowCountSubmissionQueryHandler : IRequestHandler<GetRowCountSubmissionQuery, int>
+    public class GetRowCountSubmissionsQueryHandler : IRequestHandler<GetRowCountSubmissionsQuery, int>
     {
         private readonly ITestRepository _testDB;
         private readonly ISubmissionRepository _submissionDB;
-        public GetRowCountSubmissionQueryHandler(ITestRepository testDB, ISubmissionRepository submissionDB)
+        public GetRowCountSubmissionsQueryHandler(ITestRepository testDB, ISubmissionRepository submissionDB)
         {
             _testDB = testDB;
             _submissionDB = submissionDB;
         }
-        public async Task<int> Handle(GetRowCountSubmissionQuery request, CancellationToken cancellationToken)
+        public async Task<int> Handle(GetRowCountSubmissionsQuery request, CancellationToken cancellationToken)
         {
 
             int rowCount = await _submissionDB.CountSubmissions(request.TestId, request.SearchValue, request.Status);
