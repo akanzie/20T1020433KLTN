@@ -2,11 +2,6 @@
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Domain.Submission;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
@@ -33,6 +28,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             if (file != null)
             {
                 GetSubmissionFileResponse fileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
+
                 return fileResponse;
             }
             return new GetSubmissionFileResponse();

@@ -5,6 +5,7 @@ using MediatR;
 using System.Net.WebSockets;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Teacher;
+using KLTN20T1020433.Application.Services;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
@@ -35,6 +36,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                 {
                     GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
                     Teacher teacher = await _teacherDB.GetTeacherById(test.TeacherId);
+                    testResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(test.Status);
                     testResponse.TeacherName = teacher.TeacherName;
                     return testResponse;
                 }

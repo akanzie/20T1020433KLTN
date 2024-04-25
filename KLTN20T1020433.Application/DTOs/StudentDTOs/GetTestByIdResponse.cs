@@ -15,7 +15,7 @@ namespace KLTN20T1020433.Application.DTOs.StudentDTOs
         public bool IsCheckIP { get; set; } 
         public bool IsConductedAtSchool { get; set; }
         public TestStatus Status { get; set; }
-        public string StatusDescription { get; set; }
+        public string StatusDisplayName { get; set; }
         public string TeacherName { get; set; }
     }
 

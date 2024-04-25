@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
@@ -37,6 +38,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);
                     Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
                     getTestResponse.TeacherName = teacher.TeacherName;
+                    getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForTeacher(item.Status);
                     int countStudents = await _submissionDB.CountSubmissions(item.TestId);
                     getTestResponse.CountStudents = countStudents;
                     testResponse.Add(getTestResponse);

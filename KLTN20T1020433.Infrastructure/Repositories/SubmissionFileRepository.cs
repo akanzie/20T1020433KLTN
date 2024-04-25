@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Test;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -122,6 +124,30 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Đã xảy ra lỗi khi truy vấn tệp bài nộp theo ID: " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<int> CountFilesBySubmissionId(int submissionId)
+        {
+            try
+            {
+                int count = 0;
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var parameters = new
+                    {
+                        SubmissionId = submissionId                      
+
+                    };
+                    count = await connection.ExecuteScalarAsync<int>(
+                        "CountFilesBySubmissionId", parameters, commandType: CommandType.StoredProcedure);
+                }
+                return count;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi đếm số lượng file bài nộp của sinh viên: " + ex.Message);
                 throw;
             }
         }

@@ -11,6 +11,8 @@ using AutoMapper;
 using KLTN20T1020433.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using KLTN20T1020433.Web.Models;
+using System.Net.WebSockets;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -30,7 +32,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         public async Task<IActionResult> Detail(int id = 0)
         {
             var user = User.GetUserData();
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = id , TeacherID = user.UserId});
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
             if (test.TestId == 0)
             {
                 return RedirectToAction("Index", "Home");
@@ -60,8 +62,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     Page = 1,
                     PageSize = TEST_PAGE_SIZE,
                     SearchValue = "",
-                    Status = null,      
-                    //ToTime = string.Format("{0:dd/MM/yyyy} - {1:dd/MM/yyyy}",DateTime.Today.AddMonths(-1), DateTime.Today)
+                    TestId = testId,
+                    Status = null,
                 };
             }
             return View(input);
@@ -77,8 +79,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             var model = new SubmissonSearchResult()
             {
                 Page = input.Page,
+
                 PageSize = input.PageSize,
                 SearchValue = input.SearchValue ?? "",
+                TestId = input.TestId,
+                Status = input.Status ?? null,
                 RowCount = rowCount,
                 Data = data
             };
@@ -93,17 +98,16 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             ViewBag.Title = "Tạo bài kiểm tra";
             ViewBag.IsEdit = false;
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-            var model = new Test()
+            var model = new CreateTestCommand()
             {
-                TestId = testId,
-                TestType = TestType.Quiz
+                TestType = TestType.Exam
             };
 
             return View("CreateExam", model);
         }
         public IActionResult CreateExam()
         {
-            ViewBag.Title = "Tạo bài thi";
+            ViewBag.Title = "Tạo kỳ thi";
             ViewBag.IsEdit = false;
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
             var model = new CreateTestCommand()
@@ -131,8 +135,6 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     TeacherId = user.UserId,
                     AcademicYear = "",
                     Semester = 0
-                    
-                    //ToTime = string.Format("{0:dd/MM/yyyy} - {1:dd/MM/yyyy}",DateTime.Today.AddMonths(-1), DateTime.Today)
                 };
             }
 
@@ -147,14 +149,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
             var model = new TestSearchResult()
             {
-                Page = input.Page,             
+                Page = input.Page,
                 PageSize = input.PageSize,
                 SearchValue = input.SearchValue ?? "",
                 RowCount = rowCount,
-                FromTime = input.FromTime,
-                ToTime = input.ToTime,
-                Status = input.Status,
-                Type = input.Type,
+                FromTime = input.FromTime ?? null,
+                ToTime = input.ToTime ?? null,
+                Status = input.Status ?? null,
+                Type = input.Type ?? null,
                 Data = data
             };
 
@@ -181,9 +183,44 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             return View();
         }
-        public IActionResult Submission(int submissionId = 0)
+        public async Task<IActionResult> Submission(int id = 0)
         {
-            return View();
+            var user = User.GetUserData();
+            var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
+            var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = id });
+            var model = new SubmissionModel
+            {
+                Files = files,
+                Submission = submission
+            };
+            return View(model);
+        }
+        public async Task<IActionResult> SubmissionFile(Guid fileId)
+        {
+            var user = User.GetUserData();
+            var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = fileId });
+            if (file == null)
+            {
+                return NotFound();
+            }
+            switch (file.MimeType)
+            {
+                case "image/jpeg":
+                case "image/png":
+                case "image/gif":
+                    return File(file.FilePath, file.MimeType);
+                case "text/plain":
+                case "application/octet-stream":
+                case "application/vnd.openxmlformats-officedocument.word":
+                case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                case "application/msword":
+                    return PartialView(FileUtils.ReadDocxFile(file.FilePath));
+                default:
+                    {
+                        byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
+                        return File(fileBytes, file.MimeType, file.OriginalName);
+                    }
+            }
         }
         public IActionResult Update()
         {
@@ -194,8 +231,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View();
         }
         [HttpPost]
-        public IActionResult Save()
+        public async Task<IActionResult> Save(string[] selectedStudents)
         {
+            var user = User.GetUserData();
+            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
+            var result = await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudents });
             return View();
         }
         public async Task<IActionResult> Download(Guid id)

@@ -17,6 +17,7 @@ namespace KLTN20T1020433.Web.Mappings
             CreateMap<Test, GetTestByIdResponse>();
             CreateMap<Comment, GetCommentResponse>();
             CreateMap<Submission, GetSubmissionResponse>();
+            CreateMap<Submission, GetSubmissionBySearchResponse>();
             CreateMap<SubmissionFile, GetSubmissionFileResponse>();
             CreateMap<TestFile, GetTestFileResponse>();
             CreateMap<Test, GetTestBySearchResponse>();

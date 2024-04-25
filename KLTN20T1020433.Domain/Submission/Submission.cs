@@ -19,30 +19,6 @@ namespace KLTN20T1020433.Domain.Submission
         public string StudentId { get; set; }
         public int TestId { get; set; }
         public string IPAddress { get; set; }
-        public SubmissionStatus Status { get; set; }
-        public string StatusDescription
-        {
-            get
-            {
-                if (Status == SubmissionStatus.NotSubmitted)
-                {
-                    return "Chưa nộp bài";
-                }
-                else if (Status == SubmissionStatus.PendingProcessing)
-                {
-                    return "Đang chờ xử lý";
-                }
-                else if (Status == SubmissionStatus.Submitted)
-                {
-                    return "Đã nộp";
-                }
-                else if (Status == SubmissionStatus.LateSubmission)
-                {
-                    return "Đã nộp muộn";
-                }
-                else
-                    return "Thiếu";
-            }
-        }
+        public SubmissionStatus Status { get; set; }        
     }
 }

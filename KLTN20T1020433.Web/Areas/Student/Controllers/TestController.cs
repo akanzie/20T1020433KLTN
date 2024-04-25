@@ -5,10 +5,8 @@ using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Application.Queries.StudentQueries;
 using KLTN20T1020433.Application.Services;
-using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Student.Models;
-using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -144,7 +142,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return Json("Tải file lên thành công.");
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return BadRequest();
         }
         [HttpPost]
         public async Task<IActionResult> RemoveSubmissionFile(Guid id, int testId = 0)
@@ -163,7 +161,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return Json("Có lỗi khi xóa file");
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return BadRequest();
         }
         [HttpPost]
         public async Task<IActionResult> Submit(int testId)
@@ -202,7 +200,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return BadRequest("Bạn chưa gửi file.");
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return BadRequest();
         }
         [HttpPost]
         public async Task<IActionResult> Cancel(int testId)
@@ -224,7 +222,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return PartialView("Submission", model);
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return BadRequest();
         }
         public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId)
         {
@@ -237,14 +235,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return BadRequest();
                 }
-                string filePath = file.FilePath;
-                string mimeType = file.MimeType;
-                if (!System.IO.File.Exists(filePath))
+                if (!System.IO.File.Exists(file.FilePath))
                 {
                     return Json("Không tìm thấy file");
                 }
-                byte[] fileBytes = await FileUtils.ReadFileAsync(filePath);
-                return File(fileBytes, mimeType, file.OriginalName);
+                byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
+                return File(fileBytes, file.MimeType, file.OriginalName);
 
             }
             return RedirectToAction("Index", "Home");
@@ -260,14 +256,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return BadRequest();
                 }
-                string filePath = file.FilePath;
-                string mimeType = file.MimeType;
-                if (!System.IO.File.Exists(filePath))
+                if (!System.IO.File.Exists(file.FilePath))
                 {
                     return Json("Không tìm thấy file");
                 }
-                byte[] fileBytes = await FileUtils.ReadFileAsync(filePath);
-                return File(fileBytes, mimeType, file.OriginalName);
+                byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
+                return File(fileBytes, file.MimeType, file.OriginalName);
 
             }
             return RedirectToAction("Index", "Home");
@@ -285,9 +279,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     TestId = testId,
                     Status = submission.Status
                 };
-                return PartialView(model);  
+                return PartialView(model);
             }
-            return RedirectToAction("Index", "Home");
+            return BadRequest();
         }
+
     }
 }

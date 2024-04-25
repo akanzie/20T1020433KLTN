@@ -1,24 +1,46 @@
-﻿using KLTN20T1020433.Domain.Submission;
+﻿using AutoMapper;
+using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Test;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
 {
     public class CreateSubmissionCommand : IRequest<int>
     {
-        public string StudentId { get; set; }
+        public string[] StudentIds { get; set; }
         public int TestId { get; set; }
-        public SubmissionStatus Status { get; set; } = SubmissionStatus.NotSubmitted;
     }
     public class CreateSubmissionCommandHandler : IRequestHandler<CreateSubmissionCommand, int>
     {
-        public Task<int> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
+        private readonly ITestRepository _testDB;
+        private readonly ISubmissionRepository _submissionDB;
+        private readonly IMapper _mapper;
+        public CreateSubmissionCommandHandler(ITestRepository testDB, IMapper mapper, ISubmissionRepository submissionDB)
         {
-            throw new NotImplementedException();
+            _testDB = testDB;
+            _mapper = mapper;
+            _submissionDB = submissionDB;
+        }
+        public async Task<int> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
+        {
+            var test = await _testDB.GetById(request.TestId);
+
+            // Kiểm tra xem kỳ thi có tồn tại không
+            if (test == null)
+            {
+                throw new Exception("Không tìm thấy kỳ thi.");
+            }
+            foreach (string item in request.StudentIds)
+            {
+                var submission = new Submission
+                {
+                    TestId = request.TestId,
+                    StudentId = item,
+                    Status = SubmissionStatus.NotSubmitted
+                };
+                await _submissionDB.Add(submission);
+            }
+            return 1;
         }
     }
 }

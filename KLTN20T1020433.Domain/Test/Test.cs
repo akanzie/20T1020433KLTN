@@ -48,33 +48,8 @@ namespace KLTN20T1020433.Domain.Test
             {
                 _status = value;
             }
-        }
-        public string StatusDescription
-        {
-            get
-            {
-                if (Status == TestStatus.Upcoming)
-                {
-                    return "Chưa bắt đầu";
-                }
-                else if (Status == TestStatus.Ongoing)
-                {
-                    return "Đang diễn ra";
-                }
-                else if (Status == TestStatus.Finished)
-                {
-                    return "Đã kết thúc";
-                }
-                else if (Status == TestStatus.Creating)
-                {
-                    return "Đang tạo";
-                }
-                else
-                    return "Đã bị hủy";
-            }
-        }
-
+        }        
         public string TeacherId { get; set; }
-        public string TeacherName { get; set; }
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Comment;
-
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
@@ -38,6 +38,10 @@ namespace KLTN20T1020433.Web.Configuration
             services.AddScoped<ITeacherRepository>(provider =>
             {
                 return new TeacherRepository(connectionString);
+            });
+            services.AddScoped<IStudentRepository>(provider =>
+            {
+                return new StudentRepository(connectionString);
             });
         }        
     }

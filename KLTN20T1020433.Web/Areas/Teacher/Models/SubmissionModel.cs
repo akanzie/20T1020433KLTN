@@ -5,6 +5,6 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Models
     public class SubmissionModel
     {
         public GetSubmissionResponse Submission { get; set; }
-        public IEnumerable<GetCommentResponse> Comments { get; set; }
+        public IEnumerable<GetSubmissionFileResponse> Files { get; set; }
     }
 }

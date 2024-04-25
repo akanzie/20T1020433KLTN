@@ -1,15 +1,10 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.DTOs;
-using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
+using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Test;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
@@ -20,15 +15,17 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     }
     public class GetSubmissionsBySearchQueryHandler : IRequestHandler<GetSubmissionsBySearchQuery, IEnumerable<GetSubmissionBySearchResponse>>
     {
-        private readonly ITestRepository _testDB;
+        private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly ISubmissionRepository _submissionDB;
+        private readonly IStudentRepository _studentDB;
         private readonly IMapper _mapper;
 
-        public GetSubmissionsBySearchQueryHandler(ITestRepository testDB, ISubmissionRepository submissionDB, IMapper mapper)
+        public GetSubmissionsBySearchQueryHandler(ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IMapper mapper, IStudentRepository studentDB)
         {
-            _testDB = testDB;
+            _submissionFileDB = submissionFileDB;
             _submissionDB = submissionDB;
             _mapper = mapper;
+            _studentDB = studentDB;
         }
         public async Task<IEnumerable<GetSubmissionBySearchResponse>> Handle(GetSubmissionsBySearchQuery request, CancellationToken cancellationToken)
         {
@@ -38,8 +35,13 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 List<GetSubmissionBySearchResponse> testResponse = new List<GetSubmissionBySearchResponse>();
                 foreach (var item in submissions)
                 {
-                    GetSubmissionBySearchResponse getTestResponse = _mapper.Map<GetSubmissionBySearchResponse>(item);
-                    testResponse.Add(getTestResponse);
+                    GetSubmissionBySearchResponse getSubmissionResponse = _mapper.Map<GetSubmissionBySearchResponse>(item);
+                    Student student = await _studentDB.GetStudentById(item.StudentId);
+                    getSubmissionResponse.StudentName = $"{student.LastName} {student.FirstName}";
+                    getSubmissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(item.Status);
+                    int filesCount = await _submissionFileDB.CountFilesBySubmissionId(item.SubmissionId);
+                    getSubmissionResponse.FilesCount = filesCount;
+                    testResponse.Add(getSubmissionResponse);
                 }
                 return testResponse;
             }

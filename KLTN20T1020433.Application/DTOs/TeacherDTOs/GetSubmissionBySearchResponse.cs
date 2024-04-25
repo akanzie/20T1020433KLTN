@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KLTN20T1020433.Domain.Submission;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,11 @@ namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
 {
     public class GetSubmissionBySearchResponse
     {
+        public int SubmissionId { get; set; }
+        public string StudentName { get; set; }
+        public DateTime SubmittedTime { get; set; }
+        public string IpAddress { get; set; }
+        public string StatusDisplayName { get; set; }
+        public int FilesCount { get; set; }
     }
 }

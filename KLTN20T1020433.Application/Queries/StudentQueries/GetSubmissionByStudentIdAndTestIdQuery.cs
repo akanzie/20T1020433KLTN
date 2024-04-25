@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Submission;
 using MediatR;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
@@ -26,8 +27,9 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
             var submission = await _submissionDB.GetByTestIdAndStudentId(request.TestId, request.StudentId);
             if (submission != null)
             {
-                GetSubmissionResponse testResponse = _mapper.Map<GetSubmissionResponse>(submission);
-                return testResponse;
+                GetSubmissionResponse submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
+                submissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(submission.Status);
+                return submissionResponse;
             }
             return new GetSubmissionResponse();
         }

@@ -4,6 +4,8 @@ using MediatR;
 using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Domain.Teacher;
+using KLTN20T1020433.Application.Services;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
@@ -34,7 +36,8 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                     if (item.Status == request.Status|| request.Status == null)
                     {
                         GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);
-                        Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);                     
+                        Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
+                        getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(item.Status);
                         getTestResponse.TeacherName = teacher.TeacherName;                    
                         testResponse.Add(getTestResponse);
                     }

@@ -8,7 +8,7 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="card-text">Bài nộp của bạn</h4>
-                <p class="card-text text-dark" id="submissionStatus">@Model.Submission.StatusDescription</p>
+                <p class="card-text text-dark" id="submissionStatus">@Model.Submission.StatusDisplayName</p>
 
             </div>
         </div>
@@ -18,8 +18,7 @@
                 <div id="submission_files">
                 </div>
                 <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
-                    @Html.HiddenFor(m => m.Submission.SubmissionId)
-                    @Html.HiddenFor(m => m.Submission.TestId)      
+                    <input type="hidden" name="TestId" value="@Model.Submission.TestId" />
                     <input type="file" class="d-none" multiple id="fileInput" />
                     @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                     {

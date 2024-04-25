@@ -47,17 +47,17 @@
                         </td>
                         <td class="border-bottom-0">
                            @if(item.Status == TestStatus.Ongoing){
-                                <h6 class="fw-semibold mb-1 text-danger">@item.StatusDescription</h6>
+                                <h6 class="fw-semibold mb-1 text-danger">@item.StatusDisplayName</h6>
                             }
                             @if(item.Status == TestStatus.Finished){
-                                <h6 class="fw-semibold mb-1 text-success">@item.StatusDescription</h6>
+                                <h6 class="fw-semibold mb-1 text-success">@item.StatusDisplayName</h6>
                             }
                             @if(item.Status == TestStatus.Upcoming){
-                                <h6 class="fw-semibold mb-1 text-primary">@item.StatusDescription</h6>
+                                <h6 class="fw-semibold mb-1 text-primary">@item.StatusDisplayName</h6>
                             }
                             @if (item.Status == TestStatus.Canceled)
                             {
-                                <h6 class="fw-semibold mb-1 text-dark">@item.StatusDescription</h6>
+                                <h6 class="fw-semibold mb-1 text-dark">@item.StatusDisplayName</h6>
                             }
                         </td>
                     </tr>
