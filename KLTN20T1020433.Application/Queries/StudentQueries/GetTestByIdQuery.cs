@@ -12,7 +12,6 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     public class GetTestByIdQuery : IRequest<GetTestByIdResponse>
     {
         public int Id { get; set; }
-        public string StudentId { get; set; }
     }
     public class GetTestByIdQueryHandler : IRequestHandler<GetTestByIdQuery, GetTestByIdResponse>
     {

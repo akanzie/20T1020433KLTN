@@ -5,6 +5,7 @@ using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Application.Queries.StudentQueries;
 using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Student.Models;
 using MediatR;
@@ -108,13 +109,14 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Submission(int testId = 0)
         {
             var user = User.GetUserData();
+           
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
             if (submission.SubmissionId != 0)
-            {
+            {                
                 var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
-
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
                 var model = new SubmissionModel
-                {
+                {   
                     Submission = submission,
                     Comments = comments
                 };
@@ -175,15 +177,18 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return BadRequest("Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.");
                 }
-                SubmitTestCommand command = new SubmitTestCommand
+                if (!test.CanSubmitLate && DateTime.Now > test.EndTime)
+                {
+                    return BadRequest("Đã quá thời gian cho phép nộp bài. Bạn không được phép nộp bài.");
+                }
+                if (await _mediator.Send(new SubmitTestCommand
                 {
                     SubmissionId = submission.SubmissionId,
                     IPAddress = user.ClientIP!,
                     IsCheckIP = test.IsCheckIP,
                     SubmittedTime = DateTime.Now,
                     TestEndTime = test.EndTime
-                };
-                if (await _mediator.Send(command))
+                }))
                 {
                     submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                     var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });

@@ -24,11 +24,20 @@
                     {
                         <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
                     }
+                    else if (Model.Submission.Status == SubmissionStatus.Absent)
+                    {
+                        <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control disabled" disabled>Thêm file</button>
+                    }
                 </form>
 
                 @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                 {
                     <button id="submitBtn" class="btn btn-primary mt-4 form-control" type="button">Nộp bài</button>
+
+                }
+                else if (Model.Submission.Status == SubmissionStatus.Absent)
+                {
+                    <button id="submitBtn" class="btn btn-primary mt-4 form-control disabled" disabled type="button">Nộp bài</button>
                 }
                 else
                 {

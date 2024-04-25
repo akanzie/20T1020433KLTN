@@ -3,6 +3,7 @@ using KLTN20T1020433.Domain.Submission;
 using MediatR;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
+using KLTN20T1020433.Domain.Test;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
@@ -14,11 +15,13 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     public class GetSubmissionByStudentIdAndTestIdQueryHandler : IRequestHandler<GetSubmissionByStudentIdAndTestIdQuery, GetSubmissionResponse>
     {
         private readonly ISubmissionRepository _submissionDB;
+        private readonly ITestRepository _testDB;
         private readonly IMapper _mapper;
 
-        public GetSubmissionByStudentIdAndTestIdQueryHandler(ISubmissionRepository submissionDB, IMapper mapper)
+        public GetSubmissionByStudentIdAndTestIdQueryHandler(ISubmissionRepository submissionDB, ITestRepository testDB, IMapper mapper)
         {
             _submissionDB = submissionDB;
+            _testDB = testDB;
             _mapper = mapper;
         }
 
@@ -27,7 +30,14 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
             var submission = await _submissionDB.GetByTestIdAndStudentId(request.TestId, request.StudentId);
             if (submission != null)
             {
+                var test = await _testDB.GetById(request.TestId);
                 GetSubmissionResponse submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
+                if (submissionResponse.Status == SubmissionStatus.NotSubmitted && !test.CanSubmitLate && test.EndTime < DateTime.Now)
+                {
+                    submission.Status = SubmissionStatus.Absent;
+                    await _submissionDB.Update(submission);            
+                    submissionResponse.Status = SubmissionStatus.Absent;
+                }
                 submissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(submission.Status);
                 return submissionResponse;
             }

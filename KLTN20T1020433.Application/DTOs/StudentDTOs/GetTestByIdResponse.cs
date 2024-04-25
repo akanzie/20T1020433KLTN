@@ -14,6 +14,7 @@ namespace KLTN20T1020433.Application.DTOs.StudentDTOs
         public DateTime CreatedTime { get; set; } 
         public bool IsCheckIP { get; set; } 
         public bool IsConductedAtSchool { get; set; }
+        public bool CanSubmitLate {  get; set; }
         public TestStatus Status { get; set; }
         public string StatusDisplayName { get; set; }
         public string TeacherName { get; set; }

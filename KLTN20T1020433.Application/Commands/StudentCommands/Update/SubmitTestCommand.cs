@@ -23,7 +23,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         private readonly IMediator _mediator;
         public SubmitTestCommandHandler(ISubmissionRepository submissionDB, IMediator mediator)
         {
-            _submissionDB = submissionDB;            
+            _submissionDB = submissionDB;
             _mediator = mediator;
         }
         public async Task<bool> Handle(SubmitTestCommand request, CancellationToken cancellationToken)
@@ -36,7 +36,9 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
                 {
                     return result;
                 }
-                Submission submission = await _submissionDB.GetById(request.SubmissionId);
+                Submission? submission = await _submissionDB.GetById(request.SubmissionId);
+                if (submission == null)
+                    return false;
                 if (request.SubmittedTime > request.TestEndTime)
                     submission.Status = SubmissionStatus.LateSubmission;
                 else
@@ -46,9 +48,9 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
                     submission.Status = SubmissionStatus.PendingProcessing;
                 }
                 submission.SubmittedTime = request.SubmittedTime;
-                submission.IPAddress = request.IPAddress.ToString();   
+                submission.IPAddress = request.IPAddress.ToString();
                 result = await _submissionDB.Update(submission);
-                return result;                
+                return result;
             }
             catch
             {

@@ -22,6 +22,7 @@ namespace KLTN20T1020433.Domain.Test
         public DateTime? EndTime { get; set; } = null;
         public bool IsCheckIP { get; set; }
         public bool IsConductedAtSchool { get; set; }
+        public bool CanSubmitLate { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime? LastUpdateTime { get; set; } = null;
         private TestStatus _status;
