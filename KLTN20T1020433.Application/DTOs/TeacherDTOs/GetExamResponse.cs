@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
 {
-    public class GetCourseResponse
+    public class GetExamResponse
     {
-        public string CourseId { get; set; }
-        public string CourseName { get; set;}
-
+        public string ExamId { get; set; }
+        public string ExamName { get; set; }
     }
 }

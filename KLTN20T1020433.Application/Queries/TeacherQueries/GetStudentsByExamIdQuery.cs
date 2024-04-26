@@ -5,16 +5,16 @@ using Newtonsoft.Json;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetStudentsByCourseIdQuery : IRequest<IEnumerable<GetStudentResponse>>
+    public class GetStudentsByExamIdQuery : IRequest<IEnumerable<GetStudentResponse>>
     {
         public GetTokenResponse GetTokenResponse { get; set; }
         public string CourseId { get; set; }
     }
-    public class GetStudentsByCourseIdQueryHandler : IRequestHandler<GetStudentsByCourseIdQuery, IEnumerable<GetStudentResponse>>
+    public class GetStudentsByExamIdQueryHandler : IRequestHandler<GetStudentsByCourseIdQuery, IEnumerable<GetStudentResponse>>
     {
         private readonly ApiService _apiService;
 
-        public GetStudentsByCourseIdQueryHandler(ApiService apiService)
+        public GetStudentsByExamIdQueryHandler(ApiService apiService)
         {
             _apiService = apiService;
         }

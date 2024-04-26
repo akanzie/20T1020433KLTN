@@ -11,6 +11,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Update
         public string Instruction { get; set; } = "";
         public bool IsCheckIP { get; set; } = false;
         public bool IsConductedAtSchool { get; set; } = false;
+        public bool CanSubmitLate { get; set; } = false;
         public DateTime? StartTime { get; set; } = null;
         public DateTime? EndTime { get; set; } = null;
 
@@ -36,6 +37,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Update
                 test.StartTime = request.StartTime;
                 test.EndTime = request.EndTime;
                 test.LastUpdateTime = DateTime.Now;
+                test.CanSubmitLate = request.CanSubmitLate;                
                 if (await _testDB.Update(test))
                     return true;
             }

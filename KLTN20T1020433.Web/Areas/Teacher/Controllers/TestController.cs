@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
+using KLTN20T1020433.Application.DTOs.TeacherDTOs;
+using KLTN20T1020433.Application.Queries;
 using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Test;
@@ -9,6 +11,7 @@ using KLTN20T1020433.Web.Areas.Teacher.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -222,10 +225,9 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         [HttpPost]
         public async Task<IActionResult> Save(string[] selectedStudents)
         {
-            var user = User.GetUserData();
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-            var result = await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudents });
-            return View();
+            await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudents });
+            return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> Download(Guid id)
         {
@@ -280,23 +282,54 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(testId);
             }
         }
-        public async Task<IActionResult> SelectStudents(CreateTestCommand command)
+        [Route("Teacher/Test/SelectStudents/{type?}")]
+        public async Task<IActionResult> SelectStudents(string type, CreateTestCommand command)
         {
-
-            int testId = 0;
+            var user = User.GetUserData();
             if (ApplicationContext.GetDataInt32(Constants.TESTID) != null && ApplicationContext.GetDataInt32(Constants.TESTID) != 0)
             {
-                testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
                 var updateTestCommmand = _mapper.Map<UpdateTestCommand>(command);
                 await _mediator.Send(updateTestCommmand);
             }
             else
             {
-                testId = await _mediator.Send(command);
+                int testId = await _mediator.Send(command);
                 HttpContext.Session.SetInt32(Constants.TESTID, testId);
             }
-
-            return View(testId);
+            var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+            switch (type)
+            {
+                case "quiz":
+                    var courses = _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    return View("QuizSelectStudents", courses);
+                case "exam":
+                    var exams = _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    return View("ExamSelectStudents", exams);
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
+        }
+        public async Task<IActionResult> ListStudents(TestType type, string courseId)
+        {
+            var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+            IEnumerable<GetStudentResponse> students = new List<GetStudentResponse>();
+            if (type == TestType.Quiz)
+            {
+                students = await _mediator.Send(new GetStudentsByCourseIdQuery { CourseId = courseId, GetTokenResponse = token });
+            }
+            else
+            {
+                students = await _mediator.Send(new GetStudentsByExamIdQuery { CourseId = courseId, GetTokenResponse = token });
+            }
+            return View(students);
+        }
+        public IActionResult QuizSelectStudents()
+        {
+            return View();
+        }
+        public IActionResult ExamSelectStudents()
+        {
+            return View();
         }
         public async Task<IActionResult> ListTestFiles(int testId = 0)
         {

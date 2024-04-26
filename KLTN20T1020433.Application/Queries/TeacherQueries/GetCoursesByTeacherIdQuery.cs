@@ -26,6 +26,21 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetCourseResponse>> Handle(GetCoursesByTeacherIdQuery request, CancellationToken cancellationToken)
         {
+            int j = 0;
+            var courses = new List<GetCourseResponse>();
+            for (int i = 0; i < 3; i++)
+            {
+                var course1 = new GetCourseResponse
+                {
+                    CourseId = $"{j++}",
+                    CourseName = $"Lập trình web - Nhóm {j}"
+                };
+                courses.Add(course1);
+            }
+            return courses;
+        }
+        /*public async Task<IEnumerable<GetCourseResponse>> Handle(GetCoursesByTeacherIdQuery request, CancellationToken cancellationToken)
+        {
             string endpoint = "account/v1/courses";
             string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
             if (jsonResponse != null)
@@ -35,6 +50,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 return courses;
             }
             return new List<GetCourseResponse>();
-        }
+        }*/
     }
+
 }

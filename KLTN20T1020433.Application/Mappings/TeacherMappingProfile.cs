@@ -6,6 +6,7 @@ using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Comment;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
+using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
 using System;
 
 namespace KLTN20T1020433.Application.Mappings
@@ -18,6 +19,7 @@ namespace KLTN20T1020433.Application.Mappings
             // Đưa hết các cấu hình bạn muốn map giữa các object vào đây
             // Thuộc tính FullName trong UserViewModel được kết hợp từ FirstName và LastName trong User
             CreateMap<CreateTestCommand, Test>();
+            CreateMap<CreateTestCommand, UpdateTestCommand>();
             CreateMap<Test, GetTestByIdResponse>();
             CreateMap<Comment, GetCommentResponse>();
             CreateMap<Submission, GetSubmissionResponse>();

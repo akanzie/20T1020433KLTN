@@ -1,0 +1,12 @@
+﻿@using KLTN20T1020433.Application.DTOs.TeacherDTOs
+@model IEnumerable<GetStudentResponse>
+@{
+    Layout = null;
+}
+<ul class="list-group">
+    @foreach (var item in Model)
+    {
+        <input type="checkbox" class="list-group-item" name="studentSelecting" value="@item.StudentId">
+        <p>@item.FirstName</p>
+    }
+</ul>
