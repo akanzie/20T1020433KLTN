@@ -1,12 +1,6 @@
 ﻿using AutoMapper;
-using KLTN20T1020433.Application.DTOs;
-using KLTN20T1020433.Application.DTOs.StudentDTOs;
-using KLTN20T1020433.Domain.Comment;
-using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Web.Areas.Student.Models;
 
-namespace KLTN20T1020433.Web.Mappings
+namespace KLTN20T1020433.Application.Mappings
 {
     public class AutoMapperConfig
     {

@@ -6,11 +6,10 @@ namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
     {
         public int TestId { get; set; }
         public string Title { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
-        public TestStatus Status { get; set; }
+        public string? CreatedTime { get; set; }
+        public string? LastUpdateTime { get; set; }
+        public string? EndTime { get; set; }
         public string StatusDisplayName { get; set; }
         public string TeacherName { get; set; }
-        public int CountStudents {  get; set; }
     }
 }

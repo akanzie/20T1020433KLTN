@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using KLTN20T1020433.Web.Mappings;
+using KLTN20T1020433.Application.Mappings;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace KLTN20T1020433.Web.Configuration

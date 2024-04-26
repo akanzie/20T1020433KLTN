@@ -33,12 +33,12 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                 List<GetTestBySearchResponse> testResponse = new List<GetTestBySearchResponse>();
                 foreach (var item in tests)
                 {
-                    if (item.Status == request.Status|| request.Status == null)
-                    {
-                        GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);
+                    if (item.Status == request.Status || request.Status == null)
+                    {                        
+                        GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);                       
                         Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
                         getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(item.Status);
-                        getTestResponse.TeacherName = teacher.TeacherName;                    
+                        getTestResponse.TeacherName = teacher.TeacherName;
                         testResponse.Add(getTestResponse);
                     }
                 }

@@ -40,7 +40,7 @@
     <None Include="Areas\Teacher\Views\Test\SelectCourses.cshtml" />
     <None Include="Areas\Teacher\Views\Test\SelectStudents.cshtml" />
     <None Include="Areas\Teacher\Views\Test\Submission.cshtml" />
-    <None Include="Areas\Teacher\Views\Test\Update.cshtml" />
+    <None Include="Areas\Teacher\Views\Test\Edit.cshtml" />
     <None Include="wwwroot\Modernize-1.0.0\.gitignore" />
     <None Include="wwwroot\Modernize-1.0.0\README.md" />
     <None Include="wwwroot\Modernize-1.0.0\src\assets\css\icons\tabler-icons\fonts\tabler-icons.svg" />

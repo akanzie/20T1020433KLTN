@@ -8,29 +8,46 @@
             @foreach (var item in Model.Data)
             {
                 <li class="card mb-3">
-                    <a href="~/Teacher/Test/Detail/@item.TestId" class="card-link p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="~/Teacher/Test/Detail/@item.TestId" class="card-link p-3">
+
+                            <div class="ms-2">
                                 <h5 class="mb-0">@item.Title</h5>
-                                <p class="mb-0">@item.TeacherName</p>
+                                <p class="mb-0 fw-semibold">@item.StatusDisplayName</p>
                             </div>
 
-                            <div class="dropdown">
-                                <button class="btn btn-link" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    <!-- Biểu tượng ba chấm (ellipsis) -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                         class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                                        <path d="M5 1.5a.5.5 0 0 1 .5-.5h.5a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-.5a.5.5 0 0 1-.5-.5v-13zm5 0a.5.5 0 0 1 .5-.5h.5a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-.5a.5.5 0 0 1-.5-.5v-13zm-5-1a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h.5a1 1 0 0 0 1-1v-13a1 1 0 0 0-1-1zm5 0a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h.5a1 1 0 0 0 1-1v-13a1 1 0 0 0-1-1z" />
-                                    </svg>
+                        </a>
+
+                        <div class="d-flex align-items-center justify-content-end">
+                            <p class="mb-0 text-muted">
+                                @if (@item.EndTime != "")
+                                {
+                                    <b>Đến hạn: @item.EndTime</b>
+                                }
+                                else
+                                {
+                                    if (@item.LastUpdateTime != "")
+                                    {
+                                        <b>Thời gian chỉnh sửa: @item.LastUpdateTime</b>
+                                    }
+                                    else
+                                    {
+                                        <b>Thời gian tạo: @item.CreatedTime</b>
+                                    }
+                                }
+                            </p>
+
+                            <div class="dropdown me-1 ms-2">
+                                <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-list"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="~/Teacher/Test/Update/@item.TestId">Chỉnh sửa</a></li>
-                                    <li><a class="dropdown-item" href="~/Teacher/Test/Delete/@item.TestId">Xóa</a></li>
-                                </ul>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="~/Teacher/Test/Edit/@item.TestId">Chỉnh sửa</a>
+                                    <a class="dropdown-item" href="~/Teacher/Test/Delete/@item.TestId">Xóa</a>
+                                </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </li>
             }
         </ul>
@@ -49,7 +66,6 @@
                         {
                             <li class="page-item">
                                 <a class="page-link" href="javascript:;" onclick="doSearch('#formSearch',@p)">@p</a>
-
                             </li>
                         }
                     }
