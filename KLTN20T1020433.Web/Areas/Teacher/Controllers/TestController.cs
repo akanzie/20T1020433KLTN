@@ -1,18 +1,14 @@
-﻿using KLTN20T1020433.Web.AppCodes;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using KLTN20T1020433.Domain.Test;
-using MediatR;
-using KLTN20T1020433.Application.Queries.TeacherQueries;
-using KLTN20T1020433.Web.Areas.Teacher.Models;
+﻿using AutoMapper;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
-using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
-using AutoMapper;
+using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Test;
+using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
+using KLTN20T1020433.Web.Areas.Teacher.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using KLTN20T1020433.Web.Models;
-using System.Net.WebSockets;
-using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -98,24 +94,17 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             ViewBag.Title = "Tạo bài kiểm tra";
             ViewBag.IsEdit = false;
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-            var model = new CreateTestCommand()
-            {
-                TestType = TestType.Exam
-            };
 
-            return View("CreateExam", model);
+
+            return View("CreateExam", new CreateTestCommand());
         }
         public IActionResult CreateExam()
         {
             ViewBag.Title = "Tạo kỳ thi";
             ViewBag.IsEdit = false;
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-            var model = new CreateTestCommand()
-            {
-                TestType = TestType.Exam
-            };
 
-            return View("CreateExam", model);
+            return View("CreateExam", new CreateTestCommand());
         }
         public IActionResult ListTest()
         {
@@ -267,7 +256,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         [HttpPost]
         public async Task<IActionResult> UploadTestFile(List<IFormFile> files)
         {
-            String teacherId = "1";
+            var user = User.GetUserData();
             if (files == null || files.Count == 0)
                 return Json("Không có tệp nào được gửi.");
             else
@@ -275,7 +264,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 int testId = 0;
                 if (ApplicationContext.GetDataInt32(Constants.TESTID) == null || ApplicationContext.GetDataInt32(Constants.TESTID) == 0)
                 {
-                    testId = await _mediator.Send(new CreateTestCommand { TeacherId = teacherId, TestType = TestType.Exam, TestStatus = TestStatus.Creating });
+                    testId = await _mediator.Send(new CreateTestCommand { TeacherId = user.UserId, TestType = TestType.Exam, TestStatus = TestStatus.Creating });
                     ApplicationContext.SetInt32(Constants.TESTID, testId);
                 }
                 else

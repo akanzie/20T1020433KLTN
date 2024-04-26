@@ -25,7 +25,7 @@ namespace KLTN20T1020433.Domain.Test
         public bool CanSubmitLate { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime? LastUpdateTime { get; set; } = null;
-        private TestStatus _status;
+        private TestStatus _status = TestStatus.Creating;
 
         public TestStatus Status
         {

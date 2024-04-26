@@ -22,8 +22,8 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         public string TeacherId { get; set; }
         public string TeacherName { get; set; }
         public string Email { get; set; }
-        public TestType TestType { get; set; } = TestType.Quiz;
-        public TestStatus TestStatus { get; set; } = TestStatus.Creating;
+        public TestType TestType { get; set; }
+        public TestStatus TestStatus { get; set; }
     }
     public class CreateTestCommandHandler : IRequestHandler<CreateTestCommand, int>
     {

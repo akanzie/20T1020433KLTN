@@ -23,7 +23,7 @@ namespace KLTN20T1020433.Application.Services
         protected async Task<HttpRequestMessage> CreateRequest(string endpoint, GetTokenResponse getTokenResponse)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"{_apiOptions.Host}/{endpoint}");
-            request.Headers.Add("ums-token", getTokenResponse.Token);
+           request.Headers.Add("ums-token", getTokenResponse.Token);
             request.Headers.Add("ums-application", _apiOptions.AppId);
             request.Headers.Add("ums-time", _apiOptions.SecretKey);
             request.Headers.Add("ums-signature", getTokenResponse.Signature);

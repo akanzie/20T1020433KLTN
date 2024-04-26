@@ -34,12 +34,8 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             {
                 List<GetTestBySearchResponse> testResponse = new List<GetTestBySearchResponse>();
                 foreach (var item in tests)
-                {
-
-
-                    
-                    GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);
-                    
+                {                                       
+                    GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);                    
                     Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
                     getTestResponse.TeacherName = teacher.TeacherName;
                     getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForTeacher(item.Status);

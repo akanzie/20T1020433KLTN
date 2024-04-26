@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
 using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
@@ -16,6 +17,7 @@ namespace KLTN20T1020433.Application.Mappings
         {
             // Đưa hết các cấu hình bạn muốn map giữa các object vào đây
             // Thuộc tính FullName trong UserViewModel được kết hợp từ FirstName và LastName trong User
+            CreateMap<CreateTestCommand, Test>();
             CreateMap<Test, GetTestByIdResponse>();
             CreateMap<Comment, GetCommentResponse>();
             CreateMap<Submission, GetSubmissionResponse>();
