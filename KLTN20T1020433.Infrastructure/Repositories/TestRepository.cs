@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,21 +23,24 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 int id = 0;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var parameters = new
-                    {
-                        Title = data.Title ?? "",
-                        Instruction = data.Instruction ?? "",
-                        StartTime = data.StartTime,
-                        EndTime = data.EndTime,
-                        Status = data.Status.ToString(),
-                        IsCheckIP = data.IsCheckIP,
-                        IsConductedAtSchool = data.IsConductedAtSchool,
-                        CreatedTime = data.CreatedTime,
-                        TestType = data.TestType.ToString(),
-                        TeacherId = data.TeacherId
-                    };
-                    id = await connection.ExecuteScalarAsync<int>(
-                        "AddTest", parameters, commandType: CommandType.StoredProcedure);
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@Title", data.Title ?? "");
+                    parameters.Add("@Instruction", data.Instruction ?? "");
+                    parameters.Add("@StartTime", data.StartTime);
+                    parameters.Add("@EndTime", data.EndTime);
+                    parameters.Add("@Status", data.Status.ToString());
+                    parameters.Add("@IsCheckIP", data.IsCheckIP);
+                    parameters.Add("@IsConductedAtSchool", data.IsConductedAtSchool);
+                    parameters.Add("@CanSubmitLate", data.CanSubmitLate);
+                    parameters.Add("@CreatedTime", data.CreatedTime);
+                    parameters.Add("@LastUpdateTime", data.LastUpdateTime);
+                    parameters.Add("@TestType", data.TestType.ToString());
+                    parameters.Add("@TeacherId", data.TeacherId);
+                    parameters.Add("@TestId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                    await connection.ExecuteAsync(
+                       "AddTest", parameters, commandType: CommandType.StoredProcedure);
+                    id = parameters.Get<int>("@TestId");
+
                 }
                 return id;
             }
@@ -58,7 +62,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
-                        TestType = testType.ToString() ?? "",                        
+                        TestType = testType.ToString() ?? "",
                         FromTime = fromTime,
                         ToTime = toTime
                     };
@@ -163,7 +167,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         PageSize = pageSize,
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
-                        TestType = testType.ToString() ?? "",                        
+                        TestType = testType.ToString() ?? "",
                         FromTime = fromTime,
                         ToTime = toTime
                     };
@@ -251,8 +255,9 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     Status = data.Status.ToString(),
                     IsCheckIP = data.IsCheckIP,
                     IsConductedAtSchool = data.IsConductedAtSchool,
+                    CanSubmitLate = data.CanSubmitLate,
                     CreatedTime = data.CreatedTime,
-                    LastUpdateTime = data.LastUpdateTime ?? null,
+                    LastUpdateTime = data.LastUpdateTime,
                     TestType = data.TestType.ToString(),
                     TeacherId = data.TeacherId,
                     TestId = data.TestId

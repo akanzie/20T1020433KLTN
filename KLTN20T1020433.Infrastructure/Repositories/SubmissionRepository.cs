@@ -26,19 +26,21 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 int id = 0;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var parameters = new
-                    {
-                        StudentId = data.StudentId,
-                        TestId = data.TestId,
-                        SubmittedTime = data.SubmittedTime,
-                        IPAddress = data.IPAddress,
-                        Status = data.Status.ToString()
-                    };
-                    id = await connection.ExecuteScalarAsync<int>(
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@StudentId", data.StudentId);
+                    parameters.Add("@TestId", data.TestId);
+                    parameters.Add("@SubmittedTime", data.SubmittedTime);
+                    parameters.Add("@IPAddress", data.IPAddress);
+                    parameters.Add("@Status", data.Status.ToString());
+                    parameters.Add("@SubmissionId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                    await connection.ExecuteAsync(
                         "AddSubmission",
                         parameters,
                         commandType: CommandType.StoredProcedure
                     );
+
+                    id = parameters.Get<int>("@SubmissionId");
                 }
                 return id;
             }
