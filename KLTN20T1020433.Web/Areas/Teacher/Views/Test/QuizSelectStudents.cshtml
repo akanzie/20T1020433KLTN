@@ -4,8 +4,6 @@
     ViewData["Title"] = "SelectStudents";
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
-
-
 <div class="container-fluid">
     <h2>Chọn sinh viên tham gia</h2>
     <div class="d-flex justify-content-between">
@@ -38,7 +36,6 @@
                                 </div>
                                 <!-- Danh sách sinh viên -->
                                 <div id="listStudent">
-
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -53,11 +50,34 @@
 
             </div>
             <div class="mb-3">
-                <select class="">
-                    <option value="">Chọn kỳ thi</option>
-                    <option value="kithi1">Thi kết thúc học phần - Nhóm 1</option>
-                    <option value="kithi1">Thi kết thúc học phần - Nhóm 2</option>
-                </select>
+                <span class="fw-semibold btn" id="selectCourse" data-bs-toggle="modal" data-bs-target="#selectCourseModal">--Lớp học phần--</span>
+            </div>
+            <div class="modal fade" id="selectCourseModal" tabindex="-1" aria-labelledby="selectCourseModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="selectCourseLabel">Chọn lớp học phần</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="Course">Lớp học phần:</label>
+                                    <select class="form-select" id="Course" name="Course">
+                                        @foreach (var item in Model)
+                                        {
+                                            <option value="@item.CourseId">@item.CourseName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-primary" onclick="SaveSemester">Lưu</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="mb-3">
@@ -98,35 +118,7 @@
 
     </div>
 </div>
-
-
 <script>
-    const selectAllCheckbox = document.getElementById('selectAllClass1');
-    const itemCheckboxes = document.querySelectorAll('#class1Students input[type="checkbox"]');
-    console.log(selectAllCheckbox);
-    console.log(itemCheckboxes);
-    // Xử lý sự kiện khi checkbox "Chọn tất cả" được thay đổi
-    selectAllCheckbox.addEventListener('change', function () {
-        // Lặp qua tất cả các checkbox phần tử và đặt trạng thái chọn dựa trên trạng thái của checkbox "Chọn tất cả"
-        console.log('a');
-        console.log(selectAllCheckbox);
-        console.log(itemCheckboxes);
-        itemCheckboxes.forEach(function (checkbox) {
-            checkbox.checked = selectAllCheckbox.checked;
-            console.log("b")
-        });
-    });
 
-    // Xử lý sự kiện khi một checkbox phần tử khác được thay đổi
-    itemCheckboxes.forEach(function (checkbox) {
-        checkbox.addEventListener('change', function () {
-            console.log(a1)
-            // Kiểm tra nếu tất cả các checkbox phần tử đã được chọn thì đánh dấu checkbox "Chọn tất cả" là đã được chọn
-            selectAllCheckbox.checked = [...itemCheckboxes].every(function (item) {
-                console.log(b1)
-                return item.checked;
-            });
-        });
-    });
 </script>
 

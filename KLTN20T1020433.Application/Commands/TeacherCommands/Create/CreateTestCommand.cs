@@ -17,6 +17,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         public string Instruction { get; set; } = "";
         public bool IsCheckIP { get; set; } = false;
         public bool IsConductedAtSchool { get; set; } = false;
+        public bool CanSubmitLate { get; set; } = false;
         public DateTime? StartTime { get; set; } = null;
         public DateTime? EndTime { get; set; } = null;
         public string TeacherId { get; set; }

@@ -14,6 +14,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Update
         public bool CanSubmitLate { get; set; } = false;
         public DateTime? StartTime { get; set; } = null;
         public DateTime? EndTime { get; set; } = null;
+        public string TeacherId { get; set; }
 
     }
     public class UpdateTestCommandHandler : IRequestHandler<UpdateTestCommand, bool>

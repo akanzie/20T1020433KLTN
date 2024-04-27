@@ -12,6 +12,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using NuGet.Common;
+using System.Diagnostics.Metrics;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -92,22 +94,25 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
             return View(model);
         }
-        public IActionResult CreateQuiz()
+        public async Task<IActionResult> CreateQuiz()
         {
+            var user = User.GetUserData();
             ViewBag.Title = "Tạo bài kiểm tra";
             ViewBag.IsEdit = false;
-            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-
-
-            return View("CreateExam", new CreateTestCommand());
+            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;            
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });      
+            test.TestType = TestType.Quiz;
+            return View("Edit", test);
         }
-        public IActionResult CreateExam()
+        public async Task<IActionResult> CreateExam()
         {
+            var user = User.GetUserData();
             ViewBag.Title = "Tạo kỳ thi";
             ViewBag.IsEdit = false;
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-
-            return View("CreateExam", new CreateTestCommand());
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
+            test.TestType = TestType.Exam;
+            return View("Edit", test);
         }
         public IActionResult ListTest()
         {
@@ -133,6 +138,31 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View(input);
         }
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
+        {
+            var user = User.GetUserData();
+            int rowCount = await _mediator.Send(new GetRowCountTestsQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
+
+            var data = await _mediator.Send(input);
+
+            var model = new TestSearchResult()
+            {
+                Page = input.Page,
+                PageSize = input.PageSize,
+                SearchValue = input.SearchValue ?? "",
+                RowCount = rowCount,
+                FromTime = input.FromTime ?? null,
+                ToTime = input.ToTime ?? null,
+                Status = input.Status ?? null,
+                Type = input.Type ?? null,
+                Data = data
+            };
+
+            // Lưu lại vào session điều kiện tìm kiếm
+            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
+
+            return View(model);
+        }
+        public async Task<IActionResult> SearchStudent(GetTestsBySearchQuery input)
         {
             var user = User.GetUserData();
             int rowCount = await _mediator.Send(new GetRowCountTestsQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
@@ -214,9 +244,30 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     }
             }
         }
-        public IActionResult Update()
+        public async Task<IActionResult> Edit(int id = 0)
         {
-            return View();
+            var user = User.GetUserData();
+            ViewBag.IsEdit = true;
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
+            if (test == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                switch (test.TestType)
+                {
+                    case TestType.Quiz:
+                        ViewBag.Title = "Cập nhật thông tin bài kiểm tra";
+                        return View(test);
+                    case TestType.Exam:
+                        ViewBag.Title = "Cập nhật thông tin kỳ thi";
+                        return View(test);
+                    default:
+                        return RedirectToAction("Index", "Home");
+                }
+            }
+
         }
         public IActionResult Delete()
         {
@@ -282,7 +333,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(testId);
             }
         }
-        [Route("Teacher/Test/SelectStudents/{type?}")]
+        [Route("Test/SelectStudents/{type?}")]
         public async Task<IActionResult> SelectStudents(string type, CreateTestCommand command)
         {
             var user = User.GetUserData();
