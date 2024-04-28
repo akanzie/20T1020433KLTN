@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.Configuration;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
@@ -28,14 +29,14 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
         }
         public async Task<bool> Handle(CreateSubmissionFileCommand request, CancellationToken cancellationToken)
         {
-            if (request.File == null || request.File.Length == 0)
+            if (request.File == null || request.File.Length == 0 || request.File.Length >= FileUtils.MAX_FILE_SIZE)
             {
                 throw new ArgumentException("Invalid file.");
             }
             Guid id = Guid.NewGuid();
             string uniqueFileName = $"{id}_{request.File.FileName}";
-            Submission submission = await _submissionDB.GetById(request.SubmissionId);
-            Test test = await _testDB.GetById(submission.TestId);
+            Submission? submission = await _submissionDB.GetById(request.SubmissionId);
+            Test? test = await _testDB.GetById(submission.TestId);
             string directoryPath = Path.Combine(_fileOptions.FileStoragePath, test.Title, "Submission");
             if (!Directory.Exists(directoryPath))
             {

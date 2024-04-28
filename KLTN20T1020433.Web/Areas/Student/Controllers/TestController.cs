@@ -81,7 +81,6 @@ namespace KLTN20T1020433.Web.Controllers.Student
 
             // Lưu lại vào session điều kiện tìm kiếm
             ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
-
             return View(model);
 
         }
@@ -114,7 +113,6 @@ namespace KLTN20T1020433.Web.Controllers.Student
             if (submission.SubmissionId != 0)
             {                
                 var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
                 var model = new SubmissionModel
                 {   
                     Submission = submission,
@@ -214,7 +212,6 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
             if (submission.SubmissionId != 0)
             {
-
                 if (await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId }))
                 {
                     submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });

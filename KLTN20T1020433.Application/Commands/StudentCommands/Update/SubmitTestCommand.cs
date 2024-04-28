@@ -18,27 +18,24 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
     public class SubmitTestCommandHandler : IRequestHandler<SubmitTestCommand, bool>
     {
         private readonly ISubmissionRepository _submissionDB;
-
-
-        private readonly IMediator _mediator;
-        public SubmitTestCommandHandler(ISubmissionRepository submissionDB, IMediator mediator)
+        private readonly ISubmissionFileRepository _submissionFileDB;
+        public SubmitTestCommandHandler(ISubmissionRepository submissionDB, ISubmissionFileRepository submissionFileDB)
         {
             _submissionDB = submissionDB;
-            _mediator = mediator;
+            _submissionFileDB = submissionFileDB;
         }
         public async Task<bool> Handle(SubmitTestCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 bool result = false;
-                var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = request.SubmissionId });
+                
+                var files = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
                 if (files == null || !files.Any())
                 {
                     return result;
-                }
-                Submission? submission = await _submissionDB.GetById(request.SubmissionId);
-                if (submission == null)
-                    return false;
+                }    
+                Submission? submission = await _submissionDB.GetById(request.SubmissionId);            
                 if (request.SubmittedTime > request.TestEndTime)
                     submission.Status = SubmissionStatus.LateSubmission;
                 else
@@ -48,7 +45,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
                     submission.Status = SubmissionStatus.PendingProcessing;
                 }
                 submission.SubmittedTime = request.SubmittedTime;
-                submission.IPAddress = request.IPAddress.ToString();
+                submission.IPAddress = request.IPAddress;
                 result = await _submissionDB.Update(submission);
                 return result;
             }

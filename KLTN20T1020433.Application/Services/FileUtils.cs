@@ -9,7 +9,8 @@ using Xceed.Words.NET;
 namespace KLTN20T1020433.Application.Services
 {
     public static class FileUtils
-    {     
+    {
+        public const long MAX_FILE_SIZE = 25 * 1024 * 1024;
         public static async Task<byte[]> ReadFileAsync(string filePath)
         {
             if (string.IsNullOrEmpty(filePath) || !System.IO.File.Exists(filePath))

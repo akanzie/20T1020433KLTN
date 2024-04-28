@@ -24,8 +24,6 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         public async Task<int> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
         {
             var test = await _testDB.GetById(request.TestId);
-
-            // Kiểm tra xem kỳ thi có tồn tại không
             if (test == null)
             {
                 throw new Exception("Không tìm thấy kỳ thi.");

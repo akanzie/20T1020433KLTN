@@ -22,7 +22,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
             try
             {
                 bool result = false;
-                Submission submission = await _submissionDB.GetById(request.SubmissionId);
+                Submission? submission = await _submissionDB.GetById(request.SubmissionId);
                 submission.Status = SubmissionStatus.NotSubmitted;
                 result = await _submissionDB.Update(submission);
                 return result;
