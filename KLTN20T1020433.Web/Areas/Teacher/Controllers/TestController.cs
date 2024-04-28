@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
+using KLTN20T1020433.Application.Commands.TeacherCommands.Delete;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Queries;
 using KLTN20T1020433.Application.Queries.TeacherQueries;
@@ -11,9 +12,6 @@ using KLTN20T1020433.Web.Areas.Teacher.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using NuGet.Common;
-using System.Diagnostics.Metrics;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -44,13 +42,13 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 Test = test,
                 Files = files
             };
-
             return View(model);
 
         }
         public async Task<IActionResult> ListSubmission(int testId = 0)
         {
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+            var user = User.GetUserData();
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
             if (test.TestId == 0)
             {
                 return RedirectToAction("Index", "Home");
@@ -99,8 +97,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             var user = User.GetUserData();
             ViewBag.Title = "Tạo bài kiểm tra";
             ViewBag.IsEdit = false;
-            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;            
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });      
+            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
             test.TestType = TestType.Quiz;
             return View("Edit", test);
         }
@@ -114,7 +112,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             test.TestType = TestType.Exam;
             return View("Edit", test);
         }
-        public IActionResult ListTest()
+        public IActionResult ListTest(string searchValue = "")
         {
             var user = User.GetUserData();
             var input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
@@ -124,7 +122,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 {
                     Page = 1,
                     PageSize = TEST_PAGE_SIZE,
-                    SearchValue = "",
+                    SearchValue = searchValue,
                     Status = null,
                     Type = null,
                     FromTime = null,
@@ -134,7 +132,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     Semester = 0
                 };
             }
-
+            else
+            {
+                input.SearchValue = searchValue;
+            }
+            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
             return View(input);
         }
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
@@ -150,16 +152,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 PageSize = input.PageSize,
                 SearchValue = input.SearchValue ?? "",
                 RowCount = rowCount,
-                FromTime = input.FromTime ?? null,
-                ToTime = input.ToTime ?? null,
-                Status = input.Status ?? null,
-                Type = input.Type ?? null,
+                FromTime = input.FromTime,
+                ToTime = input.ToTime,
+                Status = input.Status,
+                Type = input.Type,
                 Data = data
             };
 
             // Lưu lại vào session điều kiện tìm kiếm
             ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
-
             return View(model);
         }
         public async Task<IActionResult> SearchStudent(GetTestsBySearchQuery input)
@@ -193,11 +194,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             var file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
             if (file == null)
                 return Json("Không tìm thấy file");
-            //else
-            //{
-            //    FileUtils.DeleteFile(file.FilePath);
-            //    await FileDataService.RemoveTestFile(id);
-            //}
+            else
+            {
+                await _mediator.Send(new RemoveTestFileCommand { });
+            }
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
             return Json(testId);
         }
@@ -276,9 +276,16 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         [HttpPost]
         public async Task<IActionResult> Save(string[] selectedStudents)
         {
+            var user = User.GetUserData();
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-            await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudents });
-            return RedirectToAction("Index", "Home");
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
+            if (test.TestId == 0)
+                return BadRequest("Không tìm thấy kỳ thi");
+            else
+            {
+                await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudents });
+                return RedirectToAction("ListTest");
+            }
         }
         public async Task<IActionResult> Download(Guid id)
         {
