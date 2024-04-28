@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
+using KLTN20T1020433.Application.Commands.TeacherCommands.Update;
 using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Comment;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
-using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
-using System;
+
 
 namespace KLTN20T1020433.Application.Mappings
 {

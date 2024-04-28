@@ -2,7 +2,7 @@
 using KLTN20T1020433.Domain.Test;
 using MediatR;
 
-namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Update
+namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
 {
     public class UpdateTestCommand : IRequest<bool>
     {

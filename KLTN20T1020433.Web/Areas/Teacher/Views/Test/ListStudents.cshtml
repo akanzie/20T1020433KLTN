@@ -3,10 +3,30 @@
 @{
     Layout = null;
 }
+<input type="text" id="searchInput" class="form-control mb-3" placeholder="Search...">
+<div class="mb-3">
+    <button id="selectAllBtn" class="btn btn-primary mr-2">Select All</button>
+    <button id="clearAllBtn" class="btn btn-danger">Clear All</button>
+</div>
+
 <ul class="list-group">
     @foreach (var item in Model)
     {
-        <input type="checkbox" class="list-group-item" name="studentSelecting" value="@item.StudentId">
-        <p>@item.FirstName</p>
+        <li class="list-group-item">
+            <input type="checkbox" class="mr-2" name="studentSelecting" value="@item.StudentId">
+
+            <p>@item.FirstName</p>
+        </li>
+       
     }
 </ul>
+<script>
+    $('#selectAllBtn').click(function () {
+        $('#studentList input[type="checkbox"]').prop('checked', true);
+    });
+
+    // Clear all button click event
+    $('#clearAllBtn').click(function () {
+        $('#studentList input[type="checkbox"]').prop('checked', false);
+    });
+</script>

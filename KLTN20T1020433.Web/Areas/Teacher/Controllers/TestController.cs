@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Delete;
+using KLTN20T1020433.Application.Commands.TeacherCommands.Update;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Queries;
 using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
-using KLTN20T1020433.Web.Areas.Teacher.Commands.Update;
 using KLTN20T1020433.Web.Areas.Teacher.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -340,7 +340,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(testId);
             }
         }
-        [Route("Test/SelectStudents/{type?}")]
+        [Route("Teacher/SelectStudents/{type?}")]
         public async Task<IActionResult> SelectStudents(string type, CreateTestCommand command)
         {
             var user = User.GetUserData();
@@ -355,13 +355,13 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 HttpContext.Session.SetInt32(Constants.TESTID, testId);
             }
             var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
-            switch (type)
+            switch (type.ToLower())
             {
                 case "quiz":
-                    var courses = _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                     return View("QuizSelectStudents", courses);
                 case "exam":
-                    var exams = _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                     return View("ExamSelectStudents", exams);
                 default:
                     return RedirectToAction("Index", "Home");

@@ -74,7 +74,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" class="btn btn-primary" onclick="SaveSemester">Lưu</button>
+                            <button type="button" class="btn btn-primary" onclick="SaveSelection()" data-bs-dismiss="modal">Lưu</button>
                         </div>
                     </div>
                 </div>
@@ -119,6 +119,24 @@
     </div>
 </div>
 <script>
-
+    function SaveSelection() {
+        var courseId = $('#Course').val();
+        var courseName = $('#Course').find(':selected').text();
+        // Thay đổi nội dung của nút thành tên lớp học phần đã chọn
+        $('#selectCourse').text(courseName);
+        var url = '@Url.Action("ListStudents", "Test")';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { courseId: courseId },
+            success: function (data) {
+                $('#studentList').html(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
 </script>
+
 
