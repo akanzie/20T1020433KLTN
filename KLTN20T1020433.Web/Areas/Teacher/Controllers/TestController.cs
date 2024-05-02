@@ -28,6 +28,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             _mediator = mediator;
             _mapper = mapper;
         }
+
         public async Task<IActionResult> Detail(int id = 0)
         {
             var user = User.GetUserData();
@@ -45,7 +46,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View(model);
 
         }
-        public async Task<IActionResult> ListSubmission(int testId = 0)
+        public async Task<IActionResult> ListSubmissions(int testId = 0)
         {
             var user = User.GetUserData();
             var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
@@ -324,7 +325,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 int testId = 0;
                 if (ApplicationContext.GetDataInt32(Constants.TESTID) == null || ApplicationContext.GetDataInt32(Constants.TESTID) == 0)
                 {
-                    testId = await _mediator.Send(new CreateTestCommand { TeacherId = user.UserId, TestType = TestType.Exam, TestStatus = TestStatus.Creating });
+                    testId = await _mediator.Send(new CreateTestCommand { TeacherId = user.UserId, TestStatus = TestStatus.Creating });
                     ApplicationContext.SetInt32(Constants.TESTID, testId);
                 }
                 else
@@ -351,6 +352,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
             else
             {
+                command.TeacherId = user.UserId;
+                command.TestStatus = TestStatus.Creating;
                 int testId = await _mediator.Send(command);
                 HttpContext.Session.SetInt32(Constants.TESTID, testId);
             }

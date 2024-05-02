@@ -5,114 +5,189 @@
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
 <div class="container-fluid">
-    <h2>Chọn sinh viên tham gia</h2>
-    <div class="d-flex justify-content-between">
-        <div class="d-flex">
-            <div class="mb-3">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#studentModal">
-                    Chọn sinh viên khác
-                </button>
+    <div class="card">
+        <div class="card-body">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item fw-semibold fs-8">Tạo bài kiểm tra</li>
+                <li class="breadcrumb-item fw-semibold fs-8">Chọn sinh viên tham gia</li>
+            </ol>
+            <div class="d-flex justify-content-between">
+                <div class="d-flex">
+                    <div class="mb-3">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#studentModal">
+                            Chọn sinh viên khác
+                        </button>
 
-                <!-- Modal -->
-                <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="studentModalLabel">Danh sách sinh viên</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="studentModalLabel">Danh sách sinh viên</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Tìm kiếm..."
+                                                   aria-label="Tìm kiếm...">
+                                            <button class="btn btn-outline-secondary" type="button">
+                                                Tìm
+                                                kiếm
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Đóng
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Tìm kiếm..."
-                                           aria-label="Tìm kiếm...">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        Tìm
-                                        kiếm
+                        </div>
+                    </div>                    
+                    <div class="modal fade" id="selectCourseModal" tabindex="-1"
+                         aria-labelledby="selectCourseModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="selectCourseLabel">Chọn lớp học phần</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="Course">Lớp học phần:</label>
+                                            <select class="form-select" id="Course" name="Course">
+                                                @foreach (var item in Model)
+                                                {
+                                                    <option value="@item.CourseId">@item.CourseName</option>
+                                                }
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">
+                                        Đóng
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="SaveSelection()"
+                                            data-bs-dismiss="modal">
+                                        Lưu
                                     </button>
                                 </div>
-                                <!-- Danh sách sinh viên -->
-                                <div id="listStudent">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">
-                                    Đóng
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <button type="button" class="btn btn-light me-2" style="width:100px" id="">Hủy</button>
+                    <button type="button" class="btn btn-primary" style="width:100px" id="">Lưu</button>
+                </div>
             </div>
-            <div class="mb-3">
-                <span class="fw-semibold btn" id="selectCourse" data-bs-toggle="modal" data-bs-target="#selectCourseModal">--Lớp học phần--</span>
-            </div>
-            <div class="modal fade" id="selectCourseModal" tabindex="-1" aria-labelledby="selectCourseModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="selectCourseLabel">Chọn lớp học phần</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="Course">Lớp học phần:</label>
-                                    <select class="form-select" id="Course" name="Course">
-                                        @foreach (var item in Model)
-                                        {
-                                            <option value="@item.CourseId">@item.CourseName</option>
-                                        }
-                                    </select>
-                                </div>
+            <div class="row mt-4">
+                <div class="col-md-5">
+                    <div class="col-lg mb-4 border rounded p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-0 me-1">Sinh viên</h4>
+                                <span class="fw-semibold">(5)</span>
+                            </div>
+                            <div class="">
+                                <span class="fw-semibold btn text-primary" id="selectCourse" data-bs-toggle="modal"
+                                      data-bs-target="#selectCourseModal">--Chọn lớp học phần--</span>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" class="btn btn-primary" onclick="SaveSelection()" data-bs-dismiss="modal">Lưu</button>
+                        <div class="mb-4">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Tìm kiếm..." aria-label="Tìm kiếm...">
+                                <button class="btn btn-outline-secondary" type="button">Tìm kiếm</button>
+                            </div>
+                        </div>
+                        <div id="studentList">
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="mb-3">
-            <button type="button" class="btn btn-primary" id="">Xác nhận</button>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
-                <div id="studentList">
-                    <!-- Danh sách sinh viên sẽ được cập nhật bởi JavaScript -->
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
-                <div class="mb-3 mt-2 ms-3 mx-3">
-                    <h4>Khác</h4>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="selectAllClassA">
-                        <label class="form-check-label" for="selectAllClassA">
-                            Chọn tất cả
-                        </label>
-                    </div>
-                    <div id="classAStudents">
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student1">
-                            <label class="form-check-label" for="student1">MSV1: Sinh viên 1</label>
-                        </span>
-                        <span class="d-block">
-                            <input type="checkbox" class="form-check-input" id="student2">
-                            <label class="form-check-label" for="student2">MSV2: Sinh viên 2</label>
-                        </span>
+
+                <div class="col-md-2">
+                    <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
+                        <div class="d-block">
+                            <button class="btn d-block">Chọn</button>
+                            <button class="btn d-block">Bỏ</button>
+                        </div>
                     </div>
                 </div>
+                <div class="col-md-5">
+                    <div class="col-lg mb-4 border rounded p-3">
+                        <div class="d-flex align-items-center mb-4">
+                            <h4 class="mb-0 me-1">Danh sách tham gia</h4>
+                            <span>(5)</span>
+                        </div>
+                        <div class="mb-4">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Tìm kiếm..." aria-label="Tìm kiếm...">
+                                <button class="btn btn-outline-secondary" type="button">Tìm kiếm</button>
+                            </div>
+                        </div>
+                        <table class="table table-hover table-md">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">
+                                        <div>
+                                            <input type="checkbox" class="form-check-input me-4" id="student1Check"
+                                                   name="studentSelecting">
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        Mã sinh viên
+                                    </th>
+                                    <th scope="col">
+                                        Họ và tên
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <input type="checkbox" class="form-check-input me-4" id="student1Check"
+                                                   name="studentSelecting" value="">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        20T1020433
+                                    </td>
+                                    <td>
+                                        Châu Anh Kiệt
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <input type="checkbox" class="form-check-input me-4" id="student1Check"
+                                                   name="studentSelecting" value="">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        20T1020433
+                                    </td>
+                                    <td>
+                                        Châu Anh Kiệt
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
