@@ -3,12 +3,11 @@ using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
 {
-    public class RemoveSubmissionFileCommand : IRequest<bool>
+    public class RemoveSubmissionFileCommand : IRequest<string>
     {
         public Guid Id { get; set; }
-        public string FilePath { get; set; }
     }
-    public class RemoveSubmissionFileCommandHandler : IRequestHandler<RemoveSubmissionFileCommand, bool>
+    public class RemoveSubmissionFileCommandHandler : IRequestHandler<RemoveSubmissionFileCommand, string>
     {
         private readonly ISubmissionFileRepository _submissionFileDB;
 
@@ -16,16 +15,19 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
         {
             _submissionFileDB = submissionFileDB;
         }
-        public async Task<bool> Handle(RemoveSubmissionFileCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(RemoveSubmissionFileCommand request, CancellationToken cancellationToken)
         {
-            bool result = false;
-            if (!File.Exists(request.FilePath))
+            var file = await _submissionFileDB.GetById(request.Id);
+            if (file == null || !File.Exists(file.FilePath))
             {
-                return result;
+                return "Không tìm thấy file.";
             }
-            File.Delete(request.FilePath);
-            result = await _submissionFileDB.Delete(request.Id);
-            return result;
+            File.Delete(file.FilePath);
+            if (await _submissionFileDB.Delete(request.Id))
+            {
+                return $"Xóa file {file.OriginalName} thành công";
+            }
+            return "Có lỗi xảy ra, vui lòng thử lại sau.";
         }
     }
 }

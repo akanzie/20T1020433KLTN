@@ -9,7 +9,7 @@
                 </a>
             </li>
             <li class="nav-item d-flex align-items-center">
-                <form class="d-flex" method="post" action="~/Student/Test/ListTest">
+                <form class="d-flex" method="post" action="@Url.Action("Index","Test")">
                     @{
                         GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
                         string searchValue = "";

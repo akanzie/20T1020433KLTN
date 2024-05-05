@@ -5,32 +5,31 @@ using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
 {
-    public class CancelSubmissionCommand : IRequest<bool>
+    public class CancelSubmissionCommand : IRequest<string>
     {
         public int SubmissionId { get; set; }
     }
-    public class CancelSubmissionCommandHandler : IRequestHandler<CancelSubmissionCommand, bool>
+    public class CancelSubmissionCommandHandler : IRequestHandler<CancelSubmissionCommand, string>
     {
-        private readonly ISubmissionRepository _submissionDB; 
+        private readonly ISubmissionRepository _submissionDB;
         public CancelSubmissionCommandHandler(ISubmissionRepository submissionDB)
         {
             _submissionDB = submissionDB;
-
         }
-        public async Task<bool> Handle(CancelSubmissionCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CancelSubmissionCommand request, CancellationToken cancellationToken)
         {
-            try
+
+            var submission = await _submissionDB.GetById(request.SubmissionId);
+            if (submission == null)
             {
-                bool result = false;
-                Submission? submission = await _submissionDB.GetById(request.SubmissionId);
-                submission.Status = SubmissionStatus.NotSubmitted;
-                result = await _submissionDB.Update(submission);
-                return result;
+                return "Không tìm thấy bài nộp.";
             }
-            catch
+            submission.Status = SubmissionStatus.NotSubmitted;
+            if (await _submissionDB.Update(submission))
             {
-                return false;
+                return "Hủy nộp bài thành công.";
             }
+            return "Có lỗi xảy ra, vui lòng thử lại sau.";
         }
     }
 }

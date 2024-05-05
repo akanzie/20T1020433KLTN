@@ -21,7 +21,7 @@ namespace KLTN20T1020433.Domain.Test
         Task<Test?> GetById(int testId);       
         Task<int> Add(Test data);        
         Task<bool> Update(Test data);        
-        Task<bool> Delete(int testID); 
+        Task<bool> Delete(int testId); 
         Task<bool> IsUsed(int id);
     }
 }

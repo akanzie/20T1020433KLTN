@@ -26,7 +26,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         {
             _mediator = mediator;
         }
-        public IActionResult ListTest(string searchValue = "")
+        public IActionResult Index(string searchValue = "")
         {
             var user = User.GetUserData();
             GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
@@ -87,192 +87,165 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public async Task<IActionResult> Detail(int id = 0)
         {
             var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = user.UserId! });
-            if (submission.SubmissionId != 0)
+            if (id <= 0)
             {
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
-                if (test.TestId != 0)
-                {
-                    IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
-                    var model = new TestModel
-                    {
-                        Test = test,
-                        Files = files
-                    };
-                    return View(model);
-                }
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = user.UserId! });
+            if (submission == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
+            if (test == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
+            var model = new TestModel
+            {
+                Test = test,
+                Files = files
+            };
+            return View(model);
         }
 
         public async Task<IActionResult> Submission(int testId = 0)
         {
             var user = User.GetUserData();
-           
+
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission.SubmissionId != 0)
-            {                
+            if (submission != null)
+            {
                 var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
                 var model = new SubmissionModel
-                {   
+                {
                     Submission = submission,
                     Comments = comments
                 };
 
                 return PartialView(model);
             }
-            return Json("Không tìm thấy bài nộp.");
+            return BadRequest("Không tìm thấy bài nộp.");
         }
         [HttpPost]
         public async Task<IActionResult> UploadSubmissionFile(List<IFormFile> files, int testId = 0)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission.SubmissionId != 0)
+            if (submission == null)
             {
-                if (files == null || files.Count == 0)
-                    return Json("Không có tệp nào được gửi.");
-                else
-                {
-                    foreach (var item in files)
-                    {
-                        if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId })))
-                            return Json("Có lỗi khi lưu file");
-                    }
-                    return Json("Tải file lên thành công.");
-                }
+                return Json("Có lỗi xảy ra");
             }
-            return BadRequest();
+            if (files == null || files.Count == 0)
+                return Json("Không có tệp nào được gửi.");
+            foreach (var item in files)
+            {
+                if (item == null || item.Length == 0 || item.Length >= FileUtils.MAX_FILE_SIZE)
+                {
+                    return Json("File không hợp lệ hoặc có kích thước quá lớn.");
+                }
+                if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId })))
+                    return Json("Có lỗi khi lưu file");
+            }
+            return Json("Tải file lên thành công.");
         }
         [HttpPost]
         public async Task<IActionResult> RemoveSubmissionFile(Guid id, int testId = 0)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission.SubmissionId != 0)
+            if (submission == null)
             {
-                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
-                if (file.FileId == null)
-                    return Json("Không tìm thấy file");
-                else
-                {
-                    if (await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, FilePath = file.FilePath }))
-                        return Json("Xóa file thành công.");
-                    return Json("Có lỗi khi xóa file");
-                }
+                return Json("Có lỗi xảy ra.");
             }
-            return BadRequest();
+            var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+            if (file == null)
+                return Json("Không tìm thấy file");
+            else
+            {
+                var message = await _mediator.Send(new RemoveSubmissionFileCommand { Id = id });
+                return Json(message);
+            }
+
         }
         [HttpPost]
         public async Task<IActionResult> Submit(int testId)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission.SubmissionId != 0)
+            if (submission == null)
             {
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = submission.TestId });
-                if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(user.ClientIP!))
-                {
-                    return BadRequest("Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.");
-                }
-                if (!test.CanSubmitLate && DateTime.Now > test.EndTime)
-                {
-                    return BadRequest("Đã quá thời gian cho phép nộp bài. Bạn không được phép nộp bài.");
-                }
-                if (await _mediator.Send(new SubmitTestCommand
-                {
-                    SubmissionId = submission.SubmissionId,
-                    IPAddress = user.ClientIP!,
-                    IsCheckIP = test.IsCheckIP,
-                    SubmittedTime = DateTime.Now,
-                    TestEndTime = test.EndTime
-                }))
-                {
-                    submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-                    var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
-                    var model = new SubmissionModel
-                    {
-                        Submission = submission,
-                        Comments = comments
-                    };
-
-                    return PartialView("Submission", model);
-                }
-                else
-                {
-                    return BadRequest("Bạn chưa gửi file.");
-                }
+                return Json("Có lỗi xảy ra.");
             }
-            return BadRequest();
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = submission.TestId });
+            if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(user.ClientIP!))
+            {
+                return Json("Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.");
+            }
+            if (!test.CanSubmitLate && DateTime.Now > test.EndTime)
+            {
+                return Json("Đã quá thời gian cho phép nộp bài. Bạn không được phép nộp bài.");
+            }
+            var message = await _mediator.Send(new SubmitTestCommand
+            {
+                SubmissionId = submission.SubmissionId,
+                IPAddress = user.ClientIP!,
+                IsCheckIP = test.IsCheckIP,
+                SubmittedTime = DateTime.Now,
+                TestEndTime = test.EndTime
+            });
+            return Json(message);
         }
         [HttpPost]
         public async Task<IActionResult> Cancel(int testId)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
-            if (submission.SubmissionId != 0)
+            if (submission == null)
             {
-                if (await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId }))
-                {
-                    submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
-                    var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
-                    var model = new SubmissionModel
-                    {
-                        Submission = submission,
-                        Comments = comments
-                    };
-                    return PartialView("Submission", model);
-                }
+                return Json("Có lỗi xảy ra.");
             }
-            return BadRequest();
+            var message = await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId });
+            return Json(message);
         }
         public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission.SubmissionId != 0)
+            if (submission == null)
             {
-                GetSubmissionFileResponse file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
-                if (file == null)
-                {
-                    return BadRequest();
-                }
-                if (!System.IO.File.Exists(file.FilePath))
-                {
-                    return Json("Không tìm thấy file");
-                }
-                byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
-                return File(fileBytes, file.MimeType, file.OriginalName);
-
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+            if (file == null || !System.IO.File.Exists(file.FilePath))
+            {
+                return Json("Không tìm thấy file");
+            }
+            byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
+            return File(fileBytes, file.MimeType, file.OriginalName);
         }
         public async Task<IActionResult> DownloadTestFile(Guid id, int testId)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission.SubmissionId != 0)
+            if (submission == null)
             {
-                GetTestFileResponse file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
-                if (file == null)
-                {
-                    return BadRequest();
-                }
-                if (!System.IO.File.Exists(file.FilePath))
-                {
-                    return Json("Không tìm thấy file");
-                }
-                byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
-                return File(fileBytes, file.MimeType, file.OriginalName);
-
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            var file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
+            if (file == null || !System.IO.File.Exists(file.FilePath))
+            {
+                return Json("Không tìm thấy file");
+            }
+            byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
+            return File(fileBytes, file.MimeType, file.OriginalName);
         }
         public async Task<IActionResult> ListSubmissionFiles(int testId = 0)
         {
             var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
-            if (submission.SubmissionId != 0)
+            if (submission != null)
             {
                 var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
                 var model = new SubmissionFileModel
@@ -283,7 +256,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 };
                 return PartialView(model);
             }
-            return BadRequest();
+            return BadRequest("Không tìm thấy bài nộp.");
         }
 
     }

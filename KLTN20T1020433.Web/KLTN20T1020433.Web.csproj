@@ -22,7 +22,7 @@
     <None Include="Areas\Student\Views\Home\Pagination.cshtml" />
     <None Include="Areas\Student\Views\Test\Detail.cshtml" />
     <None Include="Areas\Student\Views\Test\ListSubmissionFiles.cshtml" />
-    <None Include="Areas\Student\Views\Test\ListTest.cshtml" />
+    <None Include="Areas\Student\Views\Test\Index.cshtml" />
     <None Include="Areas\Student\Views\Test\Search.cshtml" />
     <None Include="Areas\Student\Views\Test\Submission.cshtml" />
     <None Include="Areas\Teacher\Views\Shared\_Header.cshtml" />

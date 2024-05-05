@@ -9,11 +9,11 @@ using KLTN20T1020433.Application.Services;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
-    public class GetTestByIdQuery : IRequest<GetTestByIdResponse>
+    public class GetTestByIdQuery : IRequest<GetTestByIdResponse?>
     {
         public int Id { get; set; }
     }
-    public class GetTestByIdQueryHandler : IRequestHandler<GetTestByIdQuery, GetTestByIdResponse>
+    public class GetTestByIdQueryHandler : IRequestHandler<GetTestByIdQuery, GetTestByIdResponse?>
     {
         private readonly ITestRepository _testDB;
         private readonly ITeacherRepository _teacherDB;
@@ -26,7 +26,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
             _teacherDB = teacherDB;
         }
 
-        public async Task<GetTestByIdResponse> Handle(GetTestByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetTestByIdResponse?> Handle(GetTestByIdQuery request, CancellationToken cancellationToken)
         {
             var test = await _testDB.GetById(request.Id);
             if (test != null)
@@ -34,13 +34,13 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                 if (test.StartTime <= DateTime.Now || test.StartTime == null)
                 {
                     GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
-                    Teacher teacher = await _teacherDB.GetTeacherById(test.TeacherId);
+                    var teacher = await _teacherDB.GetTeacherById(test.TeacherId);
                     testResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(test.Status);
-                    testResponse.TeacherName = teacher.TeacherName;
+                    testResponse.TeacherName = teacher!.TeacherName;
                     return testResponse;
                 }
             }
-            return new GetTestByIdResponse();
+            return null;
         }
     }
 }

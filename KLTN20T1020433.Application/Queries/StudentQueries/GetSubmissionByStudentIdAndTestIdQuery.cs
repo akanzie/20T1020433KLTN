@@ -7,12 +7,12 @@ using KLTN20T1020433.Domain.Test;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
-    public class GetSubmissionByStudentIdAndTestIdQuery : IRequest<GetSubmissionResponse>
+    public class GetSubmissionByStudentIdAndTestIdQuery : IRequest<GetSubmissionResponse?>
     {
         public string StudentId { get; set; }
         public int TestId { get; set; }
     }
-    public class GetSubmissionByStudentIdAndTestIdQueryHandler : IRequestHandler<GetSubmissionByStudentIdAndTestIdQuery, GetSubmissionResponse>
+    public class GetSubmissionByStudentIdAndTestIdQueryHandler : IRequestHandler<GetSubmissionByStudentIdAndTestIdQuery, GetSubmissionResponse?>
     {
         private readonly ISubmissionRepository _submissionDB;
         private readonly ITestRepository _testDB;
@@ -25,7 +25,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
             _mapper = mapper;
         }
 
-        public async Task<GetSubmissionResponse> Handle(GetSubmissionByStudentIdAndTestIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetSubmissionResponse?> Handle(GetSubmissionByStudentIdAndTestIdQuery request, CancellationToken cancellationToken)
         {
             var submission = await _submissionDB.GetByTestIdAndStudentId(request.TestId, request.StudentId);
             if (submission != null)
@@ -41,7 +41,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                 submissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(submission.Status);
                 return submissionResponse;
             }
-            return new GetSubmissionResponse();
+            return null;
         }
     }
 }

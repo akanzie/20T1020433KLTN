@@ -1,78 +1,76 @@
+function showToast(message) {
+    var toast = $('<div class="toast-container position-fixed bottom-0 end-0 p-3">\
+                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">\
+                        <div class="toast-body">\
+                            ' + message + '\
+                        </div>\
+                    </div>\
+                </div>');
 
-<script>
-    // Lắng nghe sự kiện click vào nút toggle và thêm/xóa class "show" từ sidebar
-    document.getElementById('sidebarToggle').addEventListener('click', function() {
-    var sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('show');
-});
+    // Thêm toast vào body
+    $('body').append(toast);
 
+    // Hiển thị toast
+    var bsToast = new bootstrap.Toast(toast.find('.toast')[0]);
+    bsToast.show();
+}
+function openModalWithConfirmation(header, message, buttonName, confirmCallback) {
+    // Tạo modal
+    var modal = $('<div class="modal fade" tabindex="-1" role="dialog">\
+                    <div class="modal-dialog" role="document">\
+                        <div class="modal-content">\
+                            <div class="modal-header">\
+                                <h5 class="modal-title">' + header + '</h5>\
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\
+                            </div>\
+                            <div class="modal-body">' + message + '</div>\
+                            <div class="modal-footer">\
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>\
+                                <button type="button" class="btn btn-primary btn-confirm"m>' + buttonName + '</button>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>');
 
-    const selectAllCheckbox = document.getElementById('selectAllClass1');
-    const itemCheckboxes = document.querySelectorAll('#class1Students input[type="checkbox"]');
+    // Thêm modal vào body
+    $('body').append(modal);
 
-    // Xử lý sự kiện khi checkbox "Chọn tất cả" được thay đổi
-    selectAllCheckbox.addEventListener('change', function() {
-        // Lặp qua tất cả các checkbox phần tử và đặt trạng thái chọn dựa trên trạng thái của checkbox "Chọn tất cả"
-        itemCheckboxes.forEach(function (checkbox) {
-            checkbox.checked = selectAllCheckbox.checked;
-        });
-});
+    // Mở modal
+    modal.modal('show');
 
-    // Xử lý sự kiện khi một checkbox phần tử khác được thay đổi
-    itemCheckboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function () {
-            // Kiểm tra nếu tất cả các checkbox phần tử đã được chọn thì đánh dấu checkbox "Chọn tất cả" là đã được chọn
-            selectAllCheckbox.checked = [...itemCheckboxes].every(function (item) {
-                return item.checked;
-            });
-        });
-});
-
-    // Lắng nghe sự kiện khi tất cả các tài liệu HTML đã được tải
-    document.addEventListener('DOMContentLoaded', function() {
-    var itemCheckboxes = document.querySelectorAll('.checkboxItem');
-
-    // Lắng nghe sự kiện nhập vào thanh tìm kiếm
-    var searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', function() {
-        var searchText = searchInput.value.toLowerCase().trim();
-
-    // Lặp qua tất cả các checkbox phần tử
-    itemCheckboxes.forEach(function(checkbox) {
-            var label = checkbox.nextElementSibling.textContent.toLowerCase().trim();
-    // Nếu nội dung của label chứa chuỗi tìm kiếm thì hiển thị, ngược lại ẩn đi
-    if (label.includes(searchText)) {
-        checkbox.parentNode.style.display = 'block';
-            } else {
-        checkbox.parentNode.style.display = 'none';
-            }
-        });
-    });
-
-    var addStudentBtn = document.getElementById('addStudentBtn');
-    var studentList = document.getElementById('studentList');
-
-    addStudentBtn.addEventListener('click', function(event) {
-        event.preventDefault(); // Ngăn chặn hành vi mặc định của nút submit (trang reload)
-
-    var studentNameInput = document.getElementById('studentName');
-    var studentName = studentNameInput.value.trim();
-
-    if (studentName !== '') {
-            var listItem = document.createElement('li');
-    listItem.textContent = studentName;
-    studentList.appendChild(listItem);
-
-    // Xóa nội dung của ô nhập liệu sau khi thêm sinh viên thành công
-    studentNameInput.value = '';
+    // Xác nhận khi click vào button "Xác nhận"
+    modal.find('.btn-confirm').on('click', function () {
+        if (typeof confirmCallback === 'function') {
+            confirmCallback();
         }
+        // Đóng modal sau khi xác nhận
+        modal.modal('hide');
     });
-});
-    window.addEventListener('click', function(event) {
-    var modal = document.getElementById('myModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-});
 
-</script>
+    // Xóa modal khỏi DOM khi đóng
+    modal.on('hidden.bs.modal', function () {
+        modal.remove();
+    });
+}
+function handleAjaxError(xhr) {
+    var errorMessage = xhr.responseText;
+    alert("Your request is not valid: " + errorMessage);
+}
+function checkFileSize(input) {
+    var files = input.files; // Mảng các file được chọn
+
+    for (var i = 0; i < files.length; i++) {
+        var fileSize = files[i].size; // Kích thước của file trong byte
+        var maxSizeInBytes = 25 * 1024 * 1024; // Giới hạn kích thước file (25MB)
+
+        if (fileSize > maxSizeInBytes) {
+            showToast("Kích thước file " + files[i].name + " vượt quá giới hạn cho phép (25MB). Vui lòng chọn file khác.");
+            // Xoá file đã chọn (tùy chọn)
+            input.value = "";
+            return false; // Kích thước file vượt quá giới hạn
+        }
+    }
+
+    return true; // Tất cả các file đều hợp lệ
+}
+

@@ -3,75 +3,72 @@
 @{
     Layout = null;
 }
-<div id="submission">
-    <div class="card mb-4">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="card-text">Bài nộp của bạn</h4>
-                <p class="card-text text-dark" id="submissionStatus">@Model.Submission.StatusDisplayName</p>
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-text">Bài nộp của bạn</h4>
+            <p class="card-text text-dark" id="submissionStatus">@Model.Submission.StatusDisplayName</p>
 
-            </div>
         </div>
-        <div class="card-body pt-0">
-            <!-- Hiển thị file bài nộp của sinh viên -->
-            <div class="mb-3">
-                <div id="submission_files">
-                </div>
-                <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
-   
-                    <input type="file" class="d-none" multiple id="fileInput" />
-                    @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
-                    {
-                        <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
-                    }
-                    else if (Model.Submission.Status == SubmissionStatus.Absent)
-                    {
-                        <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control disabled" disabled>Thêm file</button>
-                    }
-                </form>
+    </div>
+    <div class="card-body pt-0">
+        <!-- Hiển thị file bài nộp của sinh viên -->
+        <div class="mb-3">
+            <div id="submission_files">
+            </div>
+            <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
 
+                <input type="file" class="d-none" multiple id="fileInput" />
                 @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                 {
-                    <button id="submitBtn" class="btn btn-primary mt-4 form-control" type="button">Nộp bài</button>
-
+                    <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
                 }
                 else if (Model.Submission.Status == SubmissionStatus.Absent)
                 {
-                    <button id="submitBtn" class="btn btn-primary mt-4 form-control disabled" disabled type="button">Nộp bài</button>
+                    <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control disabled" disabled>Thêm file</button>
                 }
-                else
-                {
-                    <button id="cancelBtn" class="btn btn-primary mt-4 form-control" type="button">Hủy nộp bài</button>
-                }
+            </form>
 
-            </div>
+            @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
+            {
+                <button id="submitBtn" class="btn btn-primary mt-4 form-control" type="button">Nộp bài</button>
+
+            }
+            else if (Model.Submission.Status == SubmissionStatus.Absent)
+            {
+                <button id="submitBtn" class="btn btn-primary mt-4 form-control disabled" disabled type="button">Nộp bài</button>
+            }
+            else
+            {
+                <button id="cancelBtn" class="btn btn-primary mt-4 form-control" type="button">Hủy nộp bài</button>
+            }
+
         </div>
     </div>
-    <div class="card">
-        <div class="bg-white py-3 ms-4">
-            <div class="d-flex align-items-center">
-                <span><i class="ti ti-user me-2"></i></span>
-                <span class="card-title mb-0">@Model.Comments.Count() nhận xét riêng tư</span>
-            </div>
+</div>
+<div class="card">
+    <div class="bg-white py-3 ms-4">
+        <div class="d-flex align-items-center">
+            <span><i class="ti ti-user me-2"></i></span>
+            <span class="card-title mb-0">@Model.Comments.Count() nhận xét riêng tư</span>
         </div>
-        <div class="mb-3 ms-4">
-            <div class="container">
-                <div class="row align-items-center">
-                    @foreach (var item in Model.Comments)
-                    {
-                        <div class="col">
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-0  "><strong>@item.TeacherName</strong></p>
-                                <p class="mb-0 text-muted">@item.CommentedTime</p>
-                            </div>
-                            <p class="mb-0  fw-bold text-dark">@item.Body</p>
+    </div>
+    <div class="mb-3 ms-4">
+        <div class="container">
+            <div class="row align-items-center">
+                @foreach (var item in Model.Comments)
+                {
+                    <div class="col">
+                        <div class="d-flex justify-content-between">
+                            <p class="mb-0  "><strong>@item.TeacherName</strong></p>
+                            <p class="mb-0 text-muted">@item.CommentedTime</p>
                         </div>
-                    }
+                        <p class="mb-0  fw-bold text-dark">@item.Body</p>
+                    </div>
+                }
 
-                </div>
             </div>
         </div>
-
     </div>
 </div>
 <script>
@@ -79,7 +76,7 @@
         var testId = @Model.Submission.TestId;
         bindEvents(testId);
         getFiles(testId);
-    });   
+    });
     function bindEvents(testId) {
         $('#selectFileBtn').off('click').on('click', function () {
             $('#fileInput').click();
@@ -87,17 +84,23 @@
 
         $(document).on('click', '.remove-button', function () {
             var fileId = $(this).data('fileid');
-            removeFile(fileId);
+            removeFile(fileId, testId);
         });
 
         $('#submitBtn').on('click', function () {
-            submit(testId);
+            openModalWithConfirmation('Gửi bài nộp của bạn?', 'Nộp bài nếu bạn đã kiểm tra các tệp đính kèm.', 'Nộp bài', function () {
+                submit(testId);
+            });
         });
         $('#cancelBtn').on('click', function () {
-            cancel(testId);
+            openModalWithConfirmation('Hủy nộp bài?', 'Hủy gửi để thêm hoặc thay đổi tệp đính kèm. Đừng quên gửi lại khi bạn đã hoàn tất.', 'Hủy nộp bài', function () {
+                cancel(testId);
+            });
         });
         $('#fileInput').off('change').on('change', function () {
-            uploadFiles();
+            var check = checkFileSize(this);
+            if (check)
+                uploadFiles(testId);
         });
     }
     function getFiles(testId) {
@@ -109,30 +112,30 @@
             success: function (data) {
                 $("#submission_files").html(data);
             },
-            error: function () {
-                alert("Your request is not valid!");
-            }
+            error: function (xhr, status, error) {
+                handleAjaxError(xhr);
+            },
         });
     }
-    function removeFile(fileId) {
+    function removeFile(fileId, testId) {
         var url = '@Url.Action("RemoveSubmissionFile", "Test")';
         $.ajax({
             url: url,
             type: 'POST',
             data: { id: fileId, testId: testId },
             success: function (response) {
+                showToast(response);
                 getFiles(testId);
             },
-            error: function () {
-                alert("Your request is not valid!");
-            }
+            error: function (xhr, status, error) {
+                handleAjaxError(xhr);
+            },
         });
     }
-
-    function uploadFiles() {
+    function uploadFiles(testId) {
         var formData = new FormData();
         var files = $('#fileInput')[0].files;
-        $.each(files, function (index, file) {
+        $.each(files, function (index, file) {  
             formData.append('files', file);
         });
         formData.append('testId', testId);
@@ -143,13 +146,14 @@
             data: formData,
             processData: false,
             contentType: false,
-            success: function () {
+            success: function (response) {
+                showToast(response);
                 $('#fileInput').val('');
                 getFiles(testId);
             },
-            error: function () {
-                alert("Your request is not valid!");
-            }
+            error: function (xhr, status, error) {
+                handleAjaxError(xhr);
+            },
         });
     }
     function submit(testId) {
@@ -158,13 +162,13 @@
             url: url,
             type: 'POST',
             data: { testId: testId },
-            success: function (data) {
-                $("#submission").html(data);
-                getFiles(testId);
+            success: function (response) {
+                showToast(response);
+                getSubmission(testId);
             },
-            error: function () {
-                alert("Your request is not valid!");
-            }
+            error: function (xhr, status, error) {
+                handleAjaxError(xhr);
+            },
         });
     }
     function cancel(testId) {
@@ -173,14 +177,14 @@
             url: url,
             type: 'POST',
             data: { testId: testId },
-            success: function (data) {
-                $("#submission").html(data);
-                getFiles(testId);
+            success: function (response) {
+                showToast(response);
+                getSubmission(testId);
             },
-            error: function () {
-                alert("Your request is not valid!");
-            }
+            error: function (xhr, status, error) {
+                handleAjaxError(xhr);
+            },
         });
     }
-    
+
 </script>

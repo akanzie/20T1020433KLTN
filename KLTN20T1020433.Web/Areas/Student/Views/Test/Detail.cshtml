@@ -124,8 +124,8 @@
                 url: url,
                 type: "GET",
                 data: { testId: testId },
-                error: function () {
-                    alert("Your request is not valid!");
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
                 },
                 success: function (data) {
                     $("#submission").html(data);
@@ -133,6 +133,6 @@
             });
             return;
         }
-                
+       
     </script>
 }

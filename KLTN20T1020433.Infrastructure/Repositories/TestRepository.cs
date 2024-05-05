@@ -106,7 +106,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<bool> Delete(int testID)
+        public async Task<bool> Delete(int testId)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
 
                     var parameters = new
                     {
-                        TestID = testID
+                        TestID = testId
                     };
                     result = await connection.ExecuteAsync(
                         "DeleteTest", parameters, commandType: CommandType.StoredProcedure) > 0;
