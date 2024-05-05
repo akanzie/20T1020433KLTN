@@ -11,30 +11,29 @@
     }
 </div>
 <div id="filePreview"></div>
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $(".file-link").click(function (event) {
-                event.preventDefault();
-                var fileId = $(this).data("file-id");
-                viewFile(fileId);
-            });
-
-            function viewFile(fileId) {
-                var url = '@Url.Action("SubmissionFile", "Test")';
-                $.ajax({
-                    url: url,
-                    type: "GET",
-                    data: { fileId: fileId },
-                    success: function (data) {
-                        $("#filePreview").html(data);
-                    },
-                    error: function () {
-                        alert("Your request is not valid!");
-                    }
-                });
+<script>
+    $(document).ready(function () {
+        $(".file-link").on('click', function (event) {
+            event.preventDefault();
+            var fileId = $(this).data("file-id");
+            viewFile(fileId);
+        });
+    });
+    function viewFile(fileId) {
+        var url = '@Url.Action("SubmissionFile", "Test")';
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: { fileId: fileId },
+            success: function (data) {
+                $("#filePreview").html(data);
+            },
+            error: function () {
+                alert("Your request is not valid!");
             }
         });
-    </script>
-}
+    }
+
+</script>
+
 

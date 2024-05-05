@@ -8,8 +8,7 @@
         <tr>
             <th scope="col">
                 <div>
-                    <input type="checkbox" class="form-check-input me-4" id="student1Check"
-                           name="studentSelecting">
+                    <input type="checkbox" class="form-check-input me-4" id="selectAll">
                 </div>
             </th>
             <th scope="col">
@@ -26,7 +25,7 @@
             <tr>
                 <td>
                     <div>
-                        <input type="checkbox" class="form-check-input me-4" id="student1Check"
+                        <input type="checkbox" class="form-check-input me-4 student-checkbox"
                                name="studentSelecting" value="@item.StudentId">
                     </div>
                 </td>
@@ -41,12 +40,25 @@
     </tbody>
 </table>
 <script>
-    $('#selectAllBtn').click(function () {
-        $('#studentList input[type="checkbox"]').prop('checked', true);
-    });
+    $(document).ready(function () {
+        $('#listStudents #selectAll').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('#listStudents .student-checkbox').prop('checked', isChecked);
+        });
 
-    // Clear all button click event
-    $('#clearAllBtn').click(function () {
-        $('#studentList input[type="checkbox"]').prop('checked', false);
-    });
+        $('#listStudents .student-checkbox').on('change', function () {
+            var allChecked = $('#listStudents .student-checkbox:checked').length === $('#listStudents .student-checkbox').length;
+            $('#listStudents #selectAll').prop('checked', allChecked);
+        });
+
+        $('#selectedStudents #selectAll').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('#selectedStudents .student-checkbox').prop('checked', isChecked);
+        });
+
+        $('#selectedStudents .student-checkbox').on('change', function () {
+            var allChecked = $('#selectedStudents .student-checkbox:checked').length === $('#selectedStudents .student-checkbox').length;
+            $('#selectedStudents #selectAll').prop('checked', allChecked);
+        });
+    })
 </script>

@@ -70,5 +70,10 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 throw;
             }
         }
+
+        public Task<IEnumerable<Student>> GetStudentsByTestId(int testId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

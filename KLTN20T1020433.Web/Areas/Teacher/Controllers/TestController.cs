@@ -8,10 +8,12 @@ using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.Web.Areas.Teacher.Commands.Delete;
 using KLTN20T1020433.Web.Areas.Teacher.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -28,10 +30,13 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             _mediator = mediator;
             _mapper = mapper;
         }
-
         public async Task<IActionResult> Detail(int id = 0)
         {
             var user = User.GetUserData();
+            if (id <= 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
             if (test.TestId == 0)
             {
@@ -41,7 +46,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             var model = new TestModel()
             {
                 Test = test,
-                Files = files
+                Files = files,
             };
             return View(model);
 
@@ -69,6 +74,12 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View(input);
 
         }
+        [HttpPost]
+        public async Task<IActionResult> CancelCreation(int testId)
+        {
+            await _mediator.Send(new DeleteTestCommand { Id = testId});
+            return RedirectToAction("Index", "Home");
+        }
         public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input)
         {
             var user = User.GetUserData();
@@ -93,27 +104,28 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
             return View(model);
         }
-        public async Task<IActionResult> CreateQuiz()
+        [Route("Teacher/{type?}/Create")]
+        public async Task<IActionResult> Create(string type = "")
         {
             var user = User.GetUserData();
-            ViewBag.Title = "Tạo bài kiểm tra";
-            ViewBag.IsEdit = false;
             var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
             var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
-            test.TestType = TestType.Quiz;
-            return View("Edit", test);
-        }
-        public async Task<IActionResult> CreateExam()
-        {
-            var user = User.GetUserData();
-            ViewBag.Title = "Tạo kỳ thi";
             ViewBag.IsEdit = false;
-            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
-            test.TestType = TestType.Exam;
-            return View("Edit", test);
+            switch (type.ToLower())
+            {
+                case "quiz":
+                    ViewBag.Title = "Tạo bài kiểm tra";
+                    test.TestType = TestType.Quiz;
+                    return View("Edit", test);
+                case "exam":
+                    ViewBag.Title = "Tạo kỳ thi";
+                    test.TestType = TestType.Exam;
+                    return View("Edit", test);
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
         }
-        public IActionResult ListTest(string searchValue = "")
+        public IActionResult Index(string searchValue = "")
         {
             var user = User.GetUserData();
             var input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
@@ -248,9 +260,9 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         public async Task<IActionResult> Edit(int id = 0)
         {
             var user = User.GetUserData();
-            ViewBag.IsEdit = true;
             var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
-            if (test == null)
+            ViewBag.IsEdit = true;
+            if (test.TestId == 0)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -275,17 +287,16 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Save(string[] selectedStudents)
+        public async Task<IActionResult> Save(int testId, string[] selectedStudents)
         {
             var user = User.GetUserData();
-            var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
             var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
             if (test.TestId == 0)
                 return BadRequest("Không tìm thấy kỳ thi");
             else
             {
                 await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudents });
-                return RedirectToAction("ListTest");
+                return RedirectToAction("Index");
             }
         }
         public async Task<IActionResult> Download(Guid id)
@@ -341,30 +352,56 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(testId);
             }
         }
-        [Route("Teacher/SelectStudents/{type?}")]
+        [Route("Teacher/{type?}/SelectStudents")]
         public async Task<IActionResult> SelectStudents(string type, CreateTestCommand command)
         {
             var user = User.GetUserData();
-            if (ApplicationContext.GetDataInt32(Constants.TESTID) != null && ApplicationContext.GetDataInt32(Constants.TESTID) != 0)
+            int? testId = ApplicationContext.GetDataInt32(Constants.TESTID);
+            if (testId != null && testId != 0)
             {
                 var updateTestCommmand = _mapper.Map<UpdateTestCommand>(command);
+                updateTestCommmand.TestId = testId.Value;
                 await _mediator.Send(updateTestCommmand);
+                HttpContext.Session.Remove(Constants.TESTID);
             }
             else
             {
                 command.TeacherId = user.UserId;
                 command.TestStatus = TestStatus.Creating;
-                int testId = await _mediator.Send(command);
-                HttpContext.Session.SetInt32(Constants.TESTID, testId);
+                testId = await _mediator.Send(command);
+                HttpContext.Session.SetInt32(Constants.TESTID, testId.Value);
             }
             var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+            ViewBag.TestId = testId.Value;
             switch (type.ToLower())
             {
                 case "quiz":
                     var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    ViewBag.Title = "Tạo bài kiểm tra";
                     return View("QuizSelectStudents", courses);
                 case "exam":
                     var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    ViewBag.Title = "Tạo kỳ thi";
+                    return View("ExamSelectStudents", exams);
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
+        }
+        [Route("Teacher/EditStudents/{id?}")]
+        public async Task<IActionResult> EditStudents(int id = 0)
+        {
+            var user = User.GetUserData();
+            var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
+            var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+            switch (test.TestType)
+            {
+                case TestType.Quiz:
+                    var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    ViewBag.Title = "Chỉnh sửa bài kiểm tra";
+                    return View("QuizSelectStudents", courses);
+                case TestType.Exam:
+                    var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
+                    ViewBag.Title = "Chỉnh sửa kỳ thi";
                     return View("ExamSelectStudents", exams);
                 default:
                     return RedirectToAction("Index", "Home");
@@ -372,6 +409,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         }
         public async Task<IActionResult> ListStudents(TestType type, string courseId)
         {
+            ViewBag.IsSelectedList = false;
             var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
             IEnumerable<GetStudentResponse> students = new List<GetStudentResponse>();
             if (type == TestType.Quiz)
@@ -383,6 +421,12 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 students = await _mediator.Send(new GetStudentsByExamIdQuery { CourseId = courseId, GetTokenResponse = token });
             }
             return View(students);
+        }
+        public async Task<IActionResult> SelectedStudents(int testId)
+        {
+            ViewBag.IsSelectedList = true;
+            IEnumerable<GetStudentResponse> students = await _mediator.Send(new GetStudentsByTestIdQuery { TestId = testId });
+            return View("ListStudents", students);
         }
         public IActionResult QuizSelectStudents()
         {

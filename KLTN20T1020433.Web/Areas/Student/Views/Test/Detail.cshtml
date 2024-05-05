@@ -115,11 +115,11 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            getSubmission(@Model.Test.TestId);
+            var testId = @Model.Test.TestId;
+            getSubmission(testId);
         });
         function getSubmission(testId) {
             var url = '@Url.Action("Submission", "Test")';
-
             $.ajax({
                 url: url,
                 type: "GET",
@@ -131,8 +131,8 @@
                     $("#submission").html(data);
                 }
             });
-
             return;
         }
+                
     </script>
 }

@@ -1,15 +1,14 @@
 ﻿@using KLTN20T1020433.Application.DTOs.TeacherDTOs
 @model IEnumerable<GetCourseResponse>
 @{
-    ViewData["Title"] = "SelectStudents";
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
-<div class="container-fluid">
+<div class="container-fluid ps-0 pe-0">
     <div class="card">
         <div class="card-body">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item fw-semibold fs-8">Tạo bài kiểm tra</li>
-                <li class="breadcrumb-item fw-semibold fs-8">Chọn sinh viên tham gia</li>
+                <li class="breadcrumb-item fw-semibold fs-8 text-dark">@ViewBag.Title</li>
+                <li class="breadcrumb-item fw-semibold fs-8 text-dark">Chọn sinh viên tham gia</li>
             </ol>
             <div class="d-flex justify-content-between">
                 <div class="d-flex">
@@ -48,48 +47,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>                    
-                    <div class="modal fade" id="selectCourseModal" tabindex="-1"
-                         aria-labelledby="selectCourseModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="selectCourseLabel">Chọn lớp học phần</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label for="Course">Lớp học phần:</label>
-                                            <select class="form-select" id="Course" name="Course">
-                                                @foreach (var item in Model)
-                                                {
-                                                    <option value="@item.CourseId">@item.CourseName</option>
-                                                }
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">
-                                        Đóng
-                                    </button>
-                                    <button type="button" class="btn btn-primary" onclick="SaveSelection()"
-                                            data-bs-dismiss="modal">
-                                        Lưu
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-
                 <div class="mb-3">
-                    <button type="button" class="btn btn-light me-2" style="width:100px" id="">Hủy</button>
-                    <button type="button" class="btn btn-primary" style="width:100px" id="">Lưu</button>
+                    <button id="cancelBtn" type="button" class="btn btn-light me-2" style="width:100px">Hủy</button>
+                    <button id="saveBtn" type="button" class="btn btn-primary" style="width:100px">Lưu</button>
                 </div>
             </div>
             <div class="row mt-4">
@@ -101,8 +63,14 @@
                                 <span class="fw-semibold">(5)</span>
                             </div>
                             <div class="">
-                                <span class="fw-semibold btn text-primary" id="selectCourse" data-bs-toggle="modal"
-                                      data-bs-target="#selectCourseModal">--Chọn lớp học phần--</span>
+                                <select class="form-select" id="Course" name="Course">
+                                    <option selected value="">Chọn lớp học phần</option>
+                                    @foreach (var item in Model)
+                                    {
+                                        <option value="@item.CourseId">@item.CourseName</option>
+                                    }
+
+                                </select>
                             </div>
                         </div>
                         <div class="mb-4">
@@ -111,7 +79,7 @@
                                 <button class="btn btn-outline-secondary" type="button">Tìm kiếm</button>
                             </div>
                         </div>
-                        <div id="studentList">
+                        <div id="listStudents">
                         </div>
                     </div>
                 </div>
@@ -136,82 +104,97 @@
                                 <button class="btn btn-outline-secondary" type="button">Tìm kiếm</button>
                             </div>
                         </div>
-                        <table class="table table-hover table-md">
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">
-                                        <div>
-                                            <input type="checkbox" class="form-check-input me-4" id="student1Check"
-                                                   name="studentSelecting">
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                        Mã sinh viên
-                                    </th>
-                                    <th scope="col">
-                                        Họ và tên
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div>
-                                            <input type="checkbox" class="form-check-input me-4" id="student1Check"
-                                                   name="studentSelecting" value="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        20T1020433
-                                    </td>
-                                    <td>
-                                        Châu Anh Kiệt
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div>
-                                            <input type="checkbox" class="form-check-input me-4" id="student1Check"
-                                                   name="studentSelecting" value="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        20T1020433
-                                    </td>
-                                    <td>
-                                        Châu Anh Kiệt
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div id="selectedStudents"></div>
 
                     </div>
                 </div>
 
             </div>
         </div>
-
     </div>
 </div>
-<script>
-    function SaveSelection() {
-        var courseId = $('#Course').val();
-        var courseName = $('#Course').find(':selected').text();
-        // Thay đổi nội dung của nút thành tên lớp học phần đã chọn
-        $('#selectCourse').text(courseName);
-        var url = '@Url.Action("ListStudents", "Test")';
-        $.ajax({
-            url: url,
-            type: 'GET',
-            data: { courseId: courseId },
-            success: function (data) {
-                $('#studentList').html(data);
-            },
-            error: function (error) {
-                console.log(error);
-            }
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var testId = @ViewBag.TestId;
+            bindEvents(testId);
+            getSelectedStudents(testId);
         });
-    }
-</script>
-
+        function bindEvents(testId) {
+            $('#cancelBtn').on('click', function () {
+                console.log("a");
+                cancelCreation(testId);
+            });
+            $("#saveBtn").on('click', function () {
+                console.log("a");
+                saveSelection(testId);
+            });
+            $('#Course').on('change', function () {
+                selectCourse();
+            });
+  
+        }
+        function getSelectedStudents(TestId) {
+            var url = '@Url.Action("SelectedStudents", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { testId: TestId },
+                success: function (data) {
+                    $('#selectedStudents').html(data);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+        function selectCourse() {
+            var courseId = $('#Course').val();
+            var courseName = $('#Course').find(':selected').text();
+            // Thay đổi nội dung của nút thành tên lớp học phần đã chọn
+            $('#selectCourse').text(courseName);
+            var url = '@Url.Action("ListStudents", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { courseId: courseId },
+                success: function (data) {
+                    $('#listStudents').html(data);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+        
+        function saveSelection(testId) {
+            var url = '@Url.Action("Save", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (result) {
+                    window.location.href = '@Url.Action("Index", "Test")';
+                },
+                error: function (error) {
+                    alert("Your request is not valid!");
+                }
+            });
+        }
+        function cancelCreation(testId) {
+            var url = '@Url.Action("CancelCreation", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (result) {
+                    window.location.href = '@Url.Action("Index", "Home")';
+                },
+                error: function (error) {
+                    alert("Your request is not valid!");
+                }
+            });
+        }
+    </script>
+}
 

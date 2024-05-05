@@ -2,6 +2,7 @@
 {
     public class DeleteTestCommand
     {
+        public int Id { get; set; }
     }
     public class DeleteTestCommandHandler
     {

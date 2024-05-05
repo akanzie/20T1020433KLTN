@@ -18,7 +18,7 @@
                 <div id="submission_files">
                 </div>
                 <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
-                    <input type="hidden" name="TestId" value="@Model.Submission.TestId" />
+   
                     <input type="file" class="d-none" multiple id="fileInput" />
                     @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
                     {
@@ -74,126 +74,113 @@
 
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
-        var testId;
+        var testId = @Model.Submission.TestId;
+        bindEvents(testId);
+        getFiles(testId);
+    });   
+    function bindEvents(testId) {
+        $('#selectFileBtn').off('click').on('click', function () {
+            $('#fileInput').click();
+        });
 
-        function initialize() {
-            testId = $("input[name='TestId']").val();
-            bindEvents();
-            getFiles(testId);
-        }
+        $(document).on('click', '.remove-button', function () {
+            var fileId = $(this).data('fileid');
+            removeFile(fileId);
+        });
 
-        function bindEvents() {
-            $('#selectFileBtn').off('click').on('click', function () {
-                $('#fileInput').click();
-            });
+        $('#submitBtn').on('click', function () {
+            submit(testId);
+        });
+        $('#cancelBtn').on('click', function () {
+            cancel(testId);
+        });
+        $('#fileInput').off('change').on('change', function () {
+            uploadFiles();
+        });
+    }
+    function getFiles(testId) {
+        var url = '@Url.Action("ListSubmissionFiles", "Test")';
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: { testId: testId },
+            success: function (data) {
+                $("#submission_files").html(data);
+            },
+            error: function () {
+                alert("Your request is not valid!");
+            }
+        });
+    }
+    function removeFile(fileId) {
+        var url = '@Url.Action("RemoveSubmissionFile", "Test")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { id: fileId, testId: testId },
+            success: function (response) {
+                getFiles(testId);
+            },
+            error: function () {
+                alert("Your request is not valid!");
+            }
+        });
+    }
 
-            $(document).on('click', '.remove-button', function () {
-                var fileId = $(this).data('fileid');
-                removeFile(fileId);
-            });
-
-            $('#submitBtn').on('click', function () {
-                submit(testId);
-            });
-            $('#cancelBtn').on('click', function () {
-                cancel(testId);
-            });
-            $('#fileInput').off('change').on('change', function () {
-                uploadFiles();
-            });
-        }
-
-        function removeFile(fileId) {
-            var url = '@Url.Action("RemoveSubmissionFile", "Test")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: { id: fileId, testId: testId },
-                success: function (response) {
-                    getFiles(testId);
-                },
-                error: function () {
-                    alert("Your request is not valid!");
-                }
-            });
-        }
-
-        function uploadFiles() {
-            var formData = new FormData();
-            var files = $('#fileInput')[0].files;
-            $.each(files, function (index, file) {
-                formData.append('files', file);
-            });
-            formData.append('testId', testId);
-            var url = '@Url.Action("UploadSubmissionFile", "Test")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function () {
-                    $('#fileInput').val('');
-                    getFiles(testId);
-                },
-                error: function () {
-                    alert("Your request is not valid!");
-                }
-            });
-        }
-
-        function getFiles(testId) {
-            var url = '@Url.Action("ListSubmissionFiles", "Test")';
-            $.ajax({
-                url: url,
-                type: "GET",
-                data: { testId: testId },
-                success: function (data) {
-                    $("#submission_files").html(data);
-                },
-                error: function () {
-                    alert("Your request is not valid!");
-                }
-            });
-        }
-
-        function submit(testId) {
-            var url = '@Url.Action("Submit", "Test")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: { testId: testId },
-                success: function (data) {
-                    $("#submission").html(data);
-                    getFiles(testId);
-                },
-                error: function () {
-                    alert("Your request is not valid!");
-                }
-            });
-        }
-
-        function cancel(testId) {
-            var url = '@Url.Action("Cancel", "Test")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: { testId: testId },
-                success: function (data) {
-                    $("#submission").html(data);
-                    getFiles(testId);
-                },
-                error: function () {
-                    alert("Your request is not valid!");
-                }
-            });
-        }
-
-        initialize();
-    });
-
+    function uploadFiles() {
+        var formData = new FormData();
+        var files = $('#fileInput')[0].files;
+        $.each(files, function (index, file) {
+            formData.append('files', file);
+        });
+        formData.append('testId', testId);
+        var url = '@Url.Action("UploadSubmissionFile", "Test")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                $('#fileInput').val('');
+                getFiles(testId);
+            },
+            error: function () {
+                alert("Your request is not valid!");
+            }
+        });
+    }
+    function submit(testId) {
+        var url = '@Url.Action("Submit", "Test")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { testId: testId },
+            success: function (data) {
+                $("#submission").html(data);
+                getFiles(testId);
+            },
+            error: function () {
+                alert("Your request is not valid!");
+            }
+        });
+    }
+    function cancel(testId) {
+        var url = '@Url.Action("Cancel", "Test")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { testId: testId },
+            success: function (data) {
+                $("#submission").html(data);
+                getFiles(testId);
+            },
+            error: function () {
+                alert("Your request is not valid!");
+            }
+        });
+    }
+    
 </script>
-

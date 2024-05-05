@@ -9,8 +9,7 @@
             {
                 <li class="card mb-3">
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="~/Teacher/Test/Detail/@item.TestId" class="card-link p-3">
-
+                        <a href="@Url.Action("Detail", "Test", new {Id = item.TestId})" class="card-link p-3">
                             <div class="ms-2">
                                 <h5 class="mb-0">@item.Title</h5>
                                 <p class="mb-0 fw-semibold">@item.StatusDisplayName</p>
@@ -38,12 +37,12 @@
                             </p>
 
                             <div class="dropdown me-1 ms-2">
-                                <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-light" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="bi bi-list"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="~/Teacher/Test/Edit/@item.TestId">Chỉnh sửa</a>
-                                    <a class="dropdown-item" href="~/Teacher/Test/Delete/@item.TestId">Xóa</a>
+                                    <a class="dropdown-item" href="@Url.Action("Edit","Test", new {id = item.TestId})">Chỉnh sửa</a>
+                                    <a class="dropdown-item" href="@Url.Action("Delete","Test", new {id = item.TestId})">Xóa</a>
                                 </div>
                             </div>
                         </div>

@@ -9,7 +9,7 @@
                 </a>
             </li>
             <li class="nav-item d-flex align-items-center">
-                <form class="d-flex" method="post" action="~/Teacher/Test/ListTest">
+                <form class="d-flex" method="post" action="@Url.Action("Index","Test")">
                     @{
                         GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
                         string searchValue = "";
@@ -26,7 +26,8 @@
         <div class="collapse navbar-collapse justify-content-end px-0" id="navbarNav" style="flex-basis: content">
             <ul class="navbar-nav d-flex align-items-center">
                 <li class="nav-item d-none d-sm-flex">
-                    <span class="fw-semibold btn" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Học kỳ: 1, Năm học: 2023-2024</span>
+                    <span class="fw-semibold btn" id="selectSemester" 
+                    "modal" data-bs-target="#selectSemesterModal">Học kỳ: 1, Năm học: 2023-2024</span>
                 </li>
                 @{
                     var userData = User.GetUserData();

@@ -3,7 +3,7 @@
     <!-- Sidebar scroll-->
     <div>
         <div class="brand-logo d-flex align-items-center justify-content-between" style="background-color: blue">
-            <a href="~/Teacher/Home/Index" class="text-nowrap logo-img">
+            <a href="~/Teacher" class="text-nowrap logo-img">
                 <img src="~/Modernize-1.0.0/src/assets/images/logos/logo.png" width="180" alt="" />
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -18,7 +18,7 @@
 
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="~/Teacher/Home/Index" aria-expanded="false">
+                    <a class="sidebar-link" href="@Url.Action("Index", "Home")" aria-expanded="false">
                         <span>
                             <i class="ti ti-layout-dashboard"></i>
                         </span>
@@ -26,7 +26,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="~/Teacher/Test/ListTest" aria-expanded="false">
+                    <a class="sidebar-link" href="@Url.Action("Index","Test")" aria-expanded="false">
                         <span>
                             <i class="ti ti-layout-dashboard"></i>
                         </span>
@@ -34,7 +34,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="~/Teacher/Test/CreateExam" aria-expanded="false">
+                    <a class="sidebar-link" href="~/Teacher/Exam/Create" aria-expanded="false">
                         <span>
                             <i class="ti ti-plus"></i>
                         </span>
@@ -42,7 +42,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="~/Teacher/Test/CreateQuiz" aria-expanded="false">
+                    <a class="sidebar-link" href="~/Teacher/Quiz/Create" aria-expanded="false">
                         <span>
                             <i class="ti ti-plus"></i>
                         </span>

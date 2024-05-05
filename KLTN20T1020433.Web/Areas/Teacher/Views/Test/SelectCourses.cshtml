@@ -14,9 +14,9 @@
                     <label class="form-label">Danh sách :</label>
                     <select class="form-select" name="ShipperID">
                         <option value="0">-- Chọn học phần ---</option>
-                        
-                            <option value="1">Lập trình web - Nhóm 1 - </option>
-                        
+
+                        <option value="1">Lập trình web - Nhóm 1 - </option>
+
                     </select>
                     <span id="errorMessage" class="text-danger"></span>
                 </div>
@@ -32,8 +32,6 @@
         </form>
     </div>
 </div>
-@section scripts
-{
 <script>
     $(document).ready(function () {
         $("#formShipping").submit(function (e) {
@@ -58,5 +56,4 @@
             });
         });
     })
-    </script>
-}
+</script>

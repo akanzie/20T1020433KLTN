@@ -6,21 +6,21 @@
 <div class="container-fluid" style="padding-top: 70px; padding-left: 0%; padding-right: 0%;">
     <nav>
         <div class="overflow-auto">
-            <div class="nav nav-tabs d-flex" id="nav-tab" role="tablist" style="white-space: nowrap; flex-wrap: nowrap">
+            <div class="nav nav-tabs d-flex" id="navTab" role="tablist" style="white-space: nowrap; flex-wrap: nowrap">
                 <button class="nav-link active" id="nav-detail-tab" data-bs-toggle="tab" data-bs-target="#nav-detail"
                         type="button" role="tab" aria-controls="nav-detail" aria-selected="true" style="white-space: nowrap;">
                     <span class="d-inline-block">
                         Thông tin
                     </span>
                 </button>
-                <button class="nav-link" id="nav-submission-tab" data-bs-toggle="tab" data-bs-target="#nav-submission"
+                <button class="nav-link" id="submissionList" data-bs-toggle="tab" data-bs-target="#nav-submission"
                         type="button" role="tab" aria-controls="nav-submission" aria-selected="false" style="white-space: nowrap;">
                     <span class="d-inline-block">Danh sách bài làm</span>
                 </button>
             </div>
         </div>
     </nav>
-    <div class="tab-content" id="nav-tabContent">
+    <div class="tab-content" id="navTabContent">
         <div class="tab-pane fade show active" id="nav-detail" role="tabpanel" aria-labelledby="nav-detail-tab">
             <div class="row" style="justify-content: center">
                 <div class="col-lg-10">
@@ -99,31 +99,39 @@
             </div>
         </div>
     </div>
-    <div class="tab-pane fade" id="nav-submission" role="tabpanel" aria-labelledby="nav-submission-tab">
+    <div class="tab-pane fade" id="nav-submission" role="tabpanel" aria-labelledby="submissionList">
         <div id="submissionContent">
         </div>
     </div>
 </div>
-</div>
 @section scripts
 {
     <script>
-        $(document).ready(function () {
-            $("#nav-submission-tab").click(function (e) {
-                $.ajax({
-                    url: "ListSubmission",
-                    type: 'GET',
-                    success: function (data) {
-                        e.preventDefault();
-                        $('#submissionContent').html(data);
-                    },
-                    error: function (xhr, status, error) {
-                        // Xử lý lỗi nếu có
-                        console.error(xhr.responseText);
-                    }
-                });
-
+        function initialize() {
+            bindEvents();
+        }
+        function bindEvents() {
+            $("#submissionList").on('click', function () {
+                getListSubmissions();
             });
+        }
+        function getListSubmissions() {
+            var url = '@Url.Action("ListSubmissions", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (data) {
+                    e.preventDefault();
+                    $('#submissionContent').html(data);
+                },
+                error: function (xhr, status, error) {
+                    // Xử lý lỗi nếu có
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+        $(document).ready(function () {
+            initialize();
         });
     </script>
 }
