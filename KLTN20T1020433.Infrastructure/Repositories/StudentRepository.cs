@@ -69,11 +69,6 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 Console.WriteLine("Đã xảy ra lỗi khi lấy thông tin giáo viên theo ID: " + ex.Message);
                 throw;
             }
-        }
-
-        public Task<IEnumerable<Student>> GetStudentsByTestId(int testId)
-        {
-            throw new NotImplementedException();
-        }
+        }        
     }
 }

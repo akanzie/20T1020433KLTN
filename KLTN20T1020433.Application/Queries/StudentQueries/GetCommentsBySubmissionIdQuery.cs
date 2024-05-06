@@ -21,18 +21,27 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         }
         public async Task<IEnumerable<GetCommentResponse>> Handle(GetCommentsBySubmissionIdQuery request, CancellationToken cancellationToken)
         {
-            var comments = await _commentDB.GetCommentsBySubmissionId(request.SubmissionId);
-            if (comments != null && comments.Any())
+            try
             {
-                List<GetCommentResponse> commentResponses = new List<GetCommentResponse>();
-                foreach (var item in comments)
+                var comments = await _commentDB.GetCommentsBySubmissionId(request.SubmissionId);
+                if (comments != null && comments.Any())
                 {
-                    GetCommentResponse getTestFileResponse = _mapper.Map<GetCommentResponse>(item);
-                    commentResponses.Add(getTestFileResponse);
+                    List<GetCommentResponse> commentResponses = new List<GetCommentResponse>();
+                    foreach (var item in comments)
+                    {
+                        GetCommentResponse getTestFileResponse = _mapper.Map<GetCommentResponse>(item);
+                        commentResponses.Add(getTestFileResponse);
+                    }
+                    return commentResponses;
                 }
-                return commentResponses;
+                return new List<GetCommentResponse>();
             }
-            return new List<GetCommentResponse>();
+            catch (Exception ex)
+            {                
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu lấy danh sách bình luận: " + ex.Message);
+                throw;
+            }
         }
+
     }
 }

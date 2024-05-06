@@ -29,21 +29,29 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetTestBySearchResponse>> Handle(GetTestsBySearchQuery request, CancellationToken cancellationToken)
         {
-            var tests = await _testDB.GetTestsOfTeacher(request.Page, request.PageSize, request.TeacherId, request.SearchValue, request.Type, request.Status, request.FromTime, request.ToTime);
-            if (tests != null && tests.Any())
+            try
             {
-                List<GetTestBySearchResponse> testResponse = new List<GetTestBySearchResponse>();
-                foreach (var item in tests)
-                {                                       
-                    GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);                    
-                    Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
-                    getTestResponse.TeacherName = teacher.TeacherName;
-                    getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForTeacher(item.Status);
-                    testResponse.Add(getTestResponse);
+                var tests = await _testDB.GetTestsOfTeacher(request.Page, request.PageSize, request.TeacherId, request.SearchValue, request.Type, request.Status, request.FromTime, request.ToTime);
+                if (tests != null && tests.Any())
+                {
+                    List<GetTestBySearchResponse> testResponse = new List<GetTestBySearchResponse>();
+                    foreach (var item in tests)
+                    {
+                        GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);
+                        Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
+                        getTestResponse.TeacherName = teacher.TeacherName;
+                        getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForTeacher(item.Status);
+                        testResponse.Add(getTestResponse);
+                    }
+                    return testResponse;
                 }
-                return testResponse;
+                return new List<GetTestBySearchResponse>();
             }
-            return new List<GetTestBySearchResponse>();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

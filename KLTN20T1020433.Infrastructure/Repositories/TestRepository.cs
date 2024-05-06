@@ -224,51 +224,67 @@ namespace KLTN20T1020433.Infrastructure.Repositories
 
         public async Task<bool> IsUsed(int id)
         {
-            bool result = false;
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var parameters = new
+                bool result = false;
+                using (var connection = await OpenConnectionAsync())
                 {
-                    TestId = id
-                };
-                result = await connection.ExecuteScalarAsync<bool>(
-                    "IsTestUsed",
-                    parameters,
-                    commandType: CommandType.StoredProcedure
-                );
+                    var parameters = new
+                    {
+                        TestId = id
+                    };
+                    result = await connection.ExecuteScalarAsync<bool>(
+                        "IsTestUsed",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
 
+                }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi kiểm tra xem bài kiểm tra có được sử dụng hay không: " + ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> Update(Test data)
         {
-            bool result = false;
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var parameters = new
+                bool result = false;
+                using (var connection = await OpenConnectionAsync())
                 {
-                    Title = data.Title ?? "",
-                    Instruction = data.Instruction ?? "",
-                    StartTime = data.StartTime ?? null,
-                    EndTime = data.EndTime ?? null,
-                    Status = data.Status.ToString(),
-                    IsCheckIP = data.IsCheckIP,
-                    IsConductedAtSchool = data.IsConductedAtSchool,
-                    CanSubmitLate = data.CanSubmitLate,
-                    CreatedTime = data.CreatedTime,
-                    LastUpdateTime = data.LastUpdateTime,
-                    TestType = data.TestType.ToString(),
-                    TeacherId = data.TeacherId,
-                    TestId = data.TestId
-                };
+                    var parameters = new
+                    {
+                        Title = data.Title ?? "",
+                        Instruction = data.Instruction ?? "",
+                        StartTime = data.StartTime,
+                        EndTime = data.EndTime,
+                        Status = data.Status.ToString(),
+                        IsCheckIP = data.IsCheckIP,
+                        IsConductedAtSchool = data.IsConductedAtSchool,
+                        CanSubmitLate = data.CanSubmitLate,
+                        CreatedTime = data.CreatedTime,
+                        LastUpdateTime = data.LastUpdateTime,
+                        TestType = data.TestType.ToString(),
+                        TeacherId = data.TeacherId,
+                        TestId = data.TestId
+                    };
 
-                result = await connection.ExecuteAsync(
-               "UpdateTest", parameters, commandType: CommandType.StoredProcedure) > 0;
+                    result = await connection.ExecuteAsync(
+                   "UpdateTest", parameters, commandType: CommandType.StoredProcedure) > 0;
 
+                }
+
+                return result;
             }
-
-            return result;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi cập nhật thông tin bài kiểm tra: " + ex.Message);
+                throw;
+            }
         }
     }
 }

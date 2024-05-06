@@ -26,10 +26,17 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         }
         public async Task<int> Handle(GetRowCountQuery request, CancellationToken cancellationToken)
         {
-
-            int rowCount = await _testDB.CountTestsOfStudent(request.StudentId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
-
-            return rowCount;
+            try
+            {
+                int rowCount = await _testDB.CountTestsOfStudent(request.StudentId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
+                return rowCount;
+            }
+            catch (Exception ex)
+            {                
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu lấy số lượng hàng: " + ex.Message);
+                throw;
+            }
         }
+
     }
 }

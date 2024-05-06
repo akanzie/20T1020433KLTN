@@ -26,33 +26,37 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         }
         public async Task<string> Handle(SubmitTestCommand request, CancellationToken cancellationToken)
         {
+            try
+            {
+                var submission = await _submissionDB.GetById(request.SubmissionId);
+                if (submission == null)
+                {
+                    return ErrorMessages.SubmissionNotFound;
+                }
+                var files = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
+                if (files == null || !files.Any())
+                {
+                    return ErrorMessages.CannotSubmitWithoutUpload;
+                }
 
-            var submission = await _submissionDB.GetById(request.SubmissionId);
-            if (submission == null)
-            {
-                return "Không tìm thấy bài nộp.";
+                if (request.SubmittedTime > request.TestEndTime)
+                    submission.Status = SubmissionStatus.LateSubmission;
+                else
+                    submission.Status = SubmissionStatus.Submitted;
+                if (request.IsCheckIP && Utils.CheckIPAddressExists(request.IPAddress))
+                {
+                    submission.Status = SubmissionStatus.PendingProcessing;
+                }
+                submission.SubmittedTime = request.SubmittedTime;
+                submission.IPAddress = request.IPAddress;
+                await _submissionDB.Update(submission);
+                return SuccessMessages.SubmitSuccess;
             }
-            var files = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
-            if (files == null || !files.Any())
+            catch (Exception ex)
             {
-                return "Bạn không thể nộp bài khi chưa tải file bài nộp lên.";
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
             }
-
-            if (request.SubmittedTime > request.TestEndTime)
-                submission.Status = SubmissionStatus.LateSubmission;
-            else
-                submission.Status = SubmissionStatus.Submitted;
-            if (request.IsCheckIP && Utils.CheckIPAddressExists(request.IPAddress))
-            {
-                submission.Status = SubmissionStatus.PendingProcessing;
-            }
-            submission.SubmittedTime = request.SubmittedTime;
-            submission.IPAddress = request.IPAddress;
-            if (await _submissionDB.Update(submission))
-            {
-                return "Nộp bài thành công.";
-            }
-            return "Có lỗi xảy ra, vui lòng thử lại sau.";
         }
     }
 }

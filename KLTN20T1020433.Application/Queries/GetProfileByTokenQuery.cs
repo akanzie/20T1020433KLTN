@@ -27,16 +27,23 @@ namespace KLTN20T1020433.Application.Queries
         }
         public async Task<GetProfileResponse> Handle(GetProfileByTokenQuery request, CancellationToken cancellationToken)
         {
-            string endpoint = "account/v1/profile";
-            string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
-            if (jsonResponse != null)
+            try
             {
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                GetProfileResponse profile = JsonConvert.DeserializeObject<GetProfileResponse>(responseData.Data.ToString())!;
-                return profile;
+                string endpoint = "account/v1/profile";
+                string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
+                if (jsonResponse != null)
+                {
+                    var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                    GetProfileResponse profile = JsonConvert.DeserializeObject<GetProfileResponse>(responseData.Data.ToString())!;
+                    return profile;
+                }
+                return new GetProfileResponse();
             }
-            return new GetProfileResponse();
-
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

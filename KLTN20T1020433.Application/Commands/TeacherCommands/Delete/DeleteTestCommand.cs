@@ -1,4 +1,5 @@
 ﻿using KLTN20T1020433.Application.Commands.StudentCommands.Delete;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
@@ -19,21 +20,25 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Delete
         }
         public async Task<string> Handle(DeleteTestCommand request, CancellationToken cancellationToken)
         {
-            var test = await _testDB.GetById(request.Id);
-            if (test == null)
+            try
             {
-                return "Không tìm thấy kỳ thi";
+                var test = await _testDB.GetById(request.Id);
+                if (test == null)
+                {
+                    return ErrorMessages.TestNotFound;
+                }
+                if (test.Status == TestStatus.Finished)
+                {
+                    return ErrorMessages.CannotDeleteFinishedTest;
+                }
+                await _testDB.Delete(request.Id);
+                return $"Xóa kỳ thi: {test.Title} thành công.";
             }
-            if (test.Status == TestStatus.Finished)
+            catch (Exception ex)
             {
-                return "Không thể xóa kỳ thi khi kỳ thi đã kết thúc";
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
             }
-            if (await _testDB.Delete(request.Id))
-            {
-                return $"Xóa kỳ thi: {test.Title} thành công";
-            }
-            return "Có lỗi xảy ra. Vui lòng thử lại sau.";
-
         }
     }
 }

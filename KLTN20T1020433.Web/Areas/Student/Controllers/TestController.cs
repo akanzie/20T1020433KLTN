@@ -55,65 +55,82 @@ namespace KLTN20T1020433.Web.Controllers.Student
         }
         public async Task<IActionResult> Search(GetTestsBySearchQuery input)
         {
-            var user = User.GetUserData();
-            var data = await _mediator.Send(input);
-            int rowCount = await _mediator.Send(new GetRowCountQuery
+            try
             {
-                StudentId = user.UserId,
-                SearchValue = input.SearchValue,
-                Status = input.Status,
-                FromTime = input.FromTime,
-                ToTime = input.ToTime,
-                Type = input.Type
-            });
-            var model = new TestSearchResult()
+                var user = User.GetUserData();
+                var data = await _mediator.Send(input);
+                int rowCount = await _mediator.Send(new GetRowCountQuery
+                {
+                    StudentId = user.UserId,
+                    SearchValue = input.SearchValue,
+                    Status = input.Status,
+                    FromTime = input.FromTime,
+                    ToTime = input.ToTime,
+                    Type = input.Type
+                });
+                var model = new TestSearchResult()
+                {
+                    Page = input.Page,
+                    PageSize = input.PageSize,
+                    RowCount = rowCount,
+                    FromTime = input.FromTime,
+                    ToTime = input.ToTime,
+                    SearchValue = input.SearchValue ?? "",
+                    Status = input.Status,
+                    Type = input.Type,
+                    Data = data
+                };
+
+                // Lưu lại vào session điều kiện tìm kiếm
+                ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
+                return View(model);
+            }
+            catch (Exception ex)
             {
-                Page = input.Page,
-                PageSize = input.PageSize,
-                RowCount = rowCount,
-                FromTime = input.FromTime,
-                ToTime = input.ToTime,
-                SearchValue = input.SearchValue ?? "",
-                Status = input.Status,
-                Type = input.Type,
-                Data = data
-            };
-
-            // Lưu lại vào session điều kiện tìm kiếm
-            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
-            return View(model);
-
+                Console.WriteLine($"Exception occurred in Search: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
         }
         public async Task<IActionResult> Detail(int id = 0)
         {
-            var user = User.GetUserData();
-            if (id <= 0)
+            try
             {
-                return RedirectToAction("Index", "Home");
+
+                var user = User.GetUserData();
+                if (id <= 0)
+                {
+                    return View("NotFound");
+                }
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = user.UserId! });
+                if (submission == null)
+                {
+                    return View("NotFound");
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
+                if (test == null)
+                {
+                    return View("NotFound");
+                }
+                IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
+                var model = new TestModel
+                {
+                    Test = test,
+                    Files = files
+                };
+                return View(model);
+
             }
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = id, StudentId = user.UserId! });
-            if (submission == null)
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                Console.WriteLine($"Exception occurred in Detail: {ex.Message}");
+                return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = id });
-            if (test == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
-            var model = new TestModel
-            {
-                Test = test,
-                Files = files
-            };
-            return View(model);
         }
 
         public async Task<IActionResult> Submission(int testId = 0)
         {
-            var user = User.GetUserData();
 
+            var user = User.GetUserData();
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
             if (submission != null)
             {
@@ -124,78 +141,101 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     Comments = comments
                 };
 
-                return PartialView(model);
+                return View(model);
             }
-            return BadRequest("Không tìm thấy bài nộp.");
+            return BadRequest(ErrorMessages.GeneralError);
         }
         [HttpPost]
         public async Task<IActionResult> UploadSubmissionFile(List<IFormFile> files, int testId = 0)
         {
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission == null)
+            try
             {
-                return Json("Có lỗi xảy ra");
-            }
-            if (files == null || files.Count == 0)
-                return Json("Không có tệp nào được gửi.");
-            foreach (var item in files)
-            {
-                if (item == null || item.Length == 0 || item.Length >= FileUtils.MAX_FILE_SIZE)
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+                if (submission == null)
                 {
-                    return Json("File không hợp lệ hoặc có kích thước quá lớn.");
+                    return Json(ErrorMessages.GeneralError);
                 }
-                if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId })))
-                    return Json("Có lỗi khi lưu file");
+                if (files == null || files.Count == 0)
+                    return Json(ErrorMessages.NoFilesUploaded);
+                foreach (var item in files)
+                {
+                    if (item == null || item.Length == 0 || item.Length >= FileUtils.MAX_FILE_SIZE)
+                    {
+                        return Json(ErrorMessages.InvalidOrLargeFile);
+                    }
+                    if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId })))
+                        return Json(ErrorMessages.FileUploadError);
+                }
+                return Json(SuccessMessages.FileUploadSuccess);
             }
-            return Json("Tải file lên thành công.");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in UploadSubmissionFile: {ex.Message}");
+                return Json(ErrorMessages.GeneralError);
+            }
         }
         [HttpPost]
         public async Task<IActionResult> RemoveSubmissionFile(Guid id, int testId = 0)
         {
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission == null)
+            try
             {
-                return Json("Có lỗi xảy ra.");
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+                if (submission == null)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                if (file == null)
+                    return Json(ErrorMessages.FileNotFound);
+                else
+                {
+                    var message = await _mediator.Send(new RemoveSubmissionFileCommand { Id = id });
+                    return Json(message);
+                }
             }
-            var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
-            if (file == null)
-                return Json("Không tìm thấy file");
-            else
+            catch (Exception ex)
             {
-                var message = await _mediator.Send(new RemoveSubmissionFileCommand { Id = id });
-                return Json(message);
+                Console.WriteLine($"Exception occurred in RemoveSubmissionFile: {ex.Message}");
+                return Json(ErrorMessages.GeneralError);
             }
-
         }
         [HttpPost]
         public async Task<IActionResult> Submit(int testId)
         {
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission == null)
+            try
             {
-                return Json("Có lỗi xảy ra.");
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+                if (submission == null)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = submission.TestId });
+                if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(user.ClientIP!))
+                {
+                    return Json(ErrorMessages.InvalidIPAddress);
+                }
+                if (!test.CanSubmitLate && DateTime.Now > test.EndTime)
+                {
+                    return Json(ErrorMessages.SubmissionTimeExceeded);
+                }
+                var message = await _mediator.Send(new SubmitTestCommand
+                {
+                    SubmissionId = submission.SubmissionId,
+                    IPAddress = user.ClientIP!,
+                    IsCheckIP = test.IsCheckIP,
+                    SubmittedTime = DateTime.Now,
+                    TestEndTime = test.EndTime
+                });
+                return Json(message);
             }
-            var test = await _mediator.Send(new GetTestByIdQuery { Id = submission.TestId });
-            if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(user.ClientIP!))
+            catch (Exception ex)
             {
-                return Json("Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.");
+                Console.WriteLine($"Exception occurred in Submit: {ex.Message}");
+                return Json(ErrorMessages.GeneralError);
             }
-            if (!test.CanSubmitLate && DateTime.Now > test.EndTime)
-            {
-                return Json("Đã quá thời gian cho phép nộp bài. Bạn không được phép nộp bài.");
-            }
-            var message = await _mediator.Send(new SubmitTestCommand
-            {
-                SubmissionId = submission.SubmissionId,
-                IPAddress = user.ClientIP!,
-                IsCheckIP = test.IsCheckIP,
-                SubmittedTime = DateTime.Now,
-                TestEndTime = test.EndTime
-            });
-            return Json(message);
         }
         [HttpPost]
         public async Task<IActionResult> Cancel(int testId)
@@ -204,7 +244,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
             if (submission == null)
             {
-                return Json("Có lỗi xảy ra.");
+                return Json(ErrorMessages.GeneralError);
             }
             var message = await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId });
             return Json(message);
@@ -215,12 +255,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
             if (submission == null)
             {
-                return RedirectToAction("Index", "Home");
+                return View("NotFound");
             }
             var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
             if (file == null || !System.IO.File.Exists(file.FilePath))
             {
-                return Json("Không tìm thấy file");
+                return Json(ErrorMessages.FileNotFound);
             }
             byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
             return File(fileBytes, file.MimeType, file.OriginalName);
@@ -231,12 +271,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
             var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
             if (submission == null)
             {
-                return RedirectToAction("Index", "Home");
+                return View("NotFound");
             }
             var file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
             if (file == null || !System.IO.File.Exists(file.FilePath))
             {
-                return Json("Không tìm thấy file");
+                return Json(ErrorMessages.FileNotFound);
             }
             byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
             return File(fileBytes, file.MimeType, file.OriginalName);
@@ -254,9 +294,9 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     TestId = testId,
                     Status = submission.Status
                 };
-                return PartialView(model);
+                return View(model);
             }
-            return BadRequest("Không tìm thấy bài nộp.");
+            return BadRequest(ErrorMessages.GeneralError);
         }
 
     }

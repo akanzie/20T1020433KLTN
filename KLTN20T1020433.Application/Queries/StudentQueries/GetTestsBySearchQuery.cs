@@ -27,24 +27,33 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         }
         public async Task<IEnumerable<GetTestBySearchResponse>> Handle(GetTestsBySearchQuery request, CancellationToken cancellationToken)
         {
-            var tests = await _testDB.GetTestsOfStudent(request.Page, request.PageSize, request.StudentId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
-            if (tests != null && tests.Any())
+            try
             {
-                List<GetTestBySearchResponse> testResponse = new List<GetTestBySearchResponse>();
-                foreach (var item in tests)
+                var tests = await _testDB.GetTestsOfStudent(request.Page, request.PageSize, request.StudentId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
+                if (tests != null && tests.Any())
                 {
-                    if (item.Status == request.Status || request.Status == null)
-                    {                        
-                        GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);                       
-                        Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
-                        getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(item.Status);
-                        getTestResponse.TeacherName = teacher.TeacherName;
-                        testResponse.Add(getTestResponse);
+                    List<GetTestBySearchResponse> testResponse = new List<GetTestBySearchResponse>();
+                    foreach (var item in tests)
+                    {
+                        if (item.Status == request.Status || request.Status == null)
+                        {
+                            GetTestBySearchResponse getTestResponse = _mapper.Map<GetTestBySearchResponse>(item);
+                            Teacher teacher = await _teacherDB.GetTeacherById(item.TeacherId);
+                            getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(item.Status);
+                            getTestResponse.TeacherName = teacher.TeacherName;
+                            testResponse.Add(getTestResponse);
+                        }
                     }
+                    return testResponse;
                 }
-                return testResponse;
+                return new List<GetTestBySearchResponse>();
             }
-            return new List<GetTestBySearchResponse>();
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ ở đây, ví dụ: ghi log và thông báo cho người dùng
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu tìm kiếm bài kiểm tra: " + ex.Message);
+                throw;
+            }
         }
     }
 }

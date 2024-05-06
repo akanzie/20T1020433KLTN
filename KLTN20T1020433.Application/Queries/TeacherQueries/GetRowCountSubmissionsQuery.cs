@@ -12,8 +12,8 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     public class GetRowCountSubmissionsQuery : IRequest<int>
     {
         public string SearchValue { get; set; } = "";
-        public int TestId { get; set; }        
-        public SubmissionStatus? Status { get; set; } = null;  
+        public int TestId { get; set; }
+        public SubmissionStatus? Status { get; set; } = null;
     }
     public class GetRowCountSubmissionsQueryHandler : IRequestHandler<GetRowCountSubmissionsQuery, int>
     {
@@ -26,10 +26,17 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<int> Handle(GetRowCountSubmissionsQuery request, CancellationToken cancellationToken)
         {
+            try
+            {
+                int rowCount = await _submissionDB.CountSubmissions(request.TestId, request.SearchValue, request.Status);
 
-            int rowCount = await _submissionDB.CountSubmissions(request.TestId, request.SearchValue, request.Status);
-
-            return rowCount;
+                return rowCount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

@@ -23,15 +23,22 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 
         public async Task<GetSubmissionFileResponse> Handle(GetSubmissionFileByIdQuery request, CancellationToken cancellationToken)
         {
-
-            var file = await _submissionFileDB.GetById(request.Id);
-            if (file != null)
+            try
             {
-                GetSubmissionFileResponse fileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
+                var file = await _submissionFileDB.GetById(request.Id);
+                if (file != null)
+                {
+                    GetSubmissionFileResponse fileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
 
-                return fileResponse;
+                    return fileResponse;
+                }
+                return new GetSubmissionFileResponse();
             }
-            return new GetSubmissionFileResponse();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

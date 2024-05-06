@@ -29,23 +29,31 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetSubmissionBySearchResponse>> Handle(GetSubmissionsBySearchQuery request, CancellationToken cancellationToken)
         {
-            var submissions = await _submissionDB.GetSubmissionsBySearch(request.Page, request.PageSize, request.TestId, request.SearchValue, request.Status);
-            if (submissions != null && submissions.Any())
+            try
             {
-                List<GetSubmissionBySearchResponse> testResponse = new List<GetSubmissionBySearchResponse>();
-                foreach (var item in submissions)
+                var submissions = await _submissionDB.GetSubmissionsBySearch(request.Page, request.PageSize, request.TestId, request.SearchValue, request.Status);
+                if (submissions != null && submissions.Any())
                 {
-                    GetSubmissionBySearchResponse getSubmissionResponse = _mapper.Map<GetSubmissionBySearchResponse>(item);
-                    Student student = await _studentDB.GetStudentById(item.StudentId);
-                    getSubmissionResponse.StudentName = $"{student.LastName} {student.FirstName}";
-                    getSubmissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(item.Status);
-                    int filesCount = await _submissionFileDB.CountFilesBySubmissionId(item.SubmissionId);
-                    getSubmissionResponse.FilesCount = filesCount;
-                    testResponse.Add(getSubmissionResponse);
+                    List<GetSubmissionBySearchResponse> testResponse = new List<GetSubmissionBySearchResponse>();
+                    foreach (var item in submissions)
+                    {
+                        GetSubmissionBySearchResponse getSubmissionResponse = _mapper.Map<GetSubmissionBySearchResponse>(item);
+                        Student student = await _studentDB.GetStudentById(item.StudentId);
+                        getSubmissionResponse.StudentName = $"{student.LastName} {student.FirstName}";
+                        getSubmissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(item.Status);
+                        int filesCount = await _submissionFileDB.CountFilesBySubmissionId(item.SubmissionId);
+                        getSubmissionResponse.FilesCount = filesCount;
+                        testResponse.Add(getSubmissionResponse);
+                    }
+                    return testResponse;
                 }
-                return testResponse;
+                return new List<GetSubmissionBySearchResponse>();
             }
-            return new List<GetSubmissionBySearchResponse>();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

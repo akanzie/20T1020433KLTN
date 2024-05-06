@@ -29,36 +29,47 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
         }
         public async Task<bool> Handle(CreateSubmissionFileCommand request, CancellationToken cancellationToken)
         {
-            if (request.File == null || request.File.Length == 0 || request.File.Length >= FileUtils.MAX_FILE_SIZE)
+            try
             {
-                throw new ArgumentException("Invalid file.");
+                if (request.File == null || request.File.Length == 0 || request.File.Length >= FileUtils.MAX_FILE_SIZE)
+                {
+                    throw new ArgumentException("Invalid file.");
+                }
+
+                Guid id = Guid.NewGuid();
+                string uniqueFileName = $"{id}_{request.File.FileName}";
+                Submission? submission = await _submissionDB.GetById(request.SubmissionId);
+                Test? test = await _testDB.GetById(submission.TestId);
+                string directoryPath = Path.Combine(_fileOptions.FileStoragePath, test.Title, "Submission");
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                string filePath = Path.Combine(directoryPath, uniqueFileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.File.CopyToAsync(stream);
+                }
+                SubmissionFile file = new SubmissionFile
+                {
+                    FileId = id,
+                    FileName = uniqueFileName,
+                    FilePath = filePath,
+                    MimeType = request.File.ContentType,
+                    Size = request.File.Length,
+                    SubmissionId = request.SubmissionId,
+                    OriginalName = request.File.FileName
+                };
+                var result = await _submissionFileDB.Add(file);
+                return result;
             }
-            Guid id = Guid.NewGuid();
-            string uniqueFileName = $"{id}_{request.File.FileName}";
-            Submission? submission = await _submissionDB.GetById(request.SubmissionId);
-            Test? test = await _testDB.GetById(submission.TestId);
-            string directoryPath = Path.Combine(_fileOptions.FileStoragePath, test.Title, "Submission");
-            if (!Directory.Exists(directoryPath))
+            catch (Exception ex)
             {
-                Directory.CreateDirectory(directoryPath);
+                // Xử lý ngoại lệ ở đây, ví dụ: ghi log và thông báo cho người dùng
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu tạo tệp đính kèm cho bài nộp: " + ex.Message);
+                throw;
             }
-            string filePath = Path.Combine(directoryPath, uniqueFileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await request.File.CopyToAsync(stream);
-            }
-            SubmissionFile file = new SubmissionFile
-            {
-                FileId = id,
-                FileName = uniqueFileName,
-                FilePath = filePath,
-                MimeType = request.File.ContentType,
-                Size = request.File.Length,
-                SubmissionId = request.SubmissionId,
-                OriginalName = request.File.FileName
-            };
-            var result = await _submissionFileDB.Add(file);
-            return result;
         }
+
     }
 }

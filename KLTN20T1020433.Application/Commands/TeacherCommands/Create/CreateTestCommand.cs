@@ -40,21 +40,29 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         }
         public async Task<int> Handle(CreateTestCommand request, CancellationToken cancellationToken)
         {
-            Test test = _mapper.Map<Test>(request);
-            test.CreatedTime = DateTime.Now;
-            test.LastUpdateTime = DateTime.Now;
-            int testId = await _testDB.Add(test);
-            if (await _teacherDB.GetTeacherById(request.TeacherId) == null)
+            try
             {
-                Teacher teacher = new Teacher
+                Test test = _mapper.Map<Test>(request);
+                test.CreatedTime = DateTime.Now;
+                test.LastUpdateTime = DateTime.Now;
+                int testId = await _testDB.Add(test);
+                if (await _teacherDB.GetTeacherById(request.TeacherId) == null)
                 {
-                    TeacherId = request.TeacherId,
-                    TeacherName = request.TeacherName,
-                    Email = request.Email
-                };
-                await _teacherDB.Add(teacher);
+                    Teacher teacher = new Teacher
+                    {
+                        TeacherId = request.TeacherId,
+                        TeacherName = request.TeacherName,
+                        Email = request.Email
+                    };
+                    await _teacherDB.Add(teacher);
+                }
+                return testId;
             }
-            return testId;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

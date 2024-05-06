@@ -10,6 +10,5 @@ namespace KLTN20T1020433.Domain.Student
     {
         Task<Student?> GetStudentById(string id);
         Task<bool> Add(Student student);
-        Task<IEnumerable<Student>> GetStudentsByTestId(int testId);
     }
 }

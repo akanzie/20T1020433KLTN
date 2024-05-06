@@ -24,16 +24,24 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 
         public async Task<GetTestByIdResponse> Handle(GetTestByIdQuery request, CancellationToken cancellationToken)
         {
-            var test = await _testDB.GetById(request.Id);
-            if (test != null)
+            try
             {
-                if (request.TeacherID == test.TeacherId)
+                var test = await _testDB.GetById(request.Id);
+                if (test != null)
                 {
-                    GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
-                    return testResponse;
+                    if (request.TeacherID == test.TeacherId)
+                    {
+                        GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
+                        return testResponse;
+                    }
                 }
+                return new GetTestByIdResponse();
             }
-            return new GetTestByIdResponse();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

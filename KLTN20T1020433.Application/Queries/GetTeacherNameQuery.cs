@@ -21,8 +21,16 @@ namespace KLTN20T1020433.Application.Queries
         }
         public async Task<string> Handle(GetTeacherNameQuery request, CancellationToken cancellationToken)
         {
-            Teacher teacher = await _teacherDB.GetTeacherById(request.TeacherId);
-            return teacher.TeacherName;
+            try
+            {
+                Teacher teacher = await _teacherDB.GetTeacherById(request.TeacherId);
+                return teacher.TeacherName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
 
         }
     }

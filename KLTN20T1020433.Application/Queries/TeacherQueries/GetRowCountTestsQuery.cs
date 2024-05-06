@@ -16,19 +16,26 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     }
     public class GetRowCountTestsQueryHandler : IRequestHandler<GetRowCountTestsQuery, int>
     {
-        private readonly ITestRepository _testDB;       
+        private readonly ITestRepository _testDB;
 
         public GetRowCountTestsQueryHandler(ITestRepository testDB)
         {
             _testDB = testDB;
-            
+
         }
         public async Task<int> Handle(GetRowCountTestsQuery request, CancellationToken cancellationToken)
         {
+            try
+            {
+                int rowCount = await _testDB.CountTestsOfStudent(request.TeacherId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
 
-            int rowCount = await _testDB.CountTestsOfStudent(request.TeacherId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
-
-            return rowCount;
+                return rowCount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

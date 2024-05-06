@@ -28,14 +28,22 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 
         public async Task<GetSubmissionResponse> Handle(GetSubmissionByIdQuery request, CancellationToken cancellationToken)
         {
-            var submission = await _submissionDB.GetById(request.Id);
-            if (submission != null)
+            try
             {
-                GetSubmissionResponse submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
-                return submissionResponse;
+                var submission = await _submissionDB.GetById(request.Id);
+                if (submission != null)
+                {
+                    GetSubmissionResponse submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
+                    return submissionResponse;
 
+                }
+                return new GetSubmissionResponse();
             }
-            return new GetSubmissionResponse();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

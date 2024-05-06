@@ -23,17 +23,25 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         }
         public async Task<int> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
         {
-            foreach (string item in request.StudentIds)
+            try
             {
-                var submission = new Submission
+                foreach (string item in request.StudentIds)
                 {
-                    TestId = request.TestId,
-                    StudentId = item,
-                    Status = SubmissionStatus.NotSubmitted
-                };
-                await _submissionDB.Add(submission);
+                    var submission = new Submission
+                    {
+                        TestId = request.TestId,
+                        StudentId = item,
+                        Status = SubmissionStatus.NotSubmitted
+                    };
+                    await _submissionDB.Add(submission);
+                }
+                return 0;
             }
-            return 1;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

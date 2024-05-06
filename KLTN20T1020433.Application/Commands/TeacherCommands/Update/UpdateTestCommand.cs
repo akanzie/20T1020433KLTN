@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
 {
-    public class UpdateTestCommand : IRequest<bool>
+    public class UpdateTestCommand : IRequest<string>
     {
         public int TestId { get; set; }
         public string Title { get; set; } = "";
@@ -17,7 +18,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
         public string TeacherId { get; set; }
 
     }
-    public class UpdateTestCommandHandler : IRequestHandler<UpdateTestCommand, bool>
+    public class UpdateTestCommandHandler : IRequestHandler<UpdateTestCommand, string>
     {
         private readonly ITestRepository _testDB;
         private readonly IMapper _mapper;
@@ -26,11 +27,15 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
             _testDB = testDB;
             _mapper = mapper;
         }
-        public async Task<bool> Handle(UpdateTestCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(UpdateTestCommand request, CancellationToken cancellationToken)
         {
-            Test test = await _testDB.GetById(request.TestId);
-            if (test != null)
+            try
             {
+                var test = await _testDB.GetById(request.TestId);
+                if (test == null)
+                {
+                    return ErrorMessages.TestNotFound;
+                }
                 test.Title = request.Title;
                 test.Instruction = request.Instruction;
                 test.IsCheckIP = request.IsCheckIP;
@@ -38,11 +43,15 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
                 test.StartTime = request.StartTime;
                 test.EndTime = request.EndTime;
                 test.LastUpdateTime = DateTime.Now;
-                test.CanSubmitLate = request.CanSubmitLate;                
-                if (await _testDB.Update(test))
-                    return true;
+                test.CanSubmitLate = request.CanSubmitLate;
+                await _testDB.Update(test);
+                return SuccessMessages.UpdateTestSuccess;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

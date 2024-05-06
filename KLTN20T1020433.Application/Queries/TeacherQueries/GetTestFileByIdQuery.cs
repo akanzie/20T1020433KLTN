@@ -22,13 +22,21 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<GetTestFileResponse> Handle(GetTestFileByIdQuery request, CancellationToken cancellationToken)
         {
-            var file = await _testFileDB.GetById(request.Id);
-            if (file != null)
+            try
             {
-                GetTestFileResponse fileResponse = _mapper.Map<GetTestFileResponse>(file);
-                return fileResponse;
+                var file = await _testFileDB.GetById(request.Id);
+                if (file != null)
+                {
+                    GetTestFileResponse fileResponse = _mapper.Map<GetTestFileResponse>(file);
+                    return fileResponse;
+                }
+                return new GetTestFileResponse();
             }
-            return new GetTestFileResponse();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

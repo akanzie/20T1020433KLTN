@@ -27,21 +27,30 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
 
         public async Task<GetSubmissionResponse?> Handle(GetSubmissionByStudentIdAndTestIdQuery request, CancellationToken cancellationToken)
         {
-            var submission = await _submissionDB.GetByTestIdAndStudentId(request.TestId, request.StudentId);
-            if (submission != null)
+            try
             {
-                var test = await _testDB.GetById(request.TestId);
-                GetSubmissionResponse submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
-                if (submissionResponse.Status == SubmissionStatus.NotSubmitted && !test.CanSubmitLate && test.EndTime < DateTime.Now)
+                var submission = await _submissionDB.GetByTestIdAndStudentId(request.TestId, request.StudentId);
+                if (submission != null)
                 {
-                    submission.Status = SubmissionStatus.Absent;
-                    await _submissionDB.Update(submission);            
-                    submissionResponse.Status = SubmissionStatus.Absent;
+                    var test = await _testDB.GetById(request.TestId);
+                    GetSubmissionResponse submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
+                    if (submissionResponse.Status == SubmissionStatus.NotSubmitted && !test.CanSubmitLate && test.EndTime < DateTime.Now)
+                    {
+                        submission.Status = SubmissionStatus.Absent;
+                        await _submissionDB.Update(submission);
+                        submissionResponse.Status = SubmissionStatus.Absent;
+                    }
+                    submissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(submission.Status);
+                    return submissionResponse;
                 }
-                submissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(submission.Status);
-                return submissionResponse;
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {                
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu lấy bài nộp: " + ex.Message);
+                throw;
+            }
         }
+
     }
 }

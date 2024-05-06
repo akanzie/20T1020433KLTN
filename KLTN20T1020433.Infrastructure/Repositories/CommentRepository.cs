@@ -13,90 +13,129 @@ namespace KLTN20T1020433.Infrastructure.Repositories
     {
         public CommentRepository(string connectionString) : base(connectionString)
         {
-        }      
+        }
 
         public async Task<int> Add(Comment data)
         {
-            int id = 0;
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var parameters = new
+                int id = 0;
+                using (var connection = await OpenConnectionAsync())
                 {
-                    Body = data.Body,
-                    TeacherId = data.TeacherId,
-                    SubmissionId = data.SubmissionId,
-                    CommentedTime = data.CommentedTime
-                };
-                id = await connection.ExecuteScalarAsync<int>(
-                    "AddComment", parameters, commandType: CommandType.StoredProcedure);
+                    var parameters = new
+                    {
+                        Body = data.Body,
+                        TeacherId = data.TeacherId,
+                        SubmissionId = data.SubmissionId,
+                        CommentedTime = data.CommentedTime
+                    };
+                    id = await connection.ExecuteScalarAsync<int>(
+                        "AddComment", parameters, commandType: CommandType.StoredProcedure);
+                }
+                return id;
             }
-            return id;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi thêm bình luận: " + ex.Message);
+                throw;
+            }
         }
+
         public async Task<bool> Delete(int id)
         {
-            bool result = false;
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var parameters = new
+                bool result = false;
+                using (var connection = await OpenConnectionAsync())
                 {
-                    CommentId = id
-                };
-                result = await connection.ExecuteAsync(
-                    "DeleteComment", parameters, commandType: CommandType.StoredProcedure) > 0;
+                    var parameters = new
+                    {
+                        CommentId = id
+                    };
+                    result = await connection.ExecuteAsync(
+                        "DeleteComment", parameters, commandType: CommandType.StoredProcedure) > 0;
+                }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi xóa bình luận: " + ex.Message);
+                throw;
+            }
         }
 
         public async Task<Comment?> GetById(int id)
         {
-            Comment? data = null;
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var parameters = new
+                Comment? data = null;
+                using (var connection = await OpenConnectionAsync())
                 {
-                    CommentId = id
-                };
-                data = await connection.QueryFirstOrDefaultAsync<Comment>(
-                    "GetCommentById", parameters, commandType: CommandType.StoredProcedure);
+                    var parameters = new
+                    {
+                        CommentId = id
+                    };
+                    data = await connection.QueryFirstOrDefaultAsync<Comment>(
+                        "GetCommentById", parameters, commandType: CommandType.StoredProcedure);
+                }
+                return data;
             }
-            return data;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi lấy bình luận theo ID: " + ex.Message);
+                throw;
+            }
         }
-       
 
         public async Task<IEnumerable<Comment>> GetCommentsBySubmissionId(int submissionId)
         {
-            List<Comment> comments = new List<Comment>();
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var parameters = new
+                List<Comment> comments = new List<Comment>();
+                using (var connection = await OpenConnectionAsync())
                 {
-                    SubmissionId = submissionId
-                };
-                comments = (await connection.QueryAsync<Comment>(
-                    "GetCommentsBySubmissionId", parameters, commandType: CommandType.StoredProcedure)).ToList();
+                    var parameters = new
+                    {
+                        SubmissionId = submissionId
+                    };
+                    comments = (await connection.QueryAsync<Comment>(
+                        "GetCommentsBySubmissionId", parameters, commandType: CommandType.StoredProcedure)).ToList();
+                }
+                return comments;
             }
-            return comments;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi lấy danh sách bình luận theo ID bài nộp: " + ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> Update(Comment data)
         {
-            bool result = false;
-            using (var connection = await OpenConnectionAsync())
+            try
             {
-                var parameters = new
+                bool result = false;
+                using (var connection = await OpenConnectionAsync())
                 {
-                    CommentId = data.CommentId,
-                    Body = data.Body,
-                    TeacherId = data.TeacherId,
-                    SubmissionId = data.SubmissionId,
-                    CommentedTime = data.CommentedTime
-                };
-                result = await connection.ExecuteAsync(
-                    "UpdateComment", parameters, commandType: CommandType.StoredProcedure) > 0;
+                    var parameters = new
+                    {
+                        CommentId = data.CommentId,
+                        Body = data.Body,
+                        TeacherId = data.TeacherId,
+                        SubmissionId = data.SubmissionId,
+                        CommentedTime = data.CommentedTime
+                    };
+                    result = await connection.ExecuteAsync(
+                        "UpdateComment", parameters, commandType: CommandType.StoredProcedure) > 0;
+                }
+                return result;
             }
-
-            return result;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi cập nhật bình luận: " + ex.Message);
+                throw;
+            }
         }
-        
+
     }
 }

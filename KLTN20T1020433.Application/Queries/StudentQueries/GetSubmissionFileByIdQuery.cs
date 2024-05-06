@@ -23,14 +23,23 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
 
         public async Task<GetSubmissionFileResponse?> Handle(GetSubmissionFileByIdQuery request, CancellationToken cancellationToken)
         {
-
-            var file = await _submissionFileDB.GetById(request.Id);
-            if (file != null)
+            try
             {
-                GetSubmissionFileResponse fileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
-                return fileResponse;
+                var file = await _submissionFileDB.GetById(request.Id);
+                if (file != null)
+                {
+                    GetSubmissionFileResponse fileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
+                    return fileResponse;
+                }
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ ở đây, ví dụ: ghi log và thông báo cho người dùng
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu lấy tệp đính kèm: " + ex.Message);
+                throw;
+            }
         }
+
     }
 }

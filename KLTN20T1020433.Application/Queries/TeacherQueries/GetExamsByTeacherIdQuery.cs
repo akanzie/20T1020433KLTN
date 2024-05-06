@@ -25,15 +25,28 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetExamResponse>> Handle(GetExamsByTeacherIdQuery request, CancellationToken cancellationToken)
         {
-            string endpoint = "account/v1/courses";
-            string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
-            if (jsonResponse != null)
+            try
             {
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                IEnumerable<GetExamResponse> courses = JsonConvert.DeserializeObject<GetExamResponse>(responseData.Data.ToString())!;
-                return courses;
+                string endpoint = "account/v1/courses";
+                string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
+
+                if (!string.IsNullOrEmpty(jsonResponse))
+                {
+                    var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                    IEnumerable<GetExamResponse> courses = JsonConvert.DeserializeObject<GetExamResponse>(responseData.Data.ToString())!;
+                    return courses;
+                }
+                else
+                {
+                    return new List<GetExamResponse>();
+                }
             }
-            return new List<GetExamResponse>();
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ ở đây, ví dụ: ghi log, thông báo người dùng hoặc trả về một giá trị mặc định.
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

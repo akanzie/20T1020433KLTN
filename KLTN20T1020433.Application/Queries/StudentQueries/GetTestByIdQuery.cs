@@ -28,19 +28,29 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
 
         public async Task<GetTestByIdResponse?> Handle(GetTestByIdQuery request, CancellationToken cancellationToken)
         {
-            var test = await _testDB.GetById(request.Id);
-            if (test != null)
+            try
             {
-                if (test.StartTime <= DateTime.Now || test.StartTime == null)
+                var test = await _testDB.GetById(request.Id);
+                if (test != null)
                 {
-                    GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
-                    var teacher = await _teacherDB.GetTeacherById(test.TeacherId);
-                    testResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(test.Status);
-                    testResponse.TeacherName = teacher!.TeacherName;
-                    return testResponse;
+                    if (test.StartTime <= DateTime.Now || test.StartTime == null)
+                    {
+                        GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
+                        var teacher = await _teacherDB.GetTeacherById(test.TeacherId);
+                        testResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(test.Status);
+                        testResponse.TeacherName = teacher!.TeacherName;
+                        return testResponse;
+                    }
                 }
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ ở đây, ví dụ: ghi log và thông báo cho người dùng
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu lấy thông tin bài kiểm tra: " + ex.Message);
+                throw;
+            }
         }
+
     }
 }

@@ -21,19 +21,27 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         }
         public async Task<IEnumerable<GetSubmissionFileResponse>> Handle(GetFilesBySubmissionIdQuery request, CancellationToken cancellationToken)
         {
-
-            var SubmissionFiles = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
-            if (SubmissionFiles != null && SubmissionFiles.Any())
+            try
             {
-                List<GetSubmissionFileResponse> SubmissionResponse = new List<GetSubmissionFileResponse>();
-                foreach (var file in SubmissionFiles)
+                var SubmissionFiles = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
+                if (SubmissionFiles != null && SubmissionFiles.Any())
                 {
-                    GetSubmissionFileResponse getSubmissionFileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
-                    SubmissionResponse.Add(getSubmissionFileResponse);
+                    List<GetSubmissionFileResponse> SubmissionResponse = new List<GetSubmissionFileResponse>();
+                    foreach (var file in SubmissionFiles)
+                    {
+                        GetSubmissionFileResponse getSubmissionFileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
+                        SubmissionResponse.Add(getSubmissionFileResponse);
+                    }
+                    return SubmissionResponse;
                 }
-                return SubmissionResponse;
+                return new List<GetSubmissionFileResponse>();
             }
-            return new List<GetSubmissionFileResponse>();
+            catch (Exception ex)
+            {                
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu lấy danh sách tệp đính kèm: " + ex.Message);
+                throw;
+            }
         }
+
     }
 }

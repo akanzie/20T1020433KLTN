@@ -30,36 +30,45 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         }
         public async Task<bool> Handle(CreateTestFileCommand request, CancellationToken cancellationToken)
         {
-            if (request.File == null || request.File.Length == 0)
+            try
             {
-                throw new ArgumentException("Invalid file.");
-            }
-            Guid id = Guid.NewGuid();
-            string uniqueFileName = $"{id}_{request.File.FileName}";
+                if (request.File == null || request.File.Length == 0)
+                {
+                    throw new ArgumentException("Invalid file.");
+                }
+                Guid id = Guid.NewGuid();
+                string uniqueFileName = $"{id}_{request.File.FileName}";
 
-            Test test = await _testDB.GetById(request.TestId);
-            string directoryPath = Path.Combine(_fileOptions.FileStoragePath, test.Title, "Test");
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
+                Test test = await _testDB.GetById(request.TestId);
+                string directoryPath = Path.Combine(_fileOptions.FileStoragePath, test.Title, "Test");
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                string filePath = Path.Combine(directoryPath, uniqueFileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.File.CopyToAsync(stream);
+                }
+                TestFile file = new TestFile
+                {
+                    FileId = id,
+                    FileName = uniqueFileName,
+                    FilePath = filePath,
+                    MimeType = request.File.ContentType,
+                    Size = request.File.Length,
+                    TestId = request.TestId,
+                    OriginalName = request.File.FileName
+                };
+                var result = await _testFileDB.Add(file);
+                return result;
             }
-            string filePath = Path.Combine(directoryPath, uniqueFileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            catch (Exception ex)
             {
-                await request.File.CopyToAsync(stream);
+                // Xử lý ngoại lệ ở đây, ví dụ: ghi log và thông báo cho người dùng
+                Console.WriteLine("Đã xảy ra lỗi khi xử lý yêu cầu tạo tệp đính kèm cho kỳ thi: " + ex.Message);
+                throw;
             }
-            TestFile file = new TestFile
-            {
-                FileId = id,
-                FileName = uniqueFileName,
-                FilePath = filePath,
-                MimeType = request.File.ContentType,
-                Size = request.File.Length,
-                TestId = request.TestId,
-                OriginalName = request.File.FileName
-            };
-            var result = await _testFileDB.Add(file);
-            return result;
         }
     }
 }

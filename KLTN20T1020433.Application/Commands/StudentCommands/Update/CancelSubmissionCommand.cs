@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
@@ -18,18 +19,22 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         }
         public async Task<string> Handle(CancelSubmissionCommand request, CancellationToken cancellationToken)
         {
-
-            var submission = await _submissionDB.GetById(request.SubmissionId);
-            if (submission == null)
+            try
             {
-                return "Không tìm thấy bài nộp.";
+                var submission = await _submissionDB.GetById(request.SubmissionId);
+                if (submission == null)
+                {
+                    return ErrorMessages.SubmissionNotFound;
+                }
+                submission.Status = SubmissionStatus.NotSubmitted;
+                await _submissionDB.Update(submission);
+                return SuccessMessages.CancelSubmissionSuccess;
             }
-            submission.Status = SubmissionStatus.NotSubmitted;
-            if (await _submissionDB.Update(submission))
+            catch (Exception ex)
             {
-                return "Hủy nộp bài thành công.";
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
             }
-            return "Có lỗi xảy ra, vui lòng thử lại sau.";
         }
     }
 }

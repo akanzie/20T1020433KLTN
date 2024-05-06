@@ -31,21 +31,31 @@ namespace KLTN20T1020433.Application.Queries
         }
         public async Task<GetTokenResponse> Handle(GetTokenQuery request, CancellationToken cancellationToken)
         {
-            string signature = Utils.CalculateSignature(_apiOptions.AppId, _apiOptions.SecretKey, request.Time);
-            string apiUrl = $"{request.Host}?code={request.Code}&time={request.Time}&signature={signature}";
-            HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
+            try
+            {
+                string signature = Utils.CalculateSignature(_apiOptions.AppId, _apiOptions.SecretKey, request.Time);
+                string apiUrl = $"{request.Host}?code={request.Code}&time={request.Time}&signature={signature}";
+                HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, null);
 
-            if (response.IsSuccessStatusCode)
-            {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                return new GetTokenResponse { Signature = signature, Token = responseData.Data.Token.ToString() };
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                    var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                    return new GetTokenResponse { Signature = signature, Token = responseData.Data.Token.ToString() };
+                }
+                else
+                {
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"API request failed with status code {(int)response.StatusCode}. Error message: {errorMessage}");
+                }
             }
-            else
-            {
-                throw new HttpRequestException($"API request failed with status code {(int)response.StatusCode}");
+            catch (HttpRequestException ex)
+            {                
+                Console.WriteLine($"Đã xảy ra lỗi khi gửi yêu cầu API: {ex.Message}");
+                throw; 
             }
         }
+
     }
 
 }

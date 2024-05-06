@@ -22,18 +22,26 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetTestFileResponse>> Handle(GetFilesByTestIdQuery request, CancellationToken cancellationToken)
         {
-            var testFiles = await _testFileDB.GetFilesByTestId(request.TestId);
-            if (testFiles != null && testFiles.Any())
+            try
             {
-                List<GetTestFileResponse> testResponse = new List<GetTestFileResponse>();
-                foreach (var file in testFiles)
+                var testFiles = await _testFileDB.GetFilesByTestId(request.TestId);
+                if (testFiles != null && testFiles.Any())
                 {
-                    GetTestFileResponse getTestFileResponse = _mapper.Map<GetTestFileResponse>(file);
-                    testResponse.Add(getTestFileResponse);
+                    List<GetTestFileResponse> testResponse = new List<GetTestFileResponse>();
+                    foreach (var file in testFiles)
+                    {
+                        GetTestFileResponse getTestFileResponse = _mapper.Map<GetTestFileResponse>(file);
+                        testResponse.Add(getTestFileResponse);
+                    }
+                    return testResponse;
                 }
-                return testResponse;
+                return new List<GetTestFileResponse>();
             }
-            return new List<GetTestFileResponse>();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Đã xảy ra ngoại lệ: {ex.Message}");
+                throw;
+            }
         }
     }
 }

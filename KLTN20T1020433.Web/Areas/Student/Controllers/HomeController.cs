@@ -1,5 +1,6 @@
 ﻿
 using KLTN20T1020433.Application.Queries.StudentQueries;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Student.Models;
 using KLTN20T1020433.Web.Models;
@@ -33,28 +34,31 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     PageSize = PAGE_SIZE,
                     StudentId = user.UserId
                 };
-
             }
             return View(input);
         }
         public async Task<IActionResult> Pagination(TestPagination input)
         {
-            var user = User.GetUserData();
-            var data = await _mediator.Send(new GetTestsBySearchQuery { Page = input.Page, PageSize = input.PageSize, StudentId = user.UserId });
-            int rowCount = await _mediator.Send( new GetRowCountQuery { StudentId = user.UserId });
-            var model = new TestSearchResult()
+            try
             {
-                Page = input.Page,
-                PageSize = input.PageSize,
-                RowCount = rowCount,
-                Data = data
-            };
-
-            // Lưu lại vào session điều kiện tìm kiếm
-            ApplicationContext.SetSessionData(TEST_PAGINATION, input);
-
-            return View(model);
-
+                var user = User.GetUserData();
+                var data = await _mediator.Send(new GetTestsBySearchQuery { Page = input.Page, PageSize = input.PageSize, StudentId = user.UserId });
+                int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = user.UserId });
+                var model = new TestSearchResult()
+                {
+                    Page = input.Page,
+                    PageSize = input.PageSize,
+                    RowCount = rowCount,
+                    Data = data
+                };
+                ApplicationContext.SetSessionData(TEST_PAGINATION, input);
+                return View(model);
+            }
+            catch (Exception ex)
+            {                
+                Console.WriteLine($"Exception occurred in Pagination: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
         }
     }
 }
