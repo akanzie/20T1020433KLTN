@@ -20,7 +20,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 
         public GetStudentsByTestIdQueryHandler(IStudentRepository studentDB)
         {
-            _studentDB = studentDB;
+            _submissionDB = submissionDB;
         }
         public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByTestIdQuery request, CancellationToken cancellationToken)
         {
