@@ -57,7 +57,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             catch (Exception ex)
             {                
                 Console.WriteLine($"Exception occurred in Pagination: {ex.Message}");
-                return Json(ErrorMessages.RequestNotCompleted);
+                return BadRequest(ErrorMessages.RequestNotCompleted);
             }
         }
     }

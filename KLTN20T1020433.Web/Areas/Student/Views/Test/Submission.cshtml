@@ -128,7 +128,7 @@
                 getFiles(testId);
             },
             error: function (xhr, status, error) {
-                handleAjaxError(xhr);
+                
             },
         });
     }
@@ -151,8 +151,7 @@
                 $('#fileInput').val('');
                 getFiles(testId);
             },
-            error: function (xhr, status, error) {
-                handleAjaxError(xhr);
+            error: function (xhr, status, error) {                
             },
         });
     }
@@ -166,8 +165,7 @@
                 showToast(response);
                 getSubmission(testId);
             },
-            error: function (xhr, status, error) {
-                handleAjaxError(xhr);
+            error: function (xhr, status, error) {               
             },
         });
     }
@@ -181,8 +179,7 @@
                 showToast(response);
                 getSubmission(testId);
             },
-            error: function (xhr, status, error) {
-                handleAjaxError(xhr);
+            error: function (xhr, status, error) {                
             },
         });
     }

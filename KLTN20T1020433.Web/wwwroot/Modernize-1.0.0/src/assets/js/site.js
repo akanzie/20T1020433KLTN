@@ -54,7 +54,7 @@ function openModalWithConfirmation(header, message, buttonName, confirmCallback)
 }
 function handleAjaxError(xhr) {
     var errorMessage = xhr.responseText;
-    alert("Your request is not valid: " + errorMessage);
+    alert(errorMessage);
 }
 function checkFileSize(input) {
     var files = input.files; // Mảng các file được chọn

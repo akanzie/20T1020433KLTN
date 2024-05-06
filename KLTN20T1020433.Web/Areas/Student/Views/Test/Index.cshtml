@@ -52,8 +52,8 @@
                 url: url,
                 type: "POST",
                 data: postData,
-                error: function () {
-                    alert("Your request is not valid!");
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
                 },
                 success: function (data) {
                     $(container).html(data);
