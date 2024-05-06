@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
 {
-    public class CreateSubmissionCommand : IRequest<int>
+    public class CreateSubmissionCommand : IRequest<string>
     {
         public string[] StudentIds { get; set; }
         public int TestId { get; set; }
     }
-    public class CreateSubmissionCommandHandler : IRequestHandler<CreateSubmissionCommand, int>
+    public class CreateSubmissionCommandHandler : IRequestHandler<CreateSubmissionCommand, string>
     {
         private readonly ITestRepository _testDB;
         private readonly ISubmissionRepository _submissionDB;
@@ -21,7 +22,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
             _mapper = mapper;
             _submissionDB = submissionDB;
         }
-        public async Task<int> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -35,7 +36,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
                     };
                     await _submissionDB.Add(submission);
                 }
-                return 0;
+                return "Thêm sinh viên tham gia thành công";
             }
             catch (Exception ex)
             {

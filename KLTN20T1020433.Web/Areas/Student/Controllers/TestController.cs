@@ -8,6 +8,7 @@ using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Student.Models;
+using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -129,21 +130,28 @@ namespace KLTN20T1020433.Web.Controllers.Student
 
         public async Task<IActionResult> Submission(int testId = 0)
         {
-
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission != null)
+            try
             {
-                var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
-                var model = new SubmissionModel
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+                if (submission != null)
                 {
-                    Submission = submission,
-                    Comments = comments
-                };
+                    var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
+                    var model = new SubmissionModel
+                    {
+                        Submission = submission,
+                        Comments = comments
+                    };
 
-                return View(model);
+                    return View(model);
+                }
+                return BadRequest(ErrorMessages.GeneralError);
             }
-            return BadRequest(ErrorMessages.GeneralError);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in Detail: {ex.Message}");
+                return BadRequest(ErrorMessages.RequestNotCompleted);
+            }
         }
         [HttpPost]
         public async Task<IActionResult> UploadSubmissionFile(List<IFormFile> files, int testId = 0)
@@ -172,7 +180,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred in UploadSubmissionFile: {ex.Message}");
-                return Json(ErrorMessages.GeneralError);
+                return Json(ErrorMessages.RequestNotCompleted);
             }
         }
         [HttpPost]
@@ -198,7 +206,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred in RemoveSubmissionFile: {ex.Message}");
-                return Json(ErrorMessages.GeneralError);
+                return Json(ErrorMessages.RequestNotCompleted);
             }
         }
         [HttpPost]
@@ -234,69 +242,101 @@ namespace KLTN20T1020433.Web.Controllers.Student
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred in Submit: {ex.Message}");
-                return Json(ErrorMessages.GeneralError);
+                return Json(ErrorMessages.RequestNotCompleted);
             }
         }
         [HttpPost]
         public async Task<IActionResult> Cancel(int testId)
         {
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
-            if (submission == null)
+            try
             {
-                return Json(ErrorMessages.GeneralError);
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
+                if (submission == null)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var message = await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId });
+                return Json(message);
             }
-            var message = await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId });
-            return Json(message);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in Cancel: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
         }
         public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId)
         {
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission == null)
+            try
             {
-                return View("NotFound");
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+                if (submission == null)
+                {
+                    return View("NotFound");
+                }
+                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                if (file == null || !System.IO.File.Exists(file.FilePath))
+                {
+                    return Json(ErrorMessages.FileNotFound);
+                }
+                byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
+                return File(fileBytes, file.MimeType, file.OriginalName);
             }
-            var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
-            if (file == null || !System.IO.File.Exists(file.FilePath))
+            catch (Exception ex)
             {
-                return Json(ErrorMessages.FileNotFound);
+                Console.WriteLine($"Exception occurred in DownloadSubmissionFile: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
             }
-            byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
-            return File(fileBytes, file.MimeType, file.OriginalName);
         }
         public async Task<IActionResult> DownloadTestFile(Guid id, int testId)
         {
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-            if (submission == null)
+            try
             {
-                return View("NotFound");
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+                if (submission == null)
+                {
+                    return View("NotFound");
+                }
+                var file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
+                if (file == null || !System.IO.File.Exists(file.FilePath))
+                {
+                    return Json(ErrorMessages.FileNotFound);
+                }
+                byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
+                return File(fileBytes, file.MimeType, file.OriginalName);
             }
-            var file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
-            if (file == null || !System.IO.File.Exists(file.FilePath))
+            catch (Exception ex)
             {
-                return Json(ErrorMessages.FileNotFound);
+                Console.WriteLine($"Exception occurred in DownloadTestFile: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
             }
-            byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
-            return File(fileBytes, file.MimeType, file.OriginalName);
         }
         public async Task<IActionResult> ListSubmissionFiles(int testId = 0)
         {
-            var user = User.GetUserData();
-            var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
-            if (submission != null)
+            try
             {
-                var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
-                var model = new SubmissionFileModel
+                var user = User.GetUserData();
+                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
+                if (submission != null)
                 {
-                    Files = files,
-                    TestId = testId,
-                    Status = submission.Status
-                };
-                return View(model);
+                    var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
+                    var model = new SubmissionFileModel
+                    {
+                        Files = files,
+                        TestId = testId,
+                        Status = submission.Status
+                    };
+                    return View(model);
+                }
+                return BadRequest(ErrorMessages.GeneralError);
             }
-            return BadRequest(ErrorMessages.GeneralError);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in ListSubmissionFiles: {ex.Message}");
+                return BadRequest(ErrorMessages.RequestNotCompleted);
+            }
         }
 
     }

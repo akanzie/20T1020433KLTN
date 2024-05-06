@@ -16,12 +16,7 @@
 
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
          data-sidebar-position="fixed" data-header-position="fixed">
-
-        @Html.
-        
-        
-        
-        al("~/Areas/Teacher/Views/Shared/_SideBar.cshtml")
+        @Html.Partial("~/Areas/Teacher/Views/Shared/_SideBar.cshtml")
         <div class="body-wrapper">
             @Html.Partial("~/Areas/Teacher/Views/Shared/_Header.cshtml")
 
@@ -37,6 +32,6 @@
     <script src="~/Modernize-1.0.0/src/assets/libs/simplebar/dist/simplebar.js"></script>
     <script src="~/Modernize-1.0.0/src/assets/js/dashboard.js"></script>
     <script src="~/modernize-1.0.0/src/assets/js/site.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)   
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

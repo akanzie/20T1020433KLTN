@@ -6,12 +6,12 @@ using MediatR;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetTestByIdQuery : IRequest<GetTestByIdResponse>
+    public class GetTestByIdQuery : IRequest<GetTestByIdResponse?>
     {
         public int Id { get; set; }
         public string TeacherID { get; set; }
     }
-    public class GetTestByIdQueryHandler : IRequestHandler<GetTestByIdQuery, GetTestByIdResponse>
+    public class GetTestByIdQueryHandler : IRequestHandler<GetTestByIdQuery, GetTestByIdResponse?>
     {
         private readonly ITestRepository _testDB;
         private readonly IMapper _mapper;
@@ -22,7 +22,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             _mapper = mapper;
         }
 
-        public async Task<GetTestByIdResponse> Handle(GetTestByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetTestByIdResponse?> Handle(GetTestByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                         return testResponse;
                     }
                 }
-                return new GetTestByIdResponse();
+                return null;
             }
             catch (Exception ex)
             {

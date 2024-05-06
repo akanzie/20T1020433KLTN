@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetSubmissionByIdQuery : IRequest<GetSubmissionResponse>
+    public class GetSubmissionByIdQuery : IRequest<GetSubmissionResponse?>
     {
         public int Id { get; set; }
     }
-    public class GetSubmissionByIdQueryHandler : IRequestHandler<GetSubmissionByIdQuery, GetSubmissionResponse>
+    public class GetSubmissionByIdQueryHandler : IRequestHandler<GetSubmissionByIdQuery, GetSubmissionResponse?>
     {
         private readonly ISubmissionRepository _submissionDB;
         private readonly IMapper _mapper;
@@ -26,7 +26,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             _mapper = mapper;
         }
 
-        public async Task<GetSubmissionResponse> Handle(GetSubmissionByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetSubmissionResponse?> Handle(GetSubmissionByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     return submissionResponse;
 
                 }
-                return new GetSubmissionResponse();
+                return null;
             }
             catch (Exception ex)
             {

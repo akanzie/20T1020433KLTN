@@ -1,5 +1,7 @@
 ﻿using KLTN20T1020433.Application.Queries.TeacherQueries;
+using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Web.AppCodes;
+using KLTN20T1020433.Web.Areas.Student.Models;
 using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,14 +25,20 @@ namespace KLTN20T1020433.Web.Controllers
         }
         public async Task<IActionResult> Index(string teacherId)
         {
-            var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { TeacherId = teacherId });
+            try
+            {
+                var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { TeacherId = teacherId });
+                return View(courses);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in Index: {ex.Message}");
+                return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
+            }
+        }
 
-            // Trả về danh sách các khóa học đó cho view
-            return View(courses);
-        }        
 
-     
 
-        
+
     }
 }

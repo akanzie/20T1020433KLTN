@@ -5,11 +5,11 @@ using MediatR;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetTestFileByIdQuery : IRequest<GetTestFileResponse>
+    public class GetTestFileByIdQuery : IRequest<GetTestFileResponse?>
     {
         public Guid Id { get; set; }
     }
-    public class GetTestFileByIdQueryHandler : IRequestHandler<GetTestFileByIdQuery, GetTestFileResponse>
+    public class GetTestFileByIdQueryHandler : IRequestHandler<GetTestFileByIdQuery, GetTestFileResponse?>
     {
         private readonly ITestFileRepository _testFileDB;
         private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 
             _mapper = mapper;
         }
-        public async Task<GetTestFileResponse> Handle(GetTestFileByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetTestFileResponse?> Handle(GetTestFileByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     GetTestFileResponse fileResponse = _mapper.Map<GetTestFileResponse>(file);
                     return fileResponse;
                 }
-                return new GetTestFileResponse();
+                return null;
             }
             catch (Exception ex)
             {

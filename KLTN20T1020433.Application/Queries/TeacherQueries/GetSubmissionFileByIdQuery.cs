@@ -5,11 +5,11 @@ using MediatR;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetSubmissionFileByIdQuery : IRequest<GetSubmissionFileResponse>
+    public class GetSubmissionFileByIdQuery : IRequest<GetSubmissionFileResponse?>
     {
         public Guid Id { get; set; }
     }
-    public class GetSubmissionFileByIdQueryHandler : IRequestHandler<GetSubmissionFileByIdQuery, GetSubmissionFileResponse>
+    public class GetSubmissionFileByIdQueryHandler : IRequestHandler<GetSubmissionFileByIdQuery, GetSubmissionFileResponse?>
     {
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             _mapper = mapper;
         }
 
-        public async Task<GetSubmissionFileResponse> Handle(GetSubmissionFileByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetSubmissionFileResponse?> Handle(GetSubmissionFileByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 
                     return fileResponse;
                 }
-                return new GetSubmissionFileResponse();
+                return null;
             }
             catch (Exception ex)
             {
