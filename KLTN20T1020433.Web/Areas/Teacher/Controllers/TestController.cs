@@ -413,7 +413,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UploadTestFile(List<IFormFile> files)
+        public async Task<IActionResult> UploadTestFile(List<IFormFile> files, int? testId = null)
         {
             try
             {
@@ -422,17 +422,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     return Json(ErrorMessages.NoFilesUploaded);
                 else
                 {
-                    int? testId = ApplicationContext.GetDataInt32(Constants.TESTID);
-                    if (testId == null || testId.Value == 0)
+                    if (testId == null)
                     {
-                        testId = await _mediator.Send(new CreateTestCommand { TeacherId = user.UserId, TestStatus = TestStatus.Creating });
-                        ApplicationContext.SetInt32(Constants.TESTID, testId.Value);
+                        testId = ApplicationContext.GetDataInt32(Constants.TESTID);
+                        if (testId == null || testId.Value == 0)
+                        {
+                            testId = await _mediator.Send(new CreateTestCommand { TeacherId = user.UserId, TestStatus = TestStatus.Creating });
+                            ApplicationContext.SetInt32(Constants.TESTID, testId.Value);
+                        }
                     }
-                    else
-                    {
-                        testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
-                    }
-
                     foreach (var item in files)
                     {
                         if (item == null || item.Length == 0 || item.Length >= FileUtils.MAX_FILE_SIZE)

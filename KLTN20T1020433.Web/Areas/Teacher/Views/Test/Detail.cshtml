@@ -107,9 +107,9 @@
 @section scripts
 {
     <script>
-        function initialize() {
+        $(document).ready(function () {
             bindEvents();
-        }
+        });        
         function bindEvents() {
             $("#submissionList").on('click', function () {
                 getListSubmissions();
@@ -120,8 +120,7 @@
             $.ajax({
                 url: url,
                 type: 'GET',
-                success: function (data) {
-                    e.preventDefault();
+                success: function (data) {      
                     $('#submissionContent').html(data);
                 },
                 error: function (xhr, status, error) {
@@ -130,8 +129,6 @@
                 }
             });
         }
-        $(document).ready(function () {
-            initialize();
-        });
+        
     </script>
 }

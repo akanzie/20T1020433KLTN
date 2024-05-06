@@ -113,32 +113,35 @@
         $(document).ready(function () {
             var testId = @Model.TestId;
             getFiles(testId);
-            bindEvents();
-        });    
-        function bindEvents() {
+            bindEvents(testId);
+        });
+        function bindEvents(testId) {
             $('#selectFileBtn').on('click', function () {
                 $('#fileInput').click();
             });
             $('#fileInput').off('change').on('change', function () {
-                var formData = new FormData();
-                var files = $(this)[0].files;
-                files.forEach(function (file) {
-                    formData.append('files', file);
-                });
-                uploadFiles(formData);
+                var check = checkFileSize(this);
+                if (check)
+                    uploadFiles(testId);
             });
 
             // Bắt sự kiện khi click vào nút xóa file
             $(document).on('click', '.remove-button', function () {
                 var fileId = $(this).data('fileid');
-                removeFile(fileId);
+                removeFile(fileId, testId);
             });
             $('.class-btn').click(function () {
                 $('.class-btn').removeClass('selected');
                 $(this).addClass('selected');
             });
         }
-        function uploadFiles(formData) {
+        function uploadFiles(testId) {
+            var formData = new FormData();
+            var files = $('#fileInput')[0].files;
+            $.each(files, function (index, file) {
+                formData.append('files', file);
+            });
+            formData.append('testId', testId);
             var url = '@Url.Action("UploadTestFile", "Test")';
             $.ajax({
                 url: url,
@@ -147,11 +150,11 @@
                 processData: false,
                 contentType: false,
                 success: function (response) {
+                    showToast(response);
                     $('#fileInput').val('');
                     getFiles(response);
                 },
-                error: function (xhr, status, error) {
-                    handleAjaxError(xhr);
+                error: function (xhr, status, error) {                    
                 }
             });
         }
@@ -169,21 +172,21 @@
                 }
             });
         }
-        function removeFile(fileId) {
+        function removeFile(fileId, testId) {
             var url = '@Url.Action("RemoveTestFile", "Test")';
             $.ajax({
                 url: url,
                 type: 'POST',
-                data: { id: fileId },
+                data: { id: fileId, testId: testId },
                 success: function (response) {
-                    getFiles(response);
+                    showToast(response);
+                    getFiles(testId);
                 },
                 error: function (xhr, status, error) {
                     handleAjaxError(xhr);
                 }
             });
-        }     
-       
+        }
 
     </script>
 
