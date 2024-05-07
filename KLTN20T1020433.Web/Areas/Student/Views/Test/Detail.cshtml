@@ -49,20 +49,27 @@
                             @Model.Test.Instruction
                         </p>
                         <div class="row">
-                            @foreach (var item in Model.Files)
+                            @if (Model.Files != null && Model.Files.Any())
                             {
-                                <div class="col-lg-6 mb-3">
-                                    <div class="rounded-2 border border-dark-light pe-2">
-                                        <a href="~/Student/Test/DownLoadTestFile?id=@item.FileId&testId=@Model.Test.TestId" class="flex-grow-1 overflow-hidden hstack">
-                                            <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
-                                                <img src="../assets/images/logos/favicon.png" class="img-file">
-                                            </div>
-                                            <div class="overflow-hidden">
-                                                <span class="text-truncate d-block">@item.OriginalName</span>
-                                            </div>
-                                        </a>
+                                @foreach (var item in Model.Files)
+                                {
+                                    <div class="col-lg-6 mb-3">
+                                        <div class="rounded-2 border border-dark-light pe-2">
+                                            <a href="~/Student/Test/DownLoadTestFile?id=@item.FileId&testId=@Model.Test.TestId" class="flex-grow-1 overflow-hidden hstack">
+                                                <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
+                                                    <img src="../assets/images/logos/favicon.png" class="img-file">
+                                                </div>
+                                                <div class="overflow-hidden">
+                                                    <span class="text-truncate d-block">@item.OriginalName</span>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                }
+                            }
+                            else
+                            {
+                                <div>Không có tệp đính kèm.</div>
                             }
                         </div>
                     </div>
@@ -75,20 +82,27 @@
                             </div>
                             <div class="col-md-6 mt-2">
                                 <div class="row">
-                                    @foreach (var item in Model.Files)
+                                    @if (Model.Files != null && Model.Files.Any())
                                     {
-                                        <div class="col-lg-6 mb-3">
-                                            <div class="rounded-2 border border-dark-light pe-2">
-                                                <a href="~/Student/Test/DownLoadTestFile?id=@item.FileId&testId=@Model.Test.TestId" class="flex-grow-1 overflow-hidden hstack">
-                                                    <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
-                                                        <img src="../assets/images/logos/favicon.png" class="img-file">
-                                                    </div>
-                                                    <div class="overflow-hidden">
-                                                        <span class="text-truncate d-block">@item.OriginalName</span>
-                                                    </div>
-                                                </a>
+                                        @foreach (var item in Model.Files)
+                                        {
+                                            <div class="col-lg-6 mb-3">
+                                                <div class="rounded-2 border border-dark-light pe-2">
+                                                    <a href="~/Student/Test/DownLoadTestFile?id=@item.FileId&testId=@Model.Test.TestId" class="flex-grow-1 overflow-hidden hstack">
+                                                        <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
+                                                            <img src="../assets/images/logos/favicon.png" class="img-file">
+                                                        </div>
+                                                        <div class="overflow-hidden">
+                                                            <span class="text-truncate d-block">@item.OriginalName</span>
+                                                        </div>
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div>Không có tệp đính kèm.</div>
                                     }
                                 </div>
                             </div>
@@ -133,6 +147,6 @@
             });
             return;
         }
-       
+
     </script>
 }

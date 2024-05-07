@@ -2,10 +2,8 @@
 using KLTN20T1020433.Application.Commands.StudentCommands.Delete;
 using KLTN20T1020433.Application.Commands.StudentCommands.Update;
 using KLTN20T1020433.Application.DTOs;
-using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using KLTN20T1020433.Application.Queries.StudentQueries;
 using KLTN20T1020433.Application.Services;
-using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Student.Models;
 using KLTN20T1020433.Web.Models;
@@ -133,6 +131,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return BadRequest(ErrorMessages.GeneralError);
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission != null)
                 {
@@ -159,6 +161,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission == null)
                 {
@@ -189,6 +195,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission == null)
                 {
@@ -210,11 +220,15 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Submit(int testId)
+        public async Task<IActionResult> Submit(int testId = 0)
         {
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission == null)
                 {
@@ -246,11 +260,15 @@ namespace KLTN20T1020433.Web.Controllers.Student
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Cancel(int testId)
+        public async Task<IActionResult> Cancel(int testId = 0)
         {
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
                 if (submission == null)
                 {
@@ -265,11 +283,15 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId)
+        public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId = 0)
         {
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return View("NotFound");
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission == null)
                 {
@@ -289,11 +311,15 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> DownloadTestFile(Guid id, int testId)
+        public async Task<IActionResult> DownloadTestFile(Guid id, int testId = 0)
         {
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return View("NotFound");
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission == null)
                 {
@@ -318,6 +344,10 @@ namespace KLTN20T1020433.Web.Controllers.Student
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return BadRequest(ErrorMessages.GeneralError);
+                }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId });
                 if (submission != null)
                 {

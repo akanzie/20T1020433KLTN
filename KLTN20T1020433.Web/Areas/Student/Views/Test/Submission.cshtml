@@ -50,138 +50,149 @@
     <div class="bg-white py-3 ms-4">
         <div class="d-flex align-items-center">
             <span><i class="ti ti-user me-2"></i></span>
-            <span class="card-title mb-0">@Model.Comments.Count() nhận xét riêng tư</span>
+            @if (Model.Comments != null && Model.Comments.Any())
+            {
+                <span class="card-title mb-0">@Model.Comments.Count() nhận xét riêng tư</span>
+            }
+            else
+            {
+                <span class="card-title mb-0">Chưa có nhận xét riêng tư</span>
+            }
         </div>
     </div>
     <div class="mb-3 ms-4">
         <div class="container">
             <div class="row align-items-center">
-                @foreach (var item in Model.Comments)
+                @if (Model.Comments != null && Model.Comments.Any())
                 {
-                    <div class="col">
-                        <div class="d-flex justify-content-between">
-                            <p class="mb-0  "><strong>@item.TeacherName</strong></p>
-                            <p class="mb-0 text-muted">@item.CommentedTime</p>
+                    @foreach (var item in Model.Comments)
+                    {
+                        <div class="col">
+                            <div class="d-flex justify-content-between">
+                                <p class="mb-0  "><strong>@item.TeacherName</strong></p>
+                                <p class="mb-0 text-muted">@item.CommentedTime</p>
+                            </div>
+                            <p class="mb-0  fw-bold text-dark">@item.Body</p>
                         </div>
-                        <p class="mb-0  fw-bold text-dark">@item.Body</p>
-                    </div>
+                    }
                 }
-
             </div>
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        var testId = @Model.Submission.TestId;
-        bindEvents(testId);
-        getFiles(testId);
-    });
-    function bindEvents(testId) {
-        $('#selectFileBtn').off('click').on('click', function () {
-            $('#fileInput').click();
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var testId = @Model.Submission.TestId;
+            bindEvents(testId);
+            getFiles(testId);
         });
-
-        $(document).on('click', '.remove-button', function () {
-            var fileId = $(this).data('fileid');
-            removeFile(fileId, testId);
-        });
-
-        $('#submitBtn').on('click', function () {
-            openModalWithConfirmation('Gửi bài nộp của bạn?', 'Nộp bài nếu bạn đã kiểm tra các tệp đính kèm.', 'Nộp bài', function () {
-                submit(testId);
+        function bindEvents(testId) {
+            $('#selectFileBtn').off('click').on('click', function () {
+                $('#fileInput').click();
             });
-        });
-        $('#cancelBtn').on('click', function () {
-            openModalWithConfirmation('Hủy nộp bài?', 'Hủy gửi để thêm hoặc thay đổi tệp đính kèm. Đừng quên gửi lại khi bạn đã hoàn tất.', 'Hủy nộp bài', function () {
-                cancel(testId);
-            });
-        });
-        $('#fileInput').off('change').on('change', function () {
-            var check = checkFileSize(this);
-            if (check)
-                uploadFiles(testId);
-        });
-    }
-    function getFiles(testId) {
-        var url = '@Url.Action("ListSubmissionFiles", "Test")';
-        $.ajax({
-            url: url,
-            type: "GET",
-            data: { testId: testId },
-            success: function (data) {
-                $("#submission_files").html(data);
-            },
-            error: function (xhr, status, error) {
-                handleAjaxError(xhr);
-            },
-        });
-    }
-    function removeFile(fileId, testId) {
-        var url = '@Url.Action("RemoveSubmissionFile", "Test")';
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { id: fileId, testId: testId },
-            success: function (response) {
-                showToast(response);
-                getFiles(testId);
-            },
-            error: function (xhr, status, error) {
-                
-            },
-        });
-    }
-    function uploadFiles(testId) {
-        var formData = new FormData();
-        var files = $('#fileInput')[0].files;
-        $.each(files, function (index, file) {  
-            formData.append('files', file);
-        });
-        formData.append('testId', testId);
-        var url = '@Url.Action("UploadSubmissionFile", "Test")';
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                showToast(response);
-                $('#fileInput').val('');
-                getFiles(testId);
-            },
-            error: function (xhr, status, error) {                
-            },
-        });
-    }
-    function submit(testId) {
-        var url = '@Url.Action("Submit", "Test")';
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { testId: testId },
-            success: function (response) {
-                showToast(response);
-                getSubmission(testId);
-            },
-            error: function (xhr, status, error) {               
-            },
-        });
-    }
-    function cancel(testId) {
-        var url = '@Url.Action("Cancel", "Test")';
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { testId: testId },
-            success: function (response) {
-                showToast(response);
-                getSubmission(testId);
-            },
-            error: function (xhr, status, error) {                
-            },
-        });
-    }
 
-</script>
+            $(document).on('click', '.remove-button', function () {
+                var fileId = $(this).data('fileid');
+                removeFile(fileId, testId);
+            });
+
+            $('#submitBtn').on('click', function () {
+                openModalWithConfirmation('Gửi bài nộp của bạn?', 'Nộp bài nếu bạn đã kiểm tra các tệp đính kèm.', 'Nộp bài', function () {
+                    submit(testId);
+                });
+            });
+            $('#cancelBtn').on('click', function () {
+                openModalWithConfirmation('Hủy nộp bài?', 'Hủy gửi để thêm hoặc thay đổi tệp đính kèm. Đừng quên gửi lại khi bạn đã hoàn tất.', 'Hủy nộp bài', function () {
+                    cancel(testId);
+                });
+            });
+            $('#fileInput').off('change').on('change', function () {
+                var check = checkFileSize(this);
+                if (check)
+                    uploadFiles(testId);
+            });
+        }
+        function getFiles(testId) {
+            var url = '@Url.Action("ListSubmissionFiles", "Test")';
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: { testId: testId },
+                success: function (data) {
+                    $("#submission_files").html(data);
+                },
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                },
+            });
+        }
+        function removeFile(fileId, testId) {
+            var url = '@Url.Action("RemoveSubmissionFile", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { id: fileId, testId: testId },
+                success: function (response) {
+                    showToast(response);
+                    getFiles(testId);
+                },
+                error: function (xhr, status, error) {
+
+                },
+            });
+        }
+        function uploadFiles(testId) {
+            var formData = new FormData();
+            var files = $('#fileInput')[0].files;
+            $.each(files, function (index, file) {
+                formData.append('files', file);
+            });
+            formData.append('testId', testId);
+            var url = '@Url.Action("UploadSubmissionFile", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    showToast(response);
+                    $('#fileInput').val('');
+                    getFiles(testId);
+                },
+                error: function (xhr, status, error) {
+                },
+            });
+        }
+        function submit(testId) {
+            var url = '@Url.Action("Submit", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (response) {
+                    showToast(response);
+                    getSubmission(testId);
+                },
+                error: function (xhr, status, error) {
+                },
+            });
+        }
+        function cancel(testId) {
+            var url = '@Url.Action("Cancel", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (response) {
+                    showToast(response);
+                    getSubmission(testId);
+                },
+                error: function (xhr, status, error) {
+                },
+            });
+        }
+
+    </script>
+}

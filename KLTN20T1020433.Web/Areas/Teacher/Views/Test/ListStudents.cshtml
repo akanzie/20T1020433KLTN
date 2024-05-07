@@ -1,5 +1,4 @@
-﻿@using KLTN20T1020433.Application.DTOs.TeacherDTOs
-@model IEnumerable<GetStudentResponse>
+﻿@model KLTN20T1020433.Web.Areas.Teacher.Models.StudentModel
 @{
     Layout = null;
 }
@@ -20,21 +19,30 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model.Students != null && Model.Students.Any())
+        {
+            @foreach (var item in Model.Students)
+            {
+                <tr>
+                    <td>
+                        <div>
+                            <input type="checkbox" class="form-check-input me-4 student-checkbox"
+                                   name="studentSelecting" value="@item.StudentId">
+                        </div>
+                    </td>
+                    <td>
+                        20T1020433
+                    </td>
+                    <td>
+                        Châu Anh Kiệt
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>
-                    <div>
-                        <input type="checkbox" class="form-check-input me-4 student-checkbox"
-                               name="studentSelecting" value="@item.StudentId">
-                    </div>
-                </td>
-                <td>
-                    20T1020433
-                </td>
-                <td>
-                    Châu Anh Kiệt
-                </td>
+                <td colspan="3" class="text-center">Không tìm thấy dữ liệu.</td>
             </tr>
         }
     </tbody>

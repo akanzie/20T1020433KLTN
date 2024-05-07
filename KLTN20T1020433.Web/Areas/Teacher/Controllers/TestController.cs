@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using KLTN20T1020433.Application.Commands.StudentCommands.Create;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Delete;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Update;
@@ -7,7 +6,6 @@ using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Queries;
 using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
-using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Teacher.Commands.Delete;
@@ -16,8 +14,6 @@ using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using System.Reflection;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -69,6 +65,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return BadRequest(ErrorMessages.GeneralError);
+                }
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
                 if (test == null)
                 {
@@ -95,10 +95,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
         }
         [HttpPost]
-        public async Task<IActionResult> CancelCreation(int testId)
+        public async Task<IActionResult> CancelCreation(int testId = 0)
         {
             try
             {
+                if (testId <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 await _mediator.Send(new DeleteTestCommand { Id = testId });
                 return Json(SuccessMessages.CancelCreationSuccess);
             }
@@ -145,6 +149,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var user = User.GetUserData();
                 var testId = ApplicationContext.GetDataInt32(Constants.TESTID) ?? 0;
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
+                if (test == null)
+                    test = new GetTestByIdResponse();
                 ViewBag.IsEdit = false;
                 switch (type.ToLower())
                 {
@@ -369,10 +375,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Save(int testId, string[] selectedStudents)
+        public async Task<IActionResult> Save(string[] selectedStudents, int testId = 0)
         {
             try
             {
+                if (testId <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 var user = User.GetUserData();
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
                 if (test == null)
@@ -413,7 +423,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
         }
         [HttpPost]
-        public async Task<IActionResult> UploadTestFile(List<IFormFile> files, int? testId = null)
+        public async Task<IActionResult> UploadTestFile(List<IFormFile> files, int? testId = 0)
         {
             try
             {
@@ -422,7 +432,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     return Json(ErrorMessages.NoFilesUploaded);
                 else
                 {
-                    if (testId == null)
+                    if (testId == 0)
                     {
                         testId = ApplicationContext.GetDataInt32(Constants.TESTID);
                         if (testId == null || testId.Value == 0)
@@ -481,7 +491,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     case "exam":
                         var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Tạo kỳ thi";
-                        return View("ExamSelectStudents", exams);
+                        return View("ExamSelectStudents", new ExamModel { Exams = exams });
                     default:
                         return View("NotFound");
                 }
@@ -497,6 +507,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             try
             {
+                if (id <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 var user = User.GetUserData();
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
                 var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
@@ -505,11 +519,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     case TestType.Quiz:
                         var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Chỉnh sửa bài kiểm tra";
-                        return View("QuizSelectStudents", courses);
+                        return View("QuizSelectStudents", new CourseModel { Courses = courses });
                     case TestType.Exam:
                         var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Chỉnh sửa kỳ thi";
-                        return View("ExamSelectStudents", exams);
+                        return View("ExamSelectStudents", new ExamModel { Exams = exams });
                     default:
                         return View("NotFound");
                 }
@@ -533,13 +547,17 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             {
                 students = await _mediator.Send(new GetStudentsByExamIdQuery { CourseId = courseId, GetTokenResponse = token });
             }
-            return View(students);
+            return View(new StudentModel { Students = students });
         }
-        public async Task<IActionResult> SelectedStudents(int testId)
+        public async Task<IActionResult> SelectedStudents(int testId = 0)
         {
+            if (testId <= 0)
+            {
+                return Json(ErrorMessages.GeneralError);
+            }
             ViewBag.IsSelectedList = true;
             IEnumerable<GetStudentResponse> students = await _mediator.Send(new GetStudentsByTestIdQuery { TestId = testId });
-            return View("ListStudents", students);
+            return View("ListStudents", new StudentModel { Students = students });
         }
         public IActionResult QuizSelectStudents()
         {
@@ -553,16 +571,19 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             try
             {
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return View(new TestFileModel());
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
                 if (test != null)
                 {
                     var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = testId });
 
                     var model = new TestFileModel
                     {
-                        Status = test.Status,
                         Files = files
-
                     };
                     return View(model);
                 }

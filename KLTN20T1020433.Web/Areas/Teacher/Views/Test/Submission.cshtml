@@ -4,10 +4,13 @@
 }
 <div class="container-fluid ps-0 pe-0">
     <h1>@Model.Submission.StudentName</h1>
-    @foreach (var filePath in Model.Files)
+    @if (Model.Files != null && Model.Files.Any())
     {
-        <a href="#" class="file-link" data-file-id="@filePath.FileId">@filePath.OriginalName</a>
-        <br />
+        @foreach (var filePath in Model.Files)
+        {
+            <a href="#" class="file-link" data-file-id="@filePath.FileId">@filePath.OriginalName</a>
+            <br />
+        }
     }
 </div>
 <div id="filePreview"></div>

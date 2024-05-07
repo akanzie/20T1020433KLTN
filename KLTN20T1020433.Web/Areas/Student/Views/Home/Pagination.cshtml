@@ -28,7 +28,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.Data.Any())
+            @if (Model.Data != null && Model.Data.Any())
             {
                 @foreach (var item in Model.Data)
                 {

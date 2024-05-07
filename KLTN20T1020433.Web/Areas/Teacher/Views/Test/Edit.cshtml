@@ -1,15 +1,7 @@
 ﻿@model KLTN20T1020433.Application.DTOs.TeacherDTOs.GetTestByIdResponse
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
-    string action = "";
-    @if (ViewBag.IsEdit)
-    {
-        action = Url.Action("EditStudents", "Test", new { id = Model.TestId });
-    }
-    else
-    {
-        action = Url.Action("SelectStudents", "Test", new { type = Model.TestType });
-    }
+    string action = ViewBag.IsEdit ? Url.Action("EditStudents", "Test", new { id = Model.TestId }) : Url.Action("SelectStudents", "Test", new { type = Model.TestType });
 }
 <div class="container-fluid ps-0 pe-0">
     <form action="@action" method="post">
@@ -150,11 +142,14 @@
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    showToast(response);
-                    $('#fileInput').val('');
-                    getFiles(response);
+                    if (response.success) {
+                        $('#fileInput').val('');
+
+                        getFiles(response.testId);
+                    }
+                    showToast(response.message);
                 },
-                error: function (xhr, status, error) {                    
+                error: function (xhr, status, error) {
                 }
             });
         }
@@ -183,7 +178,7 @@
                     getFiles(testId);
                 },
                 error: function (xhr, status, error) {
-                    handleAjaxError(xhr);
+
                 }
             });
         }

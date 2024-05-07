@@ -1,5 +1,4 @@
-﻿@using KLTN20T1020433.Application.DTOs.TeacherDTOs
-@model IEnumerable<GetCourseResponse>
+﻿@model KLTN20T1020433.Web.Areas.Teacher.Models.CourseModel
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
@@ -65,7 +64,7 @@
                             <div class="">
                                 <select class="form-select" id="Course" name="Course">
                                     <option selected value="">Chọn lớp học phần</option>
-                                    @foreach (var item in Model)
+                                    @foreach (var item in Model.Courses)
                                     {
                                         <option value="@item.CourseId">@item.CourseName</option>
                                     }
