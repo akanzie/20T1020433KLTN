@@ -487,7 +487,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     case "quiz":
                         var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Tạo bài kiểm tra";
-                        return View("QuizSelectStudents", courses);
+                        return View("QuizSelectStudents", new CourseModel { Courses = courses });
                     case "exam":
                         var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Tạo kỳ thi";

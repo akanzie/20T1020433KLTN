@@ -43,7 +43,7 @@ namespace KLTN20T1020433.Web.AppCodes
             });
             foreach (TestStatus item in Enum.GetValues(typeof(TestStatus)))
             {
-                if (Utils.GetTestStatusDisplayNameForStudent(item) != "")
+                if (Utils.GetTestStatusDisplayNameForTeacher(item) != "")
                 {
                     list.Add(new SelectListItem()
                     {
