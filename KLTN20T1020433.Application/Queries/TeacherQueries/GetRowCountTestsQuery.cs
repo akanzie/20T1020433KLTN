@@ -27,7 +27,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         {
             try
             {
-                int rowCount = await _testDB.CountTestsOfStudent(request.TeacherId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
+                int rowCount = await _testDB.CountTestsOfTeacher(request.TeacherId, request.SearchValue, request.Type, request.Status, request.FromTime, request.ToTime);
 
                 return rowCount;
             }

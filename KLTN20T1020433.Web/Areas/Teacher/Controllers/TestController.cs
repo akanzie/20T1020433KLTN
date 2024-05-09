@@ -370,30 +370,48 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
         }
-        public IActionResult Delete()
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id = 0)
         {
-            return View();
+            try
+            {
+                if (id <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var user = User.GetUserData();
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
+                if (test == null)
+                    return Json(ErrorMessages.TestNotFound);
+                await _mediator.Send(new DeleteTestCommand { Id = id });
+                return Json(SuccessMessages.DeleteTestSuccess);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in Save: {ex.Message}");
+                return Json(new { success = false, message = ErrorMessages.RequestNotCompleted });
+            }
         }
         [HttpPost]
-        public async Task<IActionResult> Save(string[] selectedStudents, int testId = 0)
+        public async Task<IActionResult> Save(string[] selectedStudentIds, int testId = 0)
         {
             try
             {
                 if (testId <= 0)
                 {
-                    return Json(ErrorMessages.GeneralError);
+                    return Json(new { success = false, message = ErrorMessages.GeneralError });
                 }
                 var user = User.GetUserData();
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
                 if (test == null)
-                    return Json(ErrorMessages.TestNotFound);
-                var message = await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudents });
-                return Json(message);
+                    return Json(new { success = false, message = ErrorMessages.TestNotFound });
+                await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudentIds });
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred in Save: {ex.Message}");
-                return Json(ErrorMessages.RequestNotCompleted);
+                return Json(new { success = false, message = ErrorMessages.RequestNotCompleted });
             }
         }
         public async Task<IActionResult> Download(Guid id)
@@ -481,17 +499,16 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     HttpContext.Session.SetInt32(Constants.TESTID, testId.Value);
                 }
                 var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
-                ViewBag.TestId = testId.Value;
                 switch (type.ToLower())
                 {
                     case "quiz":
                         var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Tạo bài kiểm tra";
-                        return View("QuizSelectStudents", new CourseModel { Courses = courses });
+                        return View("QuizSelectStudents", new CourseModel { Courses = courses, TestId = testId.Value });
                     case "exam":
                         var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Tạo kỳ thi";
-                        return View("ExamSelectStudents", new ExamModel { Exams = exams });
+                        return View("ExamSelectStudents", new ExamModel { Exams = exams, TestId = testId.Value });
                     default:
                         return View("NotFound");
                 }
@@ -519,11 +536,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     case TestType.Quiz:
                         var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Chỉnh sửa bài kiểm tra";
-                        return View("QuizSelectStudents", new CourseModel { Courses = courses });
+                        return View("QuizSelectStudents", new CourseModel { Courses = courses, TestId = id });
                     case TestType.Exam:
                         var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Chỉnh sửa kỳ thi";
-                        return View("ExamSelectStudents", new ExamModel { Exams = exams });
+                        return View("ExamSelectStudents", new ExamModel { Exams = exams, TestId = id });
                     default:
                         return View("NotFound");
                 }
@@ -536,18 +553,26 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         }
         public async Task<IActionResult> ListStudents(TestType type, string courseId)
         {
-            ViewBag.IsSelectedList = false;
-            var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
-            IEnumerable<GetStudentResponse> students = new List<GetStudentResponse>();
-            if (type == TestType.Quiz)
+            try
             {
-                students = await _mediator.Send(new GetStudentsByCourseIdQuery { CourseId = courseId, GetTokenResponse = token });
+                ViewBag.IsSelectedList = false;
+                var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+                IEnumerable<GetStudentResponse> students = new List<GetStudentResponse>();
+                if (type == TestType.Quiz)
+                {
+                    students = await _mediator.Send(new GetStudentsByCourseIdQuery { CourseId = courseId, GetTokenResponse = token });
+                }
+                else
+                {
+                    students = await _mediator.Send(new GetStudentsByExamIdQuery { CourseId = courseId, GetTokenResponse = token });
+                }
+                return View(new StudentModel { Students = students });
             }
-            else
+            catch (Exception ex)
             {
-                students = await _mediator.Send(new GetStudentsByExamIdQuery { CourseId = courseId, GetTokenResponse = token });
+                Console.WriteLine($"Exception occurred in EditStudents: {ex.Message}");
+                return BadRequest(ErrorMessages.RequestNotCompleted);
             }
-            return View(new StudentModel { Students = students });
         }
         public async Task<IActionResult> SelectedStudents(int testId = 0)
         {

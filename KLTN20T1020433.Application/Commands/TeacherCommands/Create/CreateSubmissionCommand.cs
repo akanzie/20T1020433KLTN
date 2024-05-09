@@ -6,12 +6,12 @@ using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
 {
-    public class CreateSubmissionCommand : IRequest<string>
+    public class CreateSubmissionCommand : IRequest<int>
     {
         public string[] StudentIds { get; set; }
         public int TestId { get; set; }
     }
-    public class CreateSubmissionCommandHandler : IRequestHandler<CreateSubmissionCommand, string>
+    public class CreateSubmissionCommandHandler : IRequestHandler<CreateSubmissionCommand, int>
     {
         private readonly ITestRepository _testDB;
         private readonly ISubmissionRepository _submissionDB;
@@ -22,7 +22,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
             _mapper = mapper;
             _submissionDB = submissionDB;
         }
-        public async Task<string> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateSubmissionCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
                     };
                     await _submissionDB.Add(submission);
                 }
-                return "Thêm sinh viên tham gia thành công";
+                return 1;
             }
             catch (Exception ex)
             {

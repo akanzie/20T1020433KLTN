@@ -13,7 +13,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <a href="@Url.Action("Detail", "Test", new {Id = item.TestId})" class="card-link p-3">
                                 <div class="ms-2">
-                                    <h5 class="mb-0">@item.Title</h5>
+                                    <p class="mb-0 fs-5 fw-semibold text-dark">@item.Title</p>
                                     <p class="mb-0 fw-semibold">@item.StatusDisplayName</p>
                                 </div>
 
@@ -21,20 +21,13 @@
 
                             <div class="d-flex align-items-center justify-content-end">
                                 <p class="mb-0 text-muted">
-                                    @if (@item.EndTime != "")
+                                    @if (@item.LastUpdateTime != "")
                                     {
-                                        <b>Đến hạn: @item.EndTime</b>
+                                    <b>Thời gian chỉnh sửa: @item.LastUpdateTime</b>
                                     }
                                     else
                                     {
-                                        if (@item.LastUpdateTime != "")
-                                        {
-                                            <b>Thời gian chỉnh sửa: @item.LastUpdateTime</b>
-                                        }
-                                        else
-                                        {
-                                            <b>Thời gian tạo: @item.CreatedTime</b>
-                                        }
+                                    <b>Thời gian tạo: @item.CreatedTime</b>
                                     }
                                 </p>
 
@@ -44,6 +37,7 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="@Url.Action("Edit","Test", new {id = item.TestId})">Chỉnh sửa</a>
+                                        <a class="dropdown-item" href="@Url.Action("Cancel","Test", new {id = item.TestId})">Hủy</a>
                                         <a class="dropdown-item" href="@Url.Action("Delete","Test", new {id = item.TestId})">Xóa</a>
                                     </div>
                                 </div>

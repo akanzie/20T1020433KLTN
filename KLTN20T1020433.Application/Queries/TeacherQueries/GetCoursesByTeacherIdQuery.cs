@@ -33,7 +33,8 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 var course1 = new GetCourseResponse
                 {
                     CourseId = $"{j++}",
-                    CourseName = $"Lập trình web - Nhóm {j}"
+                    CourseName = $"Lập trình web - Nhóm {j}",
+                    StudentCount = j
                 };
                 courses.Add(course1);
             }

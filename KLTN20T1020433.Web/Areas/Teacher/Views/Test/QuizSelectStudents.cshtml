@@ -58,15 +58,15 @@
                     <div class="col-lg mb-4 border rounded p-3">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="d-flex align-items-center">
-                                <h4 class="mb-0 me-1">Sinh viên</h4>
-                                <span class="fw-semibold">(5)</span>
+                                <h4 class="mb-0 me-1 fw-semibold">Sinh viên</h4>
+                                <span class="fw-semibold" id="countStudentsCourse"></span>
                             </div>
                             <div class="">
                                 <select class="form-select" id="Course" name="Course">
                                     <option selected value="">Chọn lớp học phần</option>
                                     @foreach (var item in Model.Courses)
                                     {
-                                        <option value="@item.CourseId">@item.CourseName</option>
+                                        <option value="@item.CourseId" data="(@item.StudentCount)">@item.CourseName</option>
                                     }
 
                                 </select>
@@ -86,7 +86,7 @@
                 <div class="col-md-2">
                     <div class="col-lg mb-4" style="border: #dadce0 1px solid;border-radius: 15px;">
                         <div class="d-block">
-                            <button class="btn d-block">Chọn</button>
+                            <button id="selectBtn" class="btn d-block">Chọn</button>
                             <button class="btn d-block">Bỏ</button>
                         </div>
                     </div>
@@ -94,8 +94,8 @@
                 <div class="col-md-5">
                     <div class="col-lg mb-4 border rounded p-3">
                         <div class="d-flex align-items-center mb-4">
-                            <h4 class="mb-0 me-1">Danh sách tham gia</h4>
-                            <span>(5)</span>
+                            <h4 class="mb-0 me-1 fw-semibold">Danh sách tham gia</h4>
+                            <span class="fw-semibold" id="countSelectedStudent"></span>
                         </div>
                         <div class="mb-4">
                             <div class="input-group mb-3">
@@ -115,7 +115,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            var testId = @ViewBag.TestId;
+            var testId = @Model.TestId;
             bindEvents(testId);
             getSelectedStudents(testId);
         });
@@ -126,12 +126,19 @@
             });
             $("#saveBtn").on('click', function () {
                 console.log("a");
-                saveSelection(testId);
+                var selectedStudentIds = [];
+                $('#selectedStudents .student-checkbox').each(function () {
+                    var studentId = $(this).val();
+                    selectedStudentIds.push(studentId);
+                });
+                saveSelection(testId, selectedStudentIds);
             });
             $('#Course').on('change', function () {
                 selectCourse();
             });
-  
+            $('#selectBtn').on('click', function () {
+                selectStudents();
+            });
         }
         function getSelectedStudents(TestId) {
             var url = '@Url.Action("SelectedStudents", "Test")';
@@ -150,7 +157,8 @@
         function selectCourse() {
             var courseId = $('#Course').val();
             var courseName = $('#Course').find(':selected').text();
-            // Thay đổi nội dung của nút thành tên lớp học phần đã chọn
+            var studentCount = $('#Course').find(':selected').attr('data');
+
             $('#selectCourse').text(courseName);
             var url = '@Url.Action("ListStudents", "Test")';
             $.ajax({
@@ -158,6 +166,7 @@
                 type: 'GET',
                 data: { courseId: courseId },
                 success: function (data) {
+                    $('#countStudentsCourse').text(studentCount)
                     $('#listStudents').html(data);
                 },
                 error: function (error) {
@@ -165,15 +174,19 @@
                 }
             });
         }
-        
-        function saveSelection(testId) {
+
+        function saveSelection(testId, studentIds) {
             var url = '@Url.Action("Save", "Test")';
             $.ajax({
                 url: url,
                 type: 'POST',
-                data: { testId: testId },
-                success: function (result) {
-                    window.location.href = '@Url.Action("Index", "Test")';
+                data: { testId: testId, selectedStudentIds: studentIds },
+                success: function (response) {
+                    if (response.success)
+                        window.location.href = '@Url.Action("Index", "Test")';
+                    else {
+                        showToast(response.message);
+                    }
                 },
                 error: function (error) {
                     alert("Your request is not valid!");
@@ -193,6 +206,22 @@
                     alert("Your request is not valid!");
                 }
             });
+        }
+        function selectStudents() {
+            var selectedStudents = [];
+            $('#listStudents .student-checkbox:checked').each(function () {
+                $(this).prop('checked', false);
+                var studentId = $(this).val();
+                var studentRow = $(this).closest('tr');
+                var studentName = studentRow.find('td:nth-child(3)').text();
+                selectedStudents.push({ id: studentId, name: studentName });
+                // Di chuyển sinh viên được chọn vào danh sách đã chọn
+                $('#selectedStudents tbody').append(studentRow);
+            });
+
+            // Cập nhật số lượng sinh viên đã chọn
+            var selectedStudentCount = selectedStudents.length;
+            $('#countSelectedStudent').text("(" + selectedStudentCount + ")");
         }
     </script>
 }
