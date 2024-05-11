@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using KLTN20T1020433.Domain.Test;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -51,7 +52,30 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> CountTestsOfStudent(string studentId = "", string searchValue = "", TestType? testType = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<int> CountTestsForStudentHome(string studentId = "")
+        {
+            try
+            {
+                int count = 0;
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var parameters = new
+                    {
+                        StudentId = studentId                        
+                    };
+                    count = await connection.ExecuteScalarAsync<int>(
+                        "CountTestsForStudentHome", parameters, commandType: CommandType.StoredProcedure);
+                }
+                return count;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi đếm số lượng bài kiểm tra của sinh viên: " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<int> CountTestsOfStudent(string studentId = "", string searchValue = "", TestStatus? testStatus = null, TestType? testType = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             try
             {
@@ -62,6 +86,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
+                        TestStatus = testStatus.ToString() ?? "",
                         TestType = testType.ToString() ?? "",
                         FromTime = fromTime,
                         ToTime = toTime
@@ -153,8 +178,36 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
+        public async Task<IEnumerable<Test>> GetTestsForStudentHome(int page = 1, int pageSize = 0, string studentId = "")
+        {
+            try
+            {
+                List<Test> listTests = new List<Test>();
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var parameters = new
+                    {
+                        Page = page,
+                        PageSize = pageSize,
+                        StudentId = studentId                        
+                    };
+                    var result = await connection.QueryAsync<Test>(
+                        "GetTestsForStudentHome",
+                        parameters,
+                        commandType: CommandType.StoredProcedure
+                    );
+                    listTests = result.ToList();
+                }
+                return listTests;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi lấy danh sách bài kiểm tra của sinh viên: " + ex.Message);
+                throw;
+            }
+        }
 
-        public async Task<IEnumerable<Test>> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestType? testType = null, DateTime? fromTime = null, DateTime? toTime = null)
+        public async Task<IEnumerable<Test>> GetTestsOfStudent(int page = 1, int pageSize = 0, string studentId = "", string searchValue = "", TestStatus? testStatus = null, TestType? testType = null, DateTime? fromTime = null, DateTime? toTime = null)
         {
             try
             {
@@ -167,6 +220,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         PageSize = pageSize,
                         StudentId = studentId,
                         SearchValue = searchValue ?? "",
+                        TestStatus = testStatus.ToString() ?? "",
                         TestType = testType.ToString() ?? "",
                         FromTime = fromTime,
                         ToTime = toTime

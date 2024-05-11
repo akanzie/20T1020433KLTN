@@ -42,7 +42,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         /*public async Task<IEnumerable<GetCourseResponse>> Handle(GetCoursesByTeacherIdQuery request, CancellationToken cancellationToken)
         {
-            string endpoint = "account/v1/courses";
+            string endpoint =  $"api/v1/course";
             string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
             if (jsonResponse != null)
             {

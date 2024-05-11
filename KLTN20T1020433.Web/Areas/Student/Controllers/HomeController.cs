@@ -25,7 +25,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public IActionResult Index()
         {
             var user = User.GetUserData();
-            Models.TestPagination? input = ApplicationContext.GetSessionData<TestPagination>(TEST_PAGINATION);
+            var input = ApplicationContext.GetSessionData<TestPagination>(TEST_PAGINATION);
             if (input == null)
             {
                 input = new TestPagination()
@@ -42,8 +42,8 @@ namespace KLTN20T1020433.Web.Controllers.Student
             try
             {
                 var user = User.GetUserData();
-                var data = await _mediator.Send(new GetTestsBySearchQuery { Page = input.Page, PageSize = input.PageSize, StudentId = user.UserId });
-                int rowCount = await _mediator.Send(new GetRowCountQuery { StudentId = user.UserId });
+                var data = await _mediator.Send(new GetTestsForHomeQuery { Page = input.Page, PageSize = input.PageSize, StudentId = user.UserId });
+                int rowCount = await _mediator.Send(new GetRowCountTestsForHomeQuery { StudentId = user.UserId });
                 var model = new TestSearchResult()
                 {
                     Page = input.Page,

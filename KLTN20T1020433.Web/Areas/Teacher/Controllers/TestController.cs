@@ -564,7 +564,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 }
                 else
                 {
-                    students = await _mediator.Send(new GetStudentsByExamIdQuery { CourseId = courseId, GetTokenResponse = token });
+                    students = await _mediator.Send(new GetStudentsByExamIdQuery { ExamId = courseId, GetTokenResponse = token });
                 }
                 return View(new StudentModel { Students = students });
             }

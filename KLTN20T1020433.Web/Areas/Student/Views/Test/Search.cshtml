@@ -1,4 +1,5 @@
-﻿@model KLTN20T1020433.Web.Areas.Student.Models.TestSearchResult
+﻿@using KLTN20T1020433.Domain.Submission
+@model KLTN20T1020433.Web.Areas.Student.Models.TestSearchResult
 @{
     Layout = null;
 }
@@ -11,24 +12,51 @@
                 @foreach (var item in Model.Data)
                 {
                     <li class="card mb-3">
-                        <a href="~/Student/Test/Detail/@item.TestId" class="card-link p-3">
+                        <a href="~/Student/Test/Detail/@item.TestId" class="card-link py-2 px-4">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 class="mb-0">@item.Title</h5>
-                                    <p class="mb-0">@item.TeacherName</p>
+                                    <p class="mb-0 text-dark fs-5 fw-semibold">@item.Title</p>
+                                    <p class="mb-0 fs-3 text-primary">@item.TeacherName</p>
                                 </div>
+                                <div>
+                                    <p class="mb-1 text-muted fs-3">
+                                        @if (@item.EndTime != "")
+                                        {
+                                            <b>Đến hạn @item.EndTime</b>
+                                        }
+                                        else
+                                        {
+                                            <b>Không có ngày đến hạn.</b>
+                                        }
+                                    </p>
+                                    <p class="mb-0 text-end fw-semibold fs-2">
+                                        @if (item.SubmissionStatus == SubmissionStatus.Absent)
+                                        {
+                                            <span class="text-danger">@item.SubmissionStatusDisplayName</span>
 
-                                <p class="mb-0 text-muted">
-                                    @if (@item.EndTime != "")
-                                    {
-                                        <b>Đến hạn @item.EndTime</b>
-                                    }
-                                    else
-                                    {
-                                        <b>Không có ngày đến hạn.</b>
-                                    }
-                                </p>
+                                        }
+                                        @if (item.SubmissionStatus == SubmissionStatus.NotSubmitted)
+                                        {
+                                            <span class="text-primary">@item.SubmissionStatusDisplayName</span>
 
+                                        }
+                                        @if (item.SubmissionStatus == SubmissionStatus.Submitted)
+                                        {
+                                            <span class="text-success">@item.SubmissionStatusDisplayName</span>
+
+                                        }
+                                        @if (item.SubmissionStatus == SubmissionStatus.LateSubmission)
+                                        {
+                                            <span class="text-dark">@item.SubmissionStatusDisplayName</span>
+
+                                        }
+                                        @if (item.SubmissionStatus == SubmissionStatus.PendingProcessing)
+                                        {
+                                            <span class="text-dark">@item.SubmissionStatusDisplayName</span>
+
+                                        }
+                                    </p>
+                                </div>
 
                             </div>
                         </a>

@@ -1,4 +1,5 @@
-﻿@model KLTN20T1020433.Web.Areas.Student.Models.TestModel
+﻿@using KLTN20T1020433.Application.Services
+@model KLTN20T1020433.Web.Areas.Student.Models.TestModel
 
 @{
     Layout = "~/Areas/Student/Views/Shared/_Layout.cshtml";
@@ -6,34 +7,32 @@
 <div class="container-fluid">
     <!--  Row 1 -->
     <div class="row">
-
         <div class="col-lg-8 col-md-12">
             <div class="card">
                 <div class="card-header bg-light border-bottom border-primary">
-                    <h3 class="text-primary">
+                    <h3 class="text-primary fw-semibold">
                         @Model.Test.Title
                     </h3>
-                    <div class="d-flex ">
-                        <p class="card-text"> @Model.Test.TeacherName</p>
-                        <p class="card-text ms-3"> - </p>
-                        <p class="card-text ms-3"> @Model.Test.CreatedTime</p>
+                    <div class="d-flex">
+                        <p class="text-muted fw-semibold fs-3"> @Model.Test.TeacherName</p>
+                        <p class="text-muted fw-semibold fs-3 ms-3"> - </p>
+                        <p class="text-muted fw-semibold fs-3 ms-3"> @Model.Test.CreatedTime.ToString(Converter.DateWithMonth)</p>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                        <p class="card-text text-dark mb-0">
+                        <p class="text-dark mb-0">
 
                             @if (Model.Test.StartTime != null)
                             {
                                 <b>
-                                    Bắt đầu @Model.Test.StartTime
+                                    Bắt đầu @Model.Test.StartTime.Value.ToString(Converter.TimeWithDateAndMonth)
                                 </b>
                             }
 
-
                         </p>
-                        <p class="card-text text-dark">
+                        <p class="text-dark mb-0">
                             @if (Model.Test.EndTime != null)
                             {
-                                <b>Đến hạn @Model.Test.EndTime</b>
+                                <b>Đến hạn @Model.Test.EndTime.Value.ToString(Converter.TimeWithDateAndMonth)</b>
                             }
                             else
                             {

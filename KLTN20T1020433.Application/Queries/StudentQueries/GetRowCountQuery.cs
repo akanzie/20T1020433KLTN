@@ -16,8 +16,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     }
     public class GetRowCountQueryHandler : IRequestHandler<GetRowCountQuery, int>
     {
-        private readonly ITestRepository _testDB;
-        
+        private readonly ITestRepository _testDB;        
 
         public GetRowCountQueryHandler(ITestRepository testDB)
         {
@@ -28,7 +27,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         {
             try
             {
-                int rowCount = await _testDB.CountTestsOfStudent(request.StudentId, request.SearchValue, request.Type, request.FromTime, request.ToTime);
+                int rowCount = await _testDB.CountTestsOfStudent(request.StudentId, request.SearchValue, request.Status, request.Type, request.FromTime, request.ToTime);
                 return rowCount;
             }
             catch (Exception ex)

@@ -2,7 +2,6 @@
 using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
-using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using MediatR;
 
@@ -10,6 +9,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetSubmissionsBySearchQuery : PaginationSearchInput, IRequest<IEnumerable<GetSubmissionBySearchResponse>>
     {
+        public GetTokenResponse GetTokenResponse { get; set; }
         public SubmissionStatus? Status { get; set; } = null;
         public int TestId { get; set; }
     }
@@ -17,15 +17,15 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     {
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly ISubmissionRepository _submissionDB;
-        private readonly IStudentRepository _studentDB;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public GetSubmissionsBySearchQueryHandler(ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IMapper mapper, IStudentRepository studentDB)
+        public GetSubmissionsBySearchQueryHandler(IMediator mediator, ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IMapper mapper)
         {
             _submissionFileDB = submissionFileDB;
             _submissionDB = submissionDB;
             _mapper = mapper;
-            _studentDB = studentDB;
+            _mediator = mediator;
         }
         public async Task<IEnumerable<GetSubmissionBySearchResponse>> Handle(GetSubmissionsBySearchQuery request, CancellationToken cancellationToken)
         {
@@ -38,7 +38,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     foreach (var item in submissions)
                     {
                         GetSubmissionBySearchResponse getSubmissionResponse = _mapper.Map<GetSubmissionBySearchResponse>(item);
-                        Student student = await _studentDB.GetStudentById(item.StudentId);
+                        var student = await _mediator.Send(new GetStudentByIdQuery { StudentId = item.StudentId, GetTokenResponse = request.GetTokenResponse });                        
                         getSubmissionResponse.StudentName = $"{student.LastName} {student.FirstName}";
                         getSubmissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(item.Status);
                         int filesCount = await _submissionFileDB.CountFilesBySubmissionId(item.SubmissionId);

@@ -1,15 +1,6 @@
 ﻿using Dapper;
-using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Teacher;
-using KLTN20T1020433.Domain.Test;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Infrastructure.Repositories
 {
@@ -28,9 +19,9 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 {
                     var parameters = new DynamicParameters();
                     parameters.Add("@StudentId", data.StudentId);
-                    parameters.Add("@TestId", data.TestId);               
-                    
-                   
+                    parameters.Add("@TestId", data.TestId);
+
+
                     parameters.Add("@SubmissionId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                     await connection.ExecuteAsync(

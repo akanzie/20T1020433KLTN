@@ -37,7 +37,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         /*public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
         {
-            string endpoint = "account/v1/students";
+            string endpoint = " $"api/v1/student/course/{request.CourseId}";
             string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
             if (jsonResponse != null)
             {

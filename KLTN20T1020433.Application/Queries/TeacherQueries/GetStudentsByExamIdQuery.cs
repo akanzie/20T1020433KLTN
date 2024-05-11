@@ -8,9 +8,9 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     public class GetStudentsByExamIdQuery : IRequest<IEnumerable<GetStudentResponse>>
     {
         public GetTokenResponse GetTokenResponse { get; set; }
-        public string CourseId { get; set; }
+        public string ExamId { get; set; }
     }
-    public class GetStudentsByExamIdQueryHandler : IRequestHandler<GetStudentsByCourseIdQuery, IEnumerable<GetStudentResponse>>
+    public class GetStudentsByExamIdQueryHandler : IRequestHandler<GetStudentsByExamIdQuery, IEnumerable<GetStudentResponse>>
     {
         private readonly ApiService _apiService;
 
@@ -18,7 +18,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         {
             _apiService = apiService;
         }
-        public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByExamIdQuery request, CancellationToken cancellationToken)
         {
            var students = new List<GetStudentResponse>();
             int j = 0;
@@ -35,9 +35,9 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             }
             return students;
         }
-        /*public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
+        /*public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByExamIdQuery request, CancellationToken cancellationToken)
         {
-            string endpoint = "account/v1/students";
+            string endpoint = " $"api/v1/student/exam/{request.ExamId}";
             string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
             if (jsonResponse != null)
             {
