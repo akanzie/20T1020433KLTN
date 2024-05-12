@@ -15,7 +15,7 @@ namespace KLTN20T1020433.Web.AppCodes
             list.Add(new SelectListItem()
             {
                 Value = "",
-                Text = "-- Tất cả --"
+                Text = "Tất cả"
             });
 
             foreach (TestStatus item in Enum.GetValues(typeof(TestStatus)))
@@ -39,7 +39,7 @@ namespace KLTN20T1020433.Web.AppCodes
             list.Add(new SelectListItem()
             {
                 Value = "",
-                Text = "-- Trạng thái --"
+                Text = "Trạng thái"
             });
             foreach (TestStatus item in Enum.GetValues(typeof(TestStatus)))
             {
@@ -61,7 +61,7 @@ namespace KLTN20T1020433.Web.AppCodes
             list.Add(new SelectListItem()
             {
                 Value = "",
-                Text = "-- Kỳ thi/Bài kiểm tra --"
+                Text = "Kỳ thi/Bài kiểm tra"
             });
 
             foreach (TestType item in Enum.GetValues(typeof(TestType)))
@@ -82,7 +82,7 @@ namespace KLTN20T1020433.Web.AppCodes
             list.Add(new SelectListItem()
             {
                 Value = "",
-                Text = "-- Tất cả --"
+                Text = "Tất cả"
             });
 
             foreach (SubmissionStatus item in Enum.GetValues(typeof(SubmissionStatus)))

@@ -1,25 +1,30 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetStudentsByTestIdQuery : IRequest<IEnumerable<GetStudentResponse>>
     {
-        public GetTokenResponse GetTokenResponse { get; set; }
         public int TestId { get; set; }
     }
     public class GetStudentsByTestIdQueryHandler : IRequestHandler<GetStudentsByTestIdQuery, IEnumerable<GetStudentResponse>>
     {
         private readonly ISubmissionRepository _submissionDB;
-        private readonly IMediator _mediator;
+        private readonly IStudentRepository _studentDB;
         private readonly IMapper _mapper;
-        public GetStudentsByTestIdQueryHandler(IMediator mediator, ISubmissionRepository submissionDB, ApiService apiService, IMapper mapper)
+        public GetStudentsByTestIdQueryHandler(ISubmissionRepository submissionDB, IStudentRepository studentDB, IMapper mapper)
         {
             _submissionDB = submissionDB;
-            _mediator = mediator;
+            _studentDB = studentDB;
             _mapper = mapper;
         }
         public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByTestIdQuery request, CancellationToken cancellationToken)
@@ -32,9 +37,9 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     List<GetStudentResponse> studentsResponse = new List<GetStudentResponse>();
                     foreach (var item in submissions)
                     {
-
-                        var student = await _mediator.Send(new GetStudentByIdQuery { StudentId = item.StudentId, GetTokenResponse = request.GetTokenResponse });
-                        studentsResponse.Add(student);
+                        var student = await _studentDB.GetStudentById(item.StudentId);
+                        GetStudentResponse studentResponse = _mapper.Map<GetStudentResponse>(student);
+                        studentsResponse.Add(studentResponse);
                     }
                     return studentsResponse;
                 }

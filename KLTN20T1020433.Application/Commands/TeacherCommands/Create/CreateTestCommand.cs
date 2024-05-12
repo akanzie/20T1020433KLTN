@@ -43,8 +43,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
             try
             {
                 Test test = _mapper.Map<Test>(request);
-                test.CreatedTime = DateTime.Now;
-                test.LastUpdateTime = DateTime.Now;
+                test.CreatedTime = DateTime.Now;                
                 int testId = await _testDB.Add(test);
                 if (await _teacherDB.GetTeacherById(request.TeacherId) == null)
                 {

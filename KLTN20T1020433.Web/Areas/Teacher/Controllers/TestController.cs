@@ -371,6 +371,28 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
         }
         [HttpPost]
+        public async Task<IActionResult> DeleteMultiple(int[] testIds)
+        {
+            try
+            {
+                if (testIds == null || testIds.Length <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var user = User.GetUserData();       
+                foreach(var item in testIds)
+                {
+                    await _mediator.Send(new DeleteTestCommand { Id = item });
+                }                
+                return Json(SuccessMessages.DeleteTestSuccess);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in Save: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        [HttpPost]
         public async Task<IActionResult> Delete(int id = 0)
         {
             try
@@ -389,7 +411,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred in Save: {ex.Message}");
-                return Json(new { success = false, message = ErrorMessages.RequestNotCompleted });
+                return Json(ErrorMessages.RequestNotCompleted);
             }
         }
         [HttpPost]

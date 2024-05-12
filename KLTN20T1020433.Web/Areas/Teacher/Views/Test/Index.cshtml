@@ -5,40 +5,74 @@
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-    <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="@Url.Action("Search", "Test")" method="post" data-container="#searchResult">
-        <div class="d-flex">
-            @Html.DropDownListFor(m => m.Status, SelectListHelper.GetTestStatusForTeacher(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
-            @Html.DropDownListFor(m => m.Type, SelectListHelper.GetTestType(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
-        </div>
-        <div class="d-flex">
-            <label for="fromTime" class="input-group-text">Từ ngày:</label>
-            <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime">
-            <label for="toTime" class="input-group-text">Đến ngày:</label>
-            <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
+<div class="container-fluid px-0">
+    <div class="card">
+        <div class="card-body">
+            <form class="d-flex justify-content-between align-items-center mb-2" id="formSearch" action="@Url.Action("Search", "Test")" method="post" data-container="#searchResult">
+                <div class="d-flex">
+                    @Html.DropDownListFor(m => m.Status, SelectListHelper.GetTestStatusForTeacher(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
+                    @Html.DropDownListFor(m => m.Type, SelectListHelper.GetTestType(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
+                </div>
+                <div class="d-flex">
+                    <label for="fromTime" class="input-group-text">Từ ngày:</label>
+                    <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime">
+                    <label for="toTime" class="input-group-text">Đến ngày:</label>
+                    <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
 
-            <button class="btn btn-outline-primary" type="submit">
-                Lọc
-            </button>
+                    <button class="btn btn-outline-primary" type="submit">
+                        Lọc
+                    </button>
+                </div>
+                @Html.HiddenFor(m => m.PageSize)
+                @Html.HiddenFor(m => m.TeacherId)
+            </form>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <button id="btnSelect" class="btn btn-outline-primary" type="button">
+                    Chọn tất cả
+                </button>
+                <button id="btnDelete" class="btn btn-outline-danger" type="button">
+                    Xóa nhiều
+                </button>
+            </div>
+            <div id="searchResult">
+            </div>
         </div>
-        @Html.HiddenFor(m => m.PageSize)
-        @Html.HiddenFor(m => m.TeacherId)
-    </form> 
-    <div id="searchResult">
     </div>
 </div>
 @section Scripts {
     <script>
+        function initialize() {
+            doSearch("#formSearch", @Model.Page);
+            bindEvents();
+        }
         $(document).ready(function () {
+            initialize();
+        });
+        function bindEvents() {
             $("#formSearch").submit(function (e) {
                 e.preventDefault();
                 doSearch(this, 1);
                 return;
             });
-
-            doSearch("#formSearch", @Model.Page);
-        });
-
+            $("#btnDelete").click(function () {
+                var testIds = getSelectedTestIds();
+                if (testIds.length > 0) {                    
+                    deleteTests(testIds);
+                } else {
+                    showToast("Vui lòng chọn ít nhất một bài kiểm tra để xóa.");
+                }
+            });
+            $('#btnSelect').on('click', function () {                
+                $('.test-checkbox').prop('checked', true);
+            }); 
+        }
+        function getSelectedTestIds() {
+            var testIds = [];
+            $('.test-checkbox:checked').each(function () {
+                testIds.push($(this).val());
+            });
+            return testIds;
+        }
         function doSearch(formSearchInput, page) {
             var url = $(formSearchInput).prop("action");
             var container = $(formSearchInput).data("container");
@@ -54,8 +88,8 @@
                 url: url,
                 type: "POST",
                 data: postData,
-                error: function () {
-                    alert("Your request is not valid!");
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
                 },
                 success: function (data) {
                     $(container).html(data);
@@ -63,6 +97,21 @@
             });
 
             return;
+        }
+        function deleteTests(testIds) {
+            var url = '@Url.Action("DeleteMultiple", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testIds: testIds },
+                success: function (response) {
+                    showToast(response);
+                    doSearch('#formSearch', @Model.Page);
+                },
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                }
+            });
         }
     </script>
 }

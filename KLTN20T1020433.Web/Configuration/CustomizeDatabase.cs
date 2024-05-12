@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Domain.Comment;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
@@ -14,30 +15,34 @@ namespace KLTN20T1020433.Web.Configuration
     {
         public static void AddCustomizeDatabase(this IServiceCollection services, string connectionString)
         {
-            services.AddScoped<ITestRepository>(provider =>
+            services.AddSingleton<ITestRepository>(provider =>
             { 
                 return new TestRepository(connectionString); 
             });
-            services.AddScoped<ITestFileRepository>(provider =>
+            services.AddSingleton<ITestFileRepository>(provider =>
             {
                 return new TestFileRepository(connectionString);
             });
-            services.AddScoped<ISubmissionRepository>(provider =>
+            services.AddSingleton<ISubmissionRepository>(provider =>
             {
                 return new SubmissionRepository(connectionString);
             });
-            services.AddScoped<ISubmissionFileRepository>(provider =>
+            services.AddSingleton<ISubmissionFileRepository>(provider =>
             {
                 return new SubmissionFileRepository(connectionString);
             });
-            services.AddScoped<ICommentRepository>(provider =>
+            services.AddSingleton<ICommentRepository>(provider =>
             {
                 return new CommentRepository(connectionString);
             });
-            services.AddScoped<ITeacherRepository>(provider =>
+            services.AddSingleton<ITeacherRepository>(provider =>
             {
                 return new TeacherRepository(connectionString);
-            });            
+            });
+            services.AddSingleton<IStudentRepository>(provider =>
+            {
+                return new StudentRepository(connectionString);
+            });
         }        
     }
 }

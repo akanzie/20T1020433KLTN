@@ -115,9 +115,10 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            var testId = @Model.TestId;
-            bindEvents(testId);
+            var testId = @Model.TestId;               
+            bindEvents(testId);            
             getSelectedStudents(testId);
+            checkSelectedStudents(getSelectedStudentIds());
         });
         function bindEvents(testId) {
             $('#cancelBtn').on('click', function () {
@@ -126,19 +127,22 @@
             });
             $("#saveBtn").on('click', function () {
                 console.log("a");
-                var selectedStudentIds = [];
-                $('#selectedStudents .student-checkbox').each(function () {
-                    var studentId = $(this).val();
-                    selectedStudentIds.push(studentId);
-                });
-                saveSelection(testId, selectedStudentIds);
+                saveSelection(testId, getSelectedStudentIds());
             });
             $('#Course').on('change', function () {
-                selectCourse();
+                selectCourse(getSelectedStudentIds());
             });
             $('#selectBtn').on('click', function () {
-                selectStudents();
+                selectStudents(getSelectedStudentIds());
             });
+        }
+        function getSelectedStudentIds() {
+            var selectedStudentIds = [];
+            $('#selectedStudents .student-checkbox').each(function () {
+                var studentId = $(this).val();
+                selectedStudentIds.push(studentId);
+            });
+            return selectedStudentIds;
         }
         function getSelectedStudents(TestId) {
             var url = '@Url.Action("SelectedStudents", "Test")';
@@ -147,14 +151,14 @@
                 type: 'GET',
                 data: { testId: TestId },
                 success: function (data) {
-                    $('#selectedStudents').html(data);
+                    $('#selectedStudents').html(data);                    
                 },
                 error: function (error) {
                     console.log(error);
                 }
             });
         }
-        function selectCourse() {
+        function selectCourse(selectedStudentIds) {
             var courseId = $('#Course').val();
             var courseName = $('#Course').find(':selected').text();
             var studentCount = $('#Course').find(':selected').attr('data');
@@ -168,6 +172,7 @@
                 success: function (data) {
                     $('#countStudentsCourse').text(studentCount)
                     $('#listStudents').html(data);
+                    checkSelectedStudents(selectedStudentIds);
                 },
                 error: function (error) {
                     console.log(error);
@@ -207,22 +212,40 @@
                 }
             });
         }
-        function selectStudents() {
-            var selectedStudents = [];
+        function selectStudents(selectedStudentIds) {
+            var students = [];
             $('#listStudents .student-checkbox:checked').each(function () {
                 $(this).prop('checked', false);
                 var studentId = $(this).val();
                 var studentRow = $(this).closest('tr');
                 var studentName = studentRow.find('td:nth-child(3)').text();
-                selectedStudents.push({ id: studentId, name: studentName });
+                students.push({ id: studentId, name: studentName });
                 // Di chuyển sinh viên được chọn vào danh sách đã chọn
-                $('#selectedStudents tbody').append(studentRow);
+                var clonedStudentRow = studentRow.clone();
+                // Thêm hàng sinh viên đã sao chép vào danh sách mới
+                $('#selectedStudents tbody').append(clonedStudentRow);
+                $(this).prop('checked', true);
             });
 
             // Cập nhật số lượng sinh viên đã chọn
-            var selectedStudentCount = selectedStudents.length;
+            var selectedStudentCount = students.length;
             $('#countSelectedStudent').text("(" + selectedStudentCount + ")");
+            checkSelectedStudents(selectedStudentIds);
         }
+        function checkSelectedStudents(selectedStudentIds) {
+            $('#listStudents .student-checkbox').each(function () {
+                var studentId = $(this).val();
+                var isSelected = selectedStudentIds.some(function (student) {
+                    return student == studentId;
+                });
+                if (isSelected) {
+                    $(this).prop('disabled', true); // Nếu studentId được chọn, thêm disabled vào input
+                } else {
+                    $(this).prop('disabled', false); // Nếu không được chọn, bỏ disabled
+                }
+            });
+        }
+
     </script>
 }
 

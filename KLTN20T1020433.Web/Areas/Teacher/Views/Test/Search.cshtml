@@ -10,24 +10,27 @@
                 @foreach (var item in Model.Data)
                 {
                     <li class="card mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="@Url.Action("Detail", "Test", new {Id = item.TestId})" class="card-link p-3">
-                                <div class="ms-2">
-                                    <p class="mb-0 fs-5 fw-semibold text-dark">@item.Title</p>
-                                    <p class="mb-0 fw-semibold">@item.StatusDisplayName</p>
-                                </div>
+                        <div class="row">
+                            <div class="col-lg-8 d-flex align-items-center justify-content-start">
+                                <input type="checkbox" class="form-check-input test-checkbox ms-4 me-3" style="transform: scale(1.2);"
+                                       name="TestSelecting" value="@item.TestId">
+                                <a href="@Url.Action("Detail", "Test", new {Id = item.TestId})" class="card-link py-3 d-block w-100">
+                                    <div class="ms-2">
+                                        <p class="mb-0 fs-5 fw-semibold text-dark">@item.Title</p>
+                                        <p class="mb-0 fw-semibold">@item.StatusDisplayName</p>
+                                    </div>
 
-                            </a>
-
-                            <div class="d-flex align-items-center justify-content-end">
+                                </a>
+                            </div>
+                            <div class="col-lg-4 d-flex align-items-center justify-content-end">
                                 <p class="mb-0 text-muted">
                                     @if (@item.LastUpdateTime != "")
                                     {
-                                    <b>Thời gian chỉnh sửa: @item.LastUpdateTime</b>
+                                        <b>Thời gian chỉnh sửa: @item.LastUpdateTime</b>
                                     }
                                     else
                                     {
-                                    <b>Thời gian tạo: @item.CreatedTime</b>
+                                        <b>Thời gian tạo: @item.CreatedTime</b>
                                     }
                                 </p>
 
@@ -37,12 +40,10 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="@Url.Action("Edit","Test", new {id = item.TestId})">Chỉnh sửa</a>
-                                        <a class="dropdown-item" href="@Url.Action("Cancel","Test", new {id = item.TestId})">Hủy</a>
-                                        <a class="dropdown-item" href="@Url.Action("Delete","Test", new {id = item.TestId})">Xóa</a>
+                                        <a class="dropdown-item" href="javascript:;" onclick="deleteTest(@item.TestId)">Xóa</a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </li>
                 }
             </ul>
@@ -76,3 +77,21 @@
         }
     </div>
 </div>
+<script>
+    function deleteTest(testId) {
+        var url = '@Url.Action("Delete", "Test")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { id: testId },
+            success: function (response) {
+                showToast(response);
+                doSearch('#formSearch', @Model.Page)
+            },
+            error: function (xhr, status, error) {
+                handleAjaxError(xhr);
+            }
+        });
+    }
+
+</script>

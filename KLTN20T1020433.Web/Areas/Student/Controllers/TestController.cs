@@ -28,7 +28,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
         public IActionResult Index(string searchValue = "")
         {
             var user = User.GetUserData();
-            GetTestsBySearchQuery? input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
+            var input = ApplicationContext.GetSessionData<GetTestsBySearchQuery>(Constants.TEST_SEARCH);
             if (input == null)
             {
                 input = new GetTestsBySearchQuery()

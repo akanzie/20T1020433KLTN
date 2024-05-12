@@ -46,22 +46,23 @@
     $(document).ready(function () {
         $('#listStudents #selectAll').on('change', function () {
             var isChecked = $(this).prop('checked');
-            $('#listStudents .student-checkbox').prop('checked', isChecked);
+            $('#listStudents .student-checkbox').not(':disabled').prop('checked', isChecked);
         });
 
         $('#listStudents .student-checkbox').on('change', function () {
-            var allChecked = $('#listStudents .student-checkbox:checked').length === $('#listStudents .student-checkbox').length;
+            var allChecked = $('#listStudents .student-checkbox:checked').length === $('#listStudents .student-checkbox:not(:disabled)').length;
             $('#listStudents #selectAll').prop('checked', allChecked);
         });
 
         $('#selectedStudents #selectAll').on('change', function () {
             var isChecked = $(this).prop('checked');
-            $('#selectedStudents .student-checkbox').prop('checked', isChecked);
+            $('#selectedStudents .student-checkbox').not(':disabled').prop('checked', isChecked);
         });
 
         $('#selectedStudents .student-checkbox').on('change', function () {
-            var allChecked = $('#selectedStudents .student-checkbox:checked').length === $('#selectedStudents .student-checkbox').length;
+            var allChecked = $('#selectedStudents .student-checkbox:checked').length === $('#selectedStudents .student-checkbox:not(:disabled)').length;
             $('#selectedStudents #selectAll').prop('checked', allChecked);
         });
-    })
+    });
+
 </script>
