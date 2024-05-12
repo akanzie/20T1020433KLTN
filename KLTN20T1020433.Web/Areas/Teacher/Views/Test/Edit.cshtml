@@ -8,9 +8,15 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center me-9">
-                    <h1 class="fs-8 fw-semibold align-items-center">@ViewBag.Title</h1>
+                    <h2 class="fw-semibold align-items-center">@ViewBag.Title</h2>
                     <input type="hidden" name="TestId" value="@Model.TestId" />
-                    <button type="submit" class="btn btn-primary" style="width: 150px;">Chọn sinh viên</button>
+                    <div class="d-flex justify-content-end">
+                        @if (ViewBag.IsEdit)
+                        {
+                            <button type="button" class="btn btn-outline-danger me-2" style="width: 100px;" onclick="deleteTest(@Model.TestId)"><span class="fw-semibold">Xóa</span></button>
+                        }                        
+                        <button type="submit" class="btn btn-outline-primary" style="width: 154px;"><i class="bi bi-person-plus"></i><span class="fw-semibold ms-2">Chọn sinh viên</span></button>
+                    </div>
                 </div>
                 <div class="row">
                     <!-- Cột trái -->
@@ -71,8 +77,6 @@
                                             <button type="button" class="btn btn-outline-primary class-btn">Kỹ thuật lập trình</button>
                                             <button type="button" class="btn btn-outline-primary class-btn">Nhập môn trí tuệ nhân tạo</button>
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -105,6 +109,7 @@
         function initialize(testId) {
             getFiles(testId);
             bindEvents(testId);
+            getSelectedStudents(testId);
         }
         $(document).ready(function () {
             initialize(@Model.TestId);

@@ -20,7 +20,8 @@
                     <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime">
 
                     <button class="btn btn-outline-primary" type="submit">
-                        Lọc
+                        <i class="bi bi-funnel"></i>
+                        <span class="fw-semibold ms-2">Lọc</span>
                     </button>
                 </div>
                 @Html.HiddenFor(m => m.PageSize)
@@ -31,7 +32,8 @@
                     Chọn tất cả
                 </button>
                 <button id="btnDelete" class="btn btn-outline-danger" type="button">
-                    Xóa nhiều
+                    <i class="bi bi-trash"></i>
+                    <span class="fw-semibold ms-2">Xóa nhiều</span>                    
                 </button>
             </div>
             <div id="searchResult">

@@ -15,6 +15,7 @@
         public const string CannotSubmitWithoutUpload = "Bạn không thể nộp bài khi chưa tải bài nộp lên.";
         public const string TestNotFound = "Không tìm thấy kỳ thi.";
         public const string CannotDeleteFinishedTest = "Không thể xóa kỳ thi khi kỳ thi đã kết thúc.";
+        public const string CannotEditFinishedTest = "Không thể chỉnh sửa kỳ thi khi kỳ thi đã kết thúc.";
         public const string InvalidIPAddress = "Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.";
         public const string SubmissionTimeExceeded = "Đã quá thời gian cho phép nộp bài. Bạn không được phép nộp bài.";
     }

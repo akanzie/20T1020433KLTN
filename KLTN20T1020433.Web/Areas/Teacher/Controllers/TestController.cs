@@ -99,11 +99,16 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             try
             {
+                var user = User.GetUserData();
                 if (testId <= 0)
                 {
                     return Json(ErrorMessages.GeneralError);
                 }
-                await _mediator.Send(new DeleteTestCommand { Id = testId });
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
+                if (test == null)
+                    return Json(ErrorMessages.GeneralError);
+                if (test.Status == TestStatus.Creating)
+                    await _mediator.Send(new DeleteTestCommand { Id = testId });
                 return Json(SuccessMessages.CancelCreationSuccess);
             }
             catch (Exception ex)
@@ -379,11 +384,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 {
                     return Json(ErrorMessages.GeneralError);
                 }
-                var user = User.GetUserData();       
-                foreach(var item in testIds)
+                var user = User.GetUserData();
+                foreach (var item in testIds)
                 {
                     await _mediator.Send(new DeleteTestCommand { Id = item });
-                }                
+                }
                 return Json(SuccessMessages.DeleteTestSuccess);
             }
             catch (Exception ex)
@@ -542,7 +547,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
         }
         [Route("Teacher/EditStudents/{id?}")]
-        public async Task<IActionResult> EditStudents(int id = 0)
+        public async Task<IActionResult> EditStudents(UpdateTestCommand updateTest, int id = 0)
         {
             try
             {
@@ -551,6 +556,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     return Json(ErrorMessages.GeneralError);
                 }
                 var user = User.GetUserData();
+                updateTest.TestId = id;
+                HttpContext.Session.Remove(Constants.TESTID);
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
                 var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
                 switch (test.TestType)

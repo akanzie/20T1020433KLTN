@@ -36,6 +36,10 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
                 {
                     return ErrorMessages.TestNotFound;
                 }
+                if (test.Status == TestStatus.Finished)
+                {
+                    return ErrorMessages.CannotEditFinishedTest;
+                }
                 test.Title = request.Title;
                 test.Instruction = request.Instruction;
                 test.IsCheckIP = request.IsCheckIP;
