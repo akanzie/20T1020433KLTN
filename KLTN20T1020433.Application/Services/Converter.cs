@@ -24,5 +24,6 @@ namespace KLTN20T1020433.Application.Services
         }
         public const string TimeWithDateAndMonth = "H:mm d 'thg' M";
         public const string DateWithMonth = "d 'thg' M";
+        public const string Time = "H:mm";
     }
 }

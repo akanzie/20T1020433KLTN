@@ -25,6 +25,7 @@ namespace KLTN20T1020433.Application.Mappings
             CreateMap<GetTestByIdResponse, UpdateTestCommand>();
             CreateMap<Comment, GetCommentResponse>();
             CreateMap<Submission, GetSubmissionResponse>();
+            CreateMap<Test, GetTestDetailResponse>();
             CreateMap<Submission, GetSubmissionBySearchResponse>();
             CreateMap<SubmissionFile, GetSubmissionFileResponse>();
             CreateMap<TestFile, GetTestFileResponse>();

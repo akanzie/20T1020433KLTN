@@ -1,106 +1,111 @@
-﻿@{
+﻿@using KLTN20T1020433.Application.Services
+@model KLTN20T1020433.Web.Areas.Teacher.Models.TestDetailModel
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid" style="padding-top: 70px; padding-left: 0%; padding-right: 0%;">
-    <nav>
-        <div class="overflow-auto">
-            <div class="nav nav-tabs d-flex" id="navTab" role="tablist" style="white-space: nowrap; flex-wrap: nowrap">
-                <button class="nav-link active" id="nav-detail-tab" data-bs-toggle="tab" data-bs-target="#nav-detail"
-                        type="button" role="tab" aria-controls="nav-detail" aria-selected="true" style="white-space: nowrap;">
-                    <span class="d-inline-block">
-                        Thông tin
-                    </span>
-                </button>
-                <button class="nav-link" id="submissionList" data-bs-toggle="tab" data-bs-target="#nav-submission"
-                        type="button" role="tab" aria-controls="nav-submission" aria-selected="false" style="white-space: nowrap;">
-                    <span class="d-inline-block">Danh sách bài làm</span>
-                </button>
-            </div>
-        </div>
-    </nav>
-    <div class="tab-content" id="navTabContent">
-        <div class="tab-pane fade show active" id="nav-detail" role="tabpanel" aria-labelledby="nav-detail-tab">
-            <div class="row" style="justify-content: center">
-                <div class="col-lg-10">
-                    <div class="card" style="-webkit-box-shadow:none; box-shadow:none">
-                        <div class="card-header" style="border-bottom: 1px solid teal; background-color:white; padding-bottom:0px">
-                            <div class="d-flex justify-content-between align-items-center">
-
-                                <h1 class="fw-bold text-primary">Thi kết thúc học phần</h1>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <nav>
+                <div class="overflow-auto">
+                    <div class="nav nav-tabs d-flex " id="navTab" role="tablist">
+                        <button class="nav-link active" id="nav-detail-tab" data-bs-toggle="tab" data-bs-target="#nav-detail"
+                                type="button" role="tab" aria-controls="nav-detail" aria-selected="true" style="white-space: nowrap;">
+                            <span class="d-inline-block">
+                                Thông tin
+                            </span>
+                        </button>
+                        <button class="nav-link" id="submissionList" data-bs-toggle="tab" data-bs-target="#nav-submission"
+                                type="button" role="tab" aria-controls="nav-submission" aria-selected="false" style="white-space: nowrap;">
+                            <span class="d-inline-block">Danh sách bài làm</span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <div class="tab-content" id="navTabContent">
+                <div class="tab-pane fade show active" id="nav-detail" role="tabpanel" aria-labelledby="nav-detail-tab">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10 border-bottom border-primary mb">
+                            <div class="d-flex justify-content-between align-items-center pt-2">
+                                <h2 class="fw-semibold text-primary">@Model.Test.Title</h2>
                                 <div class="dropdown">
                                     <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton"
                                             data-bs-toggle="dropdown" aria-expanded="false">
-                                        <!-- Biểu tượng ba chấm (ellipsis) -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots-vertical"
-                                             width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                             fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                            <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                            <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                        </svg>
+                                        <i class="bi bi-three-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
-                                        <li><a class="dropdown-item" href="#">Xóa</a></li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("Edit","Test", new {id = Model.Test.TestId})"><span class="text-dark fs-3">Chỉnh sửa</span></a>
+
+                                        </li>
+                                        <li><a class="dropdown-item" href="javascript:;" onclick="openModalDeleteTest(@Model.Test.TestId)"><span class="text-dark fs-3">Xóa</span></a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
-                                <p class="text-dark mb-0 me-2">Nguyễn Văn A</p>
+                                <p class="text-dark mb-0 me-2">@Model.Test.TeacherName</p>
                                 <span class="text-muted">-</span>
-                                <p class="text-dark mb-0 mx-2">Hôm qua</p>
-                                <p class="text-muted mb-0">(Đã chỉnh sửa 14:42)</p>
+                                <p class="text-dark mb-0 mx-2">@Model.Test.CreatedTime.ToString(Converter.DateWithMonth)</p>
+                                <p class="text-muted mb-0">(Đã chỉnh sửa @Model.Test.LastUpdateTime.ToString(Converter.TimeWithDateAndMonth))</p>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-3">
-                                <p class="fw-bold text-dark">10 điểm</p>
-                                <p class="fw-bold text-dark">Đến hạn 9g30 Hôm qua</p>
+                                <p class="fw-semibold text-dark mb-1">
+                                    Thời gian bắt đầu: @if (@Model.Test.StartTime != null)
+                                    {
+                                        @Model.Test.StartTime.Value.ToString(Converter.TimeWithDateAndMonth)
+                                    }
+                                    else
+                                    {
+                                        <span>Không có</span>
+
+                                    }
+                                </p>
+                                <p class="fw-semibold text-dark mb-1">
+                                    Thời gian kết thúc: @if (@Model.Test.EndTime != null)
+                                    {
+                                        @Model.Test.EndTime.Value.ToString(Converter.TimeWithDateAndMonth)
+                                    }
+                                    else
+                                    {
+                                        <span>Không có</span>
+                                    }
+                                </p>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p>Hướng dẫn</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
+                        <div class="col-lg-10 row mt-2">
+                            <div class="col-md-6">
+                                <span class="text-dark fs-3 fw-semibold">
+                                    Hướng dẫn
+                                </span>
+                                <p>@Html.Raw(Model.Test.Instruction)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text-dark fs-3 fw-semibold">Tệp đính kèm</span>
+                                <div class="row mt-3">
+                                    @foreach (var item in Model.Files)
+                                    {
                                         <div class="col-lg-10 col-sm-6 mb-3">
-                                            <div class="p-2" style="border-radius: 10px; border: 1px solid #02080f33;">
+                                            <div class="p-2 border rounded-1">
                                                 <a href="#" class="file-link text-dark d-block" data-file="deso1.jpg">
-                                                    <img src="../assets/images/logos/favicon.png" alt="Demo Image" width="60px" class="mx-2">
-                                                    deso1.jpg
+                                                    <img src="../assets/images/logos/favicon.png" width="60px" class="mx-2">
+                                                    <span class="text-primary">@item.OriginalName</span>
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="col-lg-10 col-sm-6 mb-3">
-                                            <div class="p-2" style="border-radius: 10px; border: 1px solid #02080f33;">
-                                                <a href="#" class="file-link text-dark d-block" data-file="deso2.jpg">
-                                                    <img src="../assets/images/logos/favicon.png" alt="Demo Image" width="60px" class="mx-2">
-                                                    deso2.jpg
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-10 col-sm-6 mb-3">
-                                            <div class="p-2" style="border-radius: 10px; border: 1px solid #02080f33;">
-                                                <a href="#" class="file-link text-dark d-block" data-file="deso3.jpg">
-                                                    <img src="../assets/images/logos/favicon.png" alt="Demo Image" width="60px" class="mx-2">
-                                                    deso3.jpg
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    }
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="nav-submission" role="tabpanel" aria-labelledby="submissionList">
-        <div id="submissionContent">
+            <div class="tab-pane fade" id="nav-submission" role="tabpanel" aria-labelledby="submissionList">
+                <div id="submissionContent">
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -109,7 +114,7 @@
     <script>
         $(document).ready(function () {
             bindEvents();
-        });        
+        });
         function bindEvents() {
             $("#submissionList").on('click', function () {
                 getListSubmissions();
@@ -120,15 +125,33 @@
             $.ajax({
                 url: url,
                 type: 'GET',
-                success: function (data) {      
+                success: function (data) {
                     $('#submissionContent').html(data);
                 },
                 error: function (xhr, status, error) {
-                    // Xử lý lỗi nếu có
-                    console.error(xhr.responseText);
+                    handleAjaxError(xhr);
                 }
             });
         }
-        
+        function openModalDeleteTest(testId) {
+            openModalWithConfirmation('Xóa kỳ thi', 'Bạn có chắc chắn muốn xóa kỳ thi?', 'Xác nhận', function () {
+                deleteTest(testId);
+            });
+        }
+        function deleteTest(testId) {
+            var url = '@Url.Action("Delete", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { id: testId },
+                success: function (response) {
+                    showToast(response);
+                    window.location.href = '@Url.Action("Index", "Test")';
+                },
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                }
+            });
+        }
     </script>
 }

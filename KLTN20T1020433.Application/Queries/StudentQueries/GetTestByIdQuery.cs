@@ -33,14 +33,16 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                 var test = await _testDB.GetById(request.Id);
                 if (test != null)
                 {
-                    if (test.StartTime <= DateTime.Now || test.StartTime == null)
+
+                    GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
+                    var teacher = await _teacherDB.GetTeacherById(test.TeacherId);
+                    testResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(test.Status);
+                    testResponse.TeacherName = teacher!.TeacherName;
+                    if (test.StartTime >= DateTime.Now && test.StartTime != null)
                     {
-                        GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
-                        var teacher = await _teacherDB.GetTeacherById(test.TeacherId);
-                        testResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(test.Status);
-                        testResponse.TeacherName = teacher!.TeacherName;
-                        return testResponse;
+                        testResponse.Instruction = "";
                     }
+                    return testResponse;
                 }
                 return null;
             }
