@@ -432,6 +432,9 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherID = user.UserId });
                 if (test == null)
                     return Json(new { success = false, message = ErrorMessages.TestNotFound });
+                var updateTest = _mapper.Map<UpdateTestCommand>(test);
+                updateTest.Status = TestStatus.InProgress;
+                await _mediator.Send(updateTest);
                 await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudentIds });
                 return Json(new { success = true });
             }
@@ -557,7 +560,9 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 }
                 var user = User.GetUserData();
                 updateTest.TestId = id;
-                HttpContext.Session.Remove(Constants.TESTID);
+                updateTest.Status = TestStatus.InProgress;
+                await _mediator.Send(updateTest);
+                HttpContext.Session.Remove(Constants.TESTID);               
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherID = user.UserId });
                 var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
                 switch (test.TestType)

@@ -5,6 +5,7 @@ using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Comment;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 
@@ -21,11 +22,13 @@ namespace KLTN20T1020433.Application.Mappings
             CreateMap<CreateTestCommand, Test>();
             CreateMap<CreateTestCommand, UpdateTestCommand>();
             CreateMap<Test, GetTestByIdResponse>();
+            CreateMap<GetTestByIdResponse, UpdateTestCommand>();
             CreateMap<Comment, GetCommentResponse>();
             CreateMap<Submission, GetSubmissionResponse>();
             CreateMap<Submission, GetSubmissionBySearchResponse>();
             CreateMap<SubmissionFile, GetSubmissionFileResponse>();
             CreateMap<TestFile, GetTestFileResponse>();
+            CreateMap<Student, GetStudentResponse>();
             CreateMap<Test, GetTestBySearchResponse>()
                 .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime.HasValue ? src.EndTime.Value.ToString(Converter.TimeWithDateAndMonth) : ""))
                 .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime.ToString(Converter.DateWithMonth)))

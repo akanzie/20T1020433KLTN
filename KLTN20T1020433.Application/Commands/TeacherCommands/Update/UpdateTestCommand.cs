@@ -16,7 +16,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
         public DateTime? StartTime { get; set; } = null;
         public DateTime? EndTime { get; set; } = null;
         public string TeacherId { get; set; }
-
+        public TestStatus Status { get; set; }
     }
     public class UpdateTestCommandHandler : IRequestHandler<UpdateTestCommand, string>
     {
@@ -48,6 +48,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Update
                 test.EndTime = request.EndTime;
                 test.LastUpdateTime = DateTime.Now;
                 test.CanSubmitLate = request.CanSubmitLate;
+                test.Status = request.Status;
                 await _testDB.Update(test);
                 return SuccessMessages.UpdateTestSuccess;
             }

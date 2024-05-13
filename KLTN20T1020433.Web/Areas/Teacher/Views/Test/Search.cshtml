@@ -49,7 +49,7 @@
                                     }
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="@Url.Action("Edit","Test", new {id = item.TestId})"><span class="text-dark fs-3">Chỉnh sửa</span></a>
-                                        <a class="dropdown-item" href="javascript:;" onclick="deleteTest(@item.TestId)"><span class="text-dark fs-3">Xóa</span></a>
+                                        <a class="dropdown-item" href="javascript:;" onclick="openModalDeleteTest(@item.TestId)"><span class="text-dark fs-3">Xóa</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -87,6 +87,11 @@
     </div>
 </div>
 <script>
+    function openModalDeleteTest(testId) {
+        openModalWithConfirmation('Xóa kỳ thi', 'Bạn có chắc chắn muốn xóa kỳ thi?', 'Xác nhận', function () {
+            deleteTest(testId);
+        });
+    }
     function deleteTest(testId) {
         var url = '@Url.Action("Delete", "Test")';
         $.ajax({
@@ -102,5 +107,4 @@
             }
         });
     }
-
 </script>

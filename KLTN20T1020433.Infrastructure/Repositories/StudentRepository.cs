@@ -24,7 +24,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 {
                     var parameters = new
                     {
-                        TeacherId = student.StudentId,
+                        StudentId = student.StudentId,
                         FirstName = student.FirstName,
                         LastName = student.LastName,
                         Email = student.Email
@@ -40,7 +40,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Đã xảy ra lỗi khi thêm giáo viên: " + ex.Message);
+                Console.WriteLine("Đã xảy ra lỗi khi thêm sinh viên: " + ex.Message);
                 throw;
             }
         }
@@ -52,7 +52,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 {
                     var parameters = new
                     {
-                        Student = id
+                        StudentId = id
                     };
 
                     var student = await connection.QueryFirstOrDefaultAsync<Student>(
@@ -66,7 +66,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Đã xảy ra lỗi khi lấy thông tin giáo viên theo ID: " + ex.Message);
+                Console.WriteLine("Đã xảy ra lỗi khi lấy thông tin sinh viên theo ID: " + ex.Message);
                 throw;
             }
         }        

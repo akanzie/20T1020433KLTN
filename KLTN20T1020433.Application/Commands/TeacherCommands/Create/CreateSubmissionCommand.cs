@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
@@ -13,12 +14,12 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
     }
     public class CreateSubmissionCommandHandler : IRequestHandler<CreateSubmissionCommand, int>
     {
-        private readonly ITestRepository _testDB;
+        private readonly IStudentRepository _studentDB;
         private readonly ISubmissionRepository _submissionDB;
         private readonly IMapper _mapper;
-        public CreateSubmissionCommandHandler(ITestRepository testDB, IMapper mapper, ISubmissionRepository submissionDB)
+        public CreateSubmissionCommandHandler(IStudentRepository studentDB, IMapper mapper, ISubmissionRepository submissionDB)
         {
-            _testDB = testDB;
+            _studentDB = studentDB;
             _mapper = mapper;
             _submissionDB = submissionDB;
         }
@@ -34,6 +35,11 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
                         StudentId = item,
                         Status = SubmissionStatus.NotSubmitted
                     };
+                    var student = await _studentDB.GetStudentById(item);
+                    if (student == null)
+                    {
+                        await _studentDB.Add(new Student { StudentId = item, FirstName = "A", LastName = "Nguyễn Văn" });
+                    }
                     await _submissionDB.Add(submission);
                 }
                 return 1;
