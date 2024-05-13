@@ -14,7 +14,7 @@
                         @if (ViewBag.IsEdit)
                         {
                             <button id="deleteBtn" type="button" class="btn btn-outline-danger me-2" style="width: 100px;"><span class="fw-semibold">Xóa</span></button>
-                        }                        
+                        }
                         <button type="submit" class="btn btn-outline-primary" style="width: 154px;"><i class="bi bi-person-plus"></i><span class="fw-semibold ms-2">Chọn sinh viên</span></button>
                     </div>
                 </div>
@@ -29,15 +29,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>
-                                    <div contenteditable="true" class="text-editor card-subtitle d-inline-block">
-                                        @Model.Instruction
-                                    </div>
-                                    <div class="text-start" style="background-color: var(--bs-secondary-bg)">
-                                        <button class="btn btn-primary m-1" onclick="document.execCommand('bold', false, null)"><strong>B</strong></button>
-                                        <button class="btn btn-primary m-1" onclick="document.execCommand('italic', false, null)"><em>I</em></button>
-                                        <button class="btn btn-primary m-1" onclick="document.execCommand('underline', false, null)"><u>U</u></button>
-                                    </div>
-
+                                    <textarea id="instructionInput">@Model.Instruction</textarea>
+                                    <input type="hidden" id="instruction" name="instruction" />
                                 </div>
                                 <div class="mb-3 form-check">
                                     <input type="checkbox" class="form-check-input" id="isCheckIP" name="IsCheckIP" value="@Model.IsCheckIP">
@@ -106,6 +99,21 @@
 </div>
 @section Scripts {
     <script>
+        ClassicEditor
+            .create(document.querySelector('#instructionInput'), {
+                toolbar: ['undo', 'redo', '|', 'bold', 'italic', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', '|', 'bulletedList', 'numberedList']
+                
+            })
+            .then(editor => {
+                console.log('Editor was initialized', editor);
+                //editor.setData(@Model.Instruction);
+                editor.model.document.on('change:data', () => {
+                    document.querySelector('#instruction').value = editor.getData();
+                });
+            })
+            .catch(error => {
+                console.error('There was an error initializing the editor', error);
+            });
         function initialize(testId) {
             getFiles(testId);
             bindEvents(testId);
@@ -138,7 +146,7 @@
                     deleteTest(testId);
                 });
             });
-            
+
         }
         function uploadFiles(testId) {
             var formData = new FormData();
@@ -205,7 +213,7 @@
                 url: url,
                 type: 'POST',
                 data: { id: testId },
-                success: function (response) {                    
+                success: function (response) {
                     showToast(response);
                     window.location.href = '@Url.Action("Index", "Test")';
                 },

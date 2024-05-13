@@ -27,20 +27,30 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
         {
             try
             {
+                HashSet<string> studentIdSet = new HashSet<string>();
+                bool hasDuplicate = false;
+
                 foreach (string item in request.StudentIds)
                 {
-                    var submission = new Submission
+                    if (studentIdSet.Contains(item))
                     {
-                        TestId = request.TestId,
-                        StudentId = item,
-                        Status = SubmissionStatus.NotSubmitted
-                    };
-                    var student = await _studentDB.GetStudentById(item);
-                    if (student == null)
-                    {
-                        await _studentDB.Add(new Student { StudentId = item, FirstName = "A", LastName = "Nguyễn Văn" });
+                        hasDuplicate = true;
                     }
-                    await _submissionDB.Add(submission);
+                    else
+                    {
+                        var submission = new Submission
+                        {
+                            TestId = request.TestId,
+                            StudentId = item,
+                            Status = SubmissionStatus.NotSubmitted
+                        };
+                        var student = await _studentDB.GetStudentById(item);
+                        if (student == null)
+                        {
+                            await _studentDB.Add(new Student { StudentId = item, FirstName = "A", LastName = "Nguyễn Văn" });
+                        }
+                        await _submissionDB.Add(submission);
+                    }
                 }
                 return 1;
             }
