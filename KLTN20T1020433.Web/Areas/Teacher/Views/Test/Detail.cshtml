@@ -113,18 +113,20 @@
 {
     <script>
         $(document).ready(function () {
-            bindEvents();
+            var testId = @Model.Test.TestId;
+            bindEvents(testId);
         });
-        function bindEvents() {
+        function bindEvents(testId) {
             $("#submissionList").on('click', function () {
-                getListSubmissions();
+                getListSubmissions(testId);
             });
         }
-        function getListSubmissions() {
+        function getListSubmissions(testId) {
             var url = '@Url.Action("ListSubmissions", "Test")';
             $.ajax({
                 url: url,
                 type: 'GET',
+                data: { testId: testId },
                 success: function (data) {
                     $('#submissionContent').html(data);
                 },

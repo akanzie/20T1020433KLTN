@@ -1,4 +1,5 @@
-﻿@model KLTN20T1020433.Application.DTOs.TeacherDTOs.GetTestByIdResponse
+﻿@using KLTN20T1020433.Application.Services
+@model KLTN20T1020433.Application.DTOs.TeacherDTOs.GetTestByIdResponse
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
     string action = ViewBag.IsEdit ? Url.Action("EditStudents", "Test", new { id = Model.TestId }) : Url.Action("SelectStudents", "Test", new { type = Model.TestType });
@@ -30,14 +31,14 @@
                                 <div class="mb-3">
                                     <label for="instruction" class="form-label">Hướng dẫn (không bắt buộc):</label>
                                     <textarea id="instructionInput">@Model.Instruction</textarea>
-                                    <input type="hidden" id="instruction" name="instruction" />
+                                    <input type="hidden" id="instruction" name="instruction" value="@Model.Instruction" />
                                 </div>
                                 <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="isCheckIP" name="IsCheckIP" value="@Model.IsCheckIP">
+                                    <input type="checkbox" class="form-check-input" id="isCheckIP" name="IsCheckIP" value="true" @(Model.IsCheckIP ? "checked" : "")>
                                     <label class="form-check-label" for="isCheckIP">Kiểm tra IP</label>
                                 </div>
                                 <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="isConductedAtSchool" name="IsConductedAtSchool" value="@Model.IsConductedAtSchool">
+                                    <input type="checkbox" class="form-check-input" id="isConductedAtSchool" name="IsConductedAtSchool" value="true" @(Model.IsConductedAtSchool ? "checked" : "")>
                                     <label class="form-check-label" for="isConductedAtSchool">Thi trên máy trường</label>
                                 </div>
                             </div>
@@ -78,15 +79,15 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label for="start-time" class="form-label">Thời gian bắt đầu:</label>
-                                    <input type="datetime-local" class="form-control" id="start-time" name="StartTime" value="@Model.StartTime">
+                                    <input type="datetime-local" class="form-control" id="start-time" name="StartTime" value="@(Model.StartTime == null ? "" : Model.StartTime.Value.ToString(Converter.DateTimeLocal))">
                                 </div>
                                 <div class="mb-3">
                                     <label for="deadline" class="form-label">Hạn nộp:</label>
-                                    <input type="datetime-local" class="form-control" id="deadline" name="EndTime" value="@Model.EndTime">
+                                    <input type="datetime-local" class="form-control" id="deadline" name="EndTime" value="@(Model.EndTime == null ? "" : Model.EndTime.Value.ToString(Converter.DateTimeLocal))">
                                 </div>
 
                                 <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" name="CanSubmitTime" value="@Model.CanSubmitLate">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1" name="CanSubmitLate" value="true" @(Model.CanSubmitLate ? "checked" : "")>
                                     <label class="form-check-label" for="exampleCheck1">Đóng tính năng nộp bài sau ngày đến hạn</label>
                                 </div>
                             </div>

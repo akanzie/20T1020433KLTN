@@ -80,11 +80,7 @@ namespace KLTN20T1020433.Application.Services
             else if (ipAddress == "")
                 return false;
             return true;
-        }
-        public static bool CheckIPAddressExists(string ipAddress)
-        {
-            throw new NotImplementedException();
-        }
+        }        
         public static string CalculateSignature(string appId, string secretKey, string time)
         {
             string data = $"{appId}{secretKey}{time}";

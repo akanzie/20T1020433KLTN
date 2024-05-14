@@ -61,7 +61,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 {
                     var parameters = new
                     {
-                        StudentId = studentId                        
+                        StudentId = studentId
                     };
                     count = await connection.ExecuteScalarAsync<int>(
                         "CountTestsForStudentHome", parameters, commandType: CommandType.StoredProcedure);
@@ -117,7 +117,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         TestType = testType.ToString() ?? "",
                         TestStatus = testStatus.ToString() ?? "",
                         FromTime = fromTime,
-                        ToTime = toTime
+                        ToTime = toTime 
                     };
                     count = await connection.ExecuteScalarAsync<int>(
                         "CountTestsOfTeacher", parameters, commandType: CommandType.StoredProcedure);
@@ -189,7 +189,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         Page = page,
                         PageSize = pageSize,
-                        StudentId = studentId                        
+                        StudentId = studentId
                     };
                     var result = await connection.QueryAsync<Test>(
                         "GetTestsForStudentHome",
@@ -320,7 +320,6 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         IsCheckIP = data.IsCheckIP,
                         IsConductedAtSchool = data.IsConductedAtSchool,
                         CanSubmitLate = data.CanSubmitLate,
-                        CreatedTime = data.CreatedTime,
                         LastUpdateTime = data.LastUpdateTime,
                         TestType = data.TestType.ToString(),
                         TeacherId = data.TeacherId,

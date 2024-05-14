@@ -11,6 +11,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     {
         public GetTokenResponse GetTokenResponse { get; set; }
         public SubmissionStatus? Status { get; set; } = null;
+        public string Title { get; set; }
         public int TestId { get; set; }
     }
     public class GetSubmissionsBySearchQueryHandler : IRequestHandler<GetSubmissionsBySearchQuery, IEnumerable<GetSubmissionBySearchResponse>>

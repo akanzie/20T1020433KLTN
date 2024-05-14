@@ -11,7 +11,7 @@ namespace KLTN20T1020433.Application.Services
         /// <param name="s"></param>
         /// <param name="formats"></param>
         /// <returns></returns>
-        public static DateTime? ToDateTime(this string s, string formats = "d/M/yyyy;d-M-yyyy;d.M.yyyy;yyyy-MM-ddTHH:mm")
+        public static DateTime? ToDateTime(this string s, string formats = "dd/MM/yyyy hh:mm:ss tt;d/M/yyyy;d-M-yyyy;d.M.yyyy;yyyy-MM-ddTHH:mm")
         {
             try
             {
@@ -25,5 +25,8 @@ namespace KLTN20T1020433.Application.Services
         public const string TimeWithDateAndMonth = "H:mm d 'thg' M";
         public const string DateWithMonth = "d 'thg' M";
         public const string Time = "H:mm";
+        public const string DateTimeLocal = "yyyy-MM-ddTHH:mm";
+        public const string Date = "yyyy-MM-dd";
+        public const string DateTimeSQL = "dd/MM/yyyy hh:mm:ss tt";
     }
 }

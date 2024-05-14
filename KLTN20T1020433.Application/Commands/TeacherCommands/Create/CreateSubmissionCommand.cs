@@ -38,18 +38,22 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
                     }
                     else
                     {
-                        var submission = new Submission
+                        var submissionOld = await _submissionDB.GetByTestIdAndStudentId(request.TestId, item);
+                        if (submissionOld == null)
                         {
-                            TestId = request.TestId,
-                            StudentId = item,
-                            Status = SubmissionStatus.NotSubmitted
-                        };
-                        var student = await _studentDB.GetStudentById(item);
-                        if (student == null)
-                        {
-                            await _studentDB.Add(new Student { StudentId = item, FirstName = "A", LastName = "Nguyễn Văn" });
+                            var submission = new Submission
+                            {
+                                TestId = request.TestId,
+                                StudentId = item,
+                                Status = SubmissionStatus.NotSubmitted
+                            };
+                            var student = await _studentDB.GetStudentById(item);
+                            if (student == null)
+                            {
+                                await _studentDB.Add(new Student { StudentId = item, FirstName = "A", LastName = "Nguyễn Văn" });
+                            }
+                            await _submissionDB.Add(submission);
                         }
-                        await _submissionDB.Add(submission);
                     }
                 }
                 return 1;

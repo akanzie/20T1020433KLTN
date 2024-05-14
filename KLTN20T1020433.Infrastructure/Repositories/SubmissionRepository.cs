@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Test;
 using System.Data;
+using System.Net;
 
 namespace KLTN20T1020433.Infrastructure.Repositories
 {
@@ -37,6 +39,31 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Đã xảy ra lỗi khi thêm bài nộp: " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<bool> CheckIPAddressExists(string iPAddress, int testId)
+        {
+            try
+            {
+                bool exists = false;
+                using (var connection = await OpenConnectionAsync())
+                {
+                    var parameters = new
+                    {
+                        TestId = testId, 
+                        IPAddress = iPAddress,
+                    };                    
+                    exists = await connection.ExecuteScalarAsync<bool>(
+                   "CheckIPAddressExists", parameters, commandType: CommandType.StoredProcedure);
+                   
+                }
+                return exists;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi kiểm tra địa chỉ IP tồn tại: " + ex.Message);
                 throw;
             }
         }

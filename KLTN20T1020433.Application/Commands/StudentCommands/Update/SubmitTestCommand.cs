@@ -43,7 +43,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
                     submission.Status = SubmissionStatus.LateSubmission;
                 else
                     submission.Status = SubmissionStatus.Submitted;
-                if (request.IsCheckIP && Utils.CheckIPAddressExists(request.IPAddress))
+                if (request.IsCheckIP && await _submissionDB.CheckIPAddressExists(request.IPAddress, submission.TestId))
                 {
                     submission.Status = SubmissionStatus.PendingProcessing;
                 }

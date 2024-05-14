@@ -1,19 +1,17 @@
-﻿@{
+﻿@model KLTN20T1020433.Application.Queries.TeacherQueries.GetSubmissionsBySearchQuery
+@{
     Layout = null;
 }
 <div class="card">
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
-            <h1>Thi kết thúc học phần</h1>
+            <h1>@Model.Title</h1>
             <div class="d-none d-sm-inline">
                 <button class="btn btn-outline-secondary">Tải xuống tất cả</button>
             </div>
             <div class="d-inline d-sm-none">
                 <button class="btn btn-outline-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
-                    </svg>
+                    <i class="bi bi-download"></i>
                 </button>
             </div>
         </div>
@@ -65,37 +63,53 @@
                     <li><label class="dropdown-item text-danger fw-bold"><input type="checkbox" value="item3"> Đã nộp muộn (4)</label></li>
                 </ul>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">STT</th>
-                                    <th scope="col">Tên sinh viên</th>
-                                    <th scope="col">Giờ nộp</th>
-                                    <th scope="col">Địa chỉ IP</th>
-                                    <th scope="col">Trạng thái</th>
-                                    <th scope="col">Số file đính kèm</th>
-                                    <th scope="col">Xem</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Châu Anh Kiệt</td>
-                                    <td>12:30 PM</td>
-                                    <td>192.168.1.1</td>
-                                    <td class="text-success">Đã nộp</td>
-                                    <td>2</td>
-                                    <td><a href="Submission">x</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div id="searchResult">
 
-                </div>
             </div>
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function initialize() {
+            doSearch("#formSearch", @Model.Page);
+            bindEvents();
+        }
+        $(document).ready(function () {
+            initialize();
+        });
+        function bindEvents() {
+            $("#formSearch").submit(function (e) {
+                e.preventDefault();
+                doSearch(this, 1);
+                return;
+            });           
+        }     
+        function doSearch(formSearchInput, page) {
+            var url = $(formSearchInput).prop("action");
+            var container = $(formSearchInput).data("container");
+            var postData = $(formSearchInput).serializeArray();
+            var searchValue = $('#searchValue').val();
+            postData.push(
+                { "name": "page", "value": page },
+                { "name": "FromTime", "value": $('#fromTime').val() },
+                { "name": "ToTime", "value": $('#toTime').val() },
+                { "name": "SearchValue", "value": searchValue }
+            );
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                },
+                success: function (data) {
+                    $(container).html(data);
+                }
+            });
+
+            return;
+        }
+        
+    </script>
+}
