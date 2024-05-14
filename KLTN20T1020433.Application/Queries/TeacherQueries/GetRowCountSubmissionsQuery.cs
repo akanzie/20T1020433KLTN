@@ -13,7 +13,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     {
         public string SearchValue { get; set; } = "";
         public int TestId { get; set; }
-        public SubmissionStatus? Status { get; set; } = null;
+        public string Statuses { get; set; } = "";
     }
     public class GetRowCountSubmissionsQueryHandler : IRequestHandler<GetRowCountSubmissionsQuery, int>
     {
@@ -28,7 +28,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         {
             try
             {
-                int rowCount = await _submissionDB.CountSubmissions(request.TestId, request.SearchValue, request.Status);
+                int rowCount = await _submissionDB.CountSubmissions(request.TestId, request.SearchValue, request.Statuses);
 
                 return rowCount;
             }

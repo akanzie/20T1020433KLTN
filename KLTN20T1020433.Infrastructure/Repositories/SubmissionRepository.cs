@@ -68,7 +68,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> CountSubmissions(int testId = 0, string searchValue = "", SubmissionStatus? status = null)
+        public async Task<int> CountSubmissions(int testId = 0, string searchValue = "", string statuses = "")
         {
             try
             {
@@ -79,7 +79,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         TestId = testId,
                         SearchValue = searchValue ?? "",
-                        SubmissionStatus = status.ToString() ?? "",
+                        SubmissionStatus = statuses
 
                     };
                     count = await connection.ExecuteScalarAsync<int>(
@@ -89,7 +89,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Đã xảy ra lỗi khi đếm số lượng bài kiểm tra của sinh viên: " + ex.Message);
+                Console.WriteLine("Đã xảy ra lỗi khi đếm số lượng bài kiểm tra của kỳ thi: " + ex.Message);
                 throw;
             }
         }
@@ -173,7 +173,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Submission>> GetSubmissionsBySearch(int page = 1, int pageSize = 0, int testId = 0, string searchValue = "", SubmissionStatus? status = null)
+        public async Task<IEnumerable<Submission>> GetSubmissionsBySearch(int page = 1, int pageSize = 0, int testId = 0, string searchValue = "", string statuses = "")
         {
             try
             {
@@ -186,7 +186,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         PageSize = pageSize,
                         TestId = testId,
                         SearchValue = searchValue ?? "",
-                        SubmissionStatus = status.ToString() ?? "",
+                        SubmissionStatus = statuses,
                     };
                     var result = await connection.QueryAsync<Submission>(
                         "GetSubmissions",

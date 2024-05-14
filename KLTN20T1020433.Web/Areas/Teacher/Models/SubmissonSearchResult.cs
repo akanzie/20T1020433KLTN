@@ -8,8 +8,8 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Models
     public class SubmissonSearchResult : BasePaginationResult
     {
         public int TestId { get; set; } = 0;
-        public SubmissionStatus? Status { get; set; } = null;
-
+        public string Statuses { get; set; }
         public IEnumerable<GetSubmissionBySearchResponse> Data { get; set; }
+        public int SubmissionCount { get; set; }
     }
 }

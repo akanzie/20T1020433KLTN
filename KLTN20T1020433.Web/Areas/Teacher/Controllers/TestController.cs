@@ -45,11 +45,25 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     return View("NotFound");
                 }
                 var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
+                var input = ApplicationContext.GetSessionData<GetSubmissionsBySearchQuery>(Constants.SUBMISSION_SEARCH);
+                if (input == null)
+                {
+                    input = new GetSubmissionsBySearchQuery()
+                    {
+                        Page = 1,
+                        PageSize = TEST_PAGE_SIZE,
+                        SearchValue = "",
+                        TestId = id,
+                        Statuses = ""
+                    };
+                }
                 var model = new TestDetailModel()
                 {
                     Test = test,
                     Files = files,
+                    SearchQuery = input
                 };
+
                 return View(model);
             }
             catch (Exception ex)
@@ -59,39 +73,33 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
 
-        }
-        public async Task<IActionResult> ListSubmissions(int testId = 0)
+        }       
+        public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input)
         {
             try
             {
                 var user = User.GetUserData();
-                if (testId <= 0)
+                int rowCount = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = input.SearchValue, Statuses = input.Statuses, TestId = input.TestId });
+
+                var data = await _mediator.Send(input);
+
+                var model = new SubmissonSearchResult()
                 {
-                    return BadRequest(ErrorMessages.GeneralError);
-                }
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
-                if (test == null)
-                {
-                    return BadRequest(ErrorMessages.GeneralError);
-                }
-                var input = ApplicationContext.GetSessionData<GetSubmissionsBySearchQuery>(Constants.SUBMISSION_SEARCH);
-                if (input == null)
-                {
-                    input = new GetSubmissionsBySearchQuery()
-                    {
-                        Page = 1,
-                        PageSize = TEST_PAGE_SIZE,
-                        SearchValue = "",
-                        TestId = testId,
-                        Status = null,
-                    };
-                }
-                return View(input);
+                    Page = input.Page,
+                    PageSize = input.PageSize,
+                    SearchValue = input.SearchValue ?? "",
+                    TestId = input.TestId,
+                    Statuses = input.Statuses ?? "",
+                    RowCount = rowCount,
+                    Data = data
+                };
+                ApplicationContext.SetSessionData(Constants.SUBMISSION_SEARCH, input);
+                return View(model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred in ListSubmissions: {ex.Message}");
-                return BadRequest(ErrorMessages.RequestNotCompleted);
+                Console.WriteLine($"Exception occurred in SearchSubmission: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
             }
         }
         [HttpPost]
@@ -117,35 +125,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input)
-        {
-            try
-            {
-                var user = User.GetUserData();
-                int rowCount = await _mediator.Send(new GetRowCountSubmissionsQuery { });
 
-                var data = await _mediator.Send(input);
-
-                var model = new SubmissonSearchResult()
-                {
-                    Page = input.Page,
-
-                    PageSize = input.PageSize,
-                    SearchValue = input.SearchValue ?? "",
-                    TestId = input.TestId,
-                    Status = input.Status ?? null,
-                    RowCount = rowCount,
-                    Data = data
-                };
-                ApplicationContext.SetSessionData(Constants.SUBMISSION_SEARCH, input);
-                return View(model);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred in SearchSubmission: {ex.Message}");
-                return Json(ErrorMessages.RequestNotCompleted);
-            }
-        }
         [Route("Teacher/{type?}/Create")]
         public async Task<IActionResult> Create(string type = "")
         {
@@ -210,7 +190,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             {
                 var user = User.GetUserData();
                 int rowCount = await _mediator.Send(new GetRowCountTestsQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
-                
+
                 var data = await _mediator.Send(input);
 
                 var model = new TestSearchResult()
@@ -562,7 +542,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 updateTest.TestId = id;
                 updateTest.Status = TestStatus.InProgress;
                 await _mediator.Send(updateTest);
-                HttpContext.Session.Remove(Constants.TESTID);               
+                HttpContext.Session.Remove(Constants.TESTID);
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherId = user.UserId });
                 var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
                 switch (test.TestType)

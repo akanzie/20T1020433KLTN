@@ -137,7 +137,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 {
                     var parameters = new
                     {
-                        SubmissionId = submissionId                      
+                        SubmissionId = submissionId                     
 
                     };
                     count = await connection.ExecuteScalarAsync<int>(

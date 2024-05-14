@@ -32,7 +32,6 @@
     <None Include="Areas\Teacher\Views\Course\ListStudent.cshtml" />
     <None Include="Areas\Teacher\Views\Home\Index.cshtml" />
     <None Include="Areas\Teacher\Views\Test\Detail.cshtml" />
-    <None Include="Areas\Teacher\Views\Test\ListSubmissions.cshtml" />
     <None Include="Areas\Teacher\Views\Test\Index.cshtml" />
     <None Include="Areas\Teacher\Views\Test\ListTestFiles.cshtml" />
     <None Include="Areas\Teacher\Views\Test\SelectCourses.cshtml" />

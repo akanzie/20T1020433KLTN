@@ -26,7 +26,7 @@ namespace KLTN20T1020433.Application.Mappings
             CreateMap<Comment, GetCommentResponse>();
             CreateMap<Submission, GetSubmissionResponse>();
             CreateMap<Test, GetTestDetailResponse>();
-            CreateMap<Submission, GetSubmissionBySearchResponse>();
+            CreateMap<Submission, GetSubmissionBySearchResponse>().ForMember(dest => dest.SubmittedTime, opt => opt.MapFrom(src => src.SubmittedTime.HasValue ? src.SubmittedTime.Value.ToString(Converter.TimeWithDateAndMonth) : ""));
             CreateMap<SubmissionFile, GetSubmissionFileResponse>();
             CreateMap<TestFile, GetTestFileResponse>();
             CreateMap<Student, GetStudentResponse>();

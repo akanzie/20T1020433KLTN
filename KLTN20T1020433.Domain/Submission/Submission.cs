@@ -15,7 +15,7 @@ namespace KLTN20T1020433.Domain.Submission
     public class Submission
     {
         public int SubmissionId { get; set; }
-        public DateTime SubmittedTime { get; set; }
+        public DateTime? SubmittedTime { get; set; } = null;
         public string StudentId { get; set; }
         public int TestId { get; set; }
         public string IPAddress { get; set; }

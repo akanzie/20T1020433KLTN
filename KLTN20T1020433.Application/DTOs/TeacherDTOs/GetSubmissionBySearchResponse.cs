@@ -11,7 +11,7 @@ namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
     {
         public int SubmissionId { get; set; }
         public string StudentName { get; set; }
-        public DateTime SubmittedTime { get; set; }
+        public string SubmittedTime { get; set; }
         public string IpAddress { get; set; }
         public string StatusDisplayName { get; set; }
         public int FilesCount { get; set; }

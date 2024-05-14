@@ -31,7 +31,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         {
             try
             {
-                var submissions = await _submissionDB.GetSubmissionsBySearch(1, 0, request.TestId, "", null);
+                var submissions = await _submissionDB.GetSubmissionsBySearch(1, 0, request.TestId, "", "");
                 if (submissions != null && submissions.Any())
                 {
                     List<GetStudentResponse> studentsResponse = new List<GetStudentResponse>();

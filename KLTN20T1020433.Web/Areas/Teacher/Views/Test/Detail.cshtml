@@ -103,7 +103,79 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-submission" role="tabpanel" aria-labelledby="submissionList">
-                <div id="submissionContent">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="mt-3 my-4"><span class="fw-semibold">@Model.Test.Title</span></h2>
+                        <form class="" id="formSearch" action="@Url.Action("SearchSubmission", "Test")" method="post" data-container="#searchResult">
+                            <div class="d-sm-flex align-items-center mb-3 d-none">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="checkAll" checked>
+                                    <label class="form-check-label fw-bold" for="checkAll">
+                                        Tất cả (7)
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="checkSubmitted" name="Status" value="Submitted">
+                                    <label class="form-check-label text-success fw-bold" for="checkSubmitted">
+                                        Đã nộp (1)
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="checkSubmitted" name="Status" value="NotSubmitted">
+                                    <label class="form-check-label text-success fw-bold" for="checkSubmitted">
+                                        Chưa nộp bài (1)
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="checkAbsent" name="Status" value="Absent">
+                                    <label class="form-check-label text-warning fw-bold" for="checkAbsent">
+                                        Thiếu (1)
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="checkPending" name="Status" value="PendingProcessing">
+                                    <label class="form-check-label text-info fw-bold" for="checkPending">
+                                        Đang chờ xử lý (1)
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="checkLate" name="Status" value="LateSubmission">
+                                    <label class="form-check-label text-danger fw-bold" for="checkLate">
+                                        Đã nộp muộn (4)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <input type="text" id="searchValue" class="form-control me-2" placeholder="Tìm kiếm..." name="SearchValue" value="@Model.SearchQuery.SearchValue">
+                                    <button class="btn btn-primary" id="searchButton">Tìm kiếm</button>
+                                </div>
+                                <div class="d-none d-sm-inline ms-3">
+                                    <button class="btn btn-outline-secondary">Tải xuống tất cả</button>
+                                </div>
+                                <div class="d-inline d-sm-none ms-3">
+                                    <button class="btn btn-outline-secondary">
+                                        <i class="bi bi-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="hidden" name="PageSize" value="@Model.SearchQuery.PageSize"/>
+                            <input type="hidden" name="TestId" value="@Model.SearchQuery.TestId" />
+                            <div class="dropdown d-sm-none d-inline">
+                                <button class="btn btn-secondary dropdown-toggle mb-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Lọc
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><label class="dropdown-item fw-bold"><input type="checkbox" id="dropdownCheckAll"> Tất cả (7)</label></li>
+                                    <li><label class="dropdown-item text-success fw-bold"><input type="checkbox" id="dropdownCheckSubmitted"> Đã nộp (1)</label></li>
+                                    <li><label class="dropdown-item text-warning fw-bold"><input type="checkbox" id="dropdownCheckMissing"> Thiếu (1)</label></li>
+                                    <li><label class="dropdown-item text-info fw-bold"><input type="checkbox" id="dropdownCheckPending"> Đang chờ xử lý (1)</label></li>
+                                    <li><label class="dropdown-item text-danger fw-bold"><input type="checkbox" id="dropdownCheckLate"> Đã nộp muộn (4)</label></li>
+                                </ul>
+                            </div>
+                        </form>
+                        <div id="searchResult"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,26 +187,15 @@
         $(document).ready(function () {
             var testId = @Model.Test.TestId;
             bindEvents(testId);
+            doSearch("#formSearch", @Model.SearchQuery.Page)            
         });
-        function bindEvents(testId) {
-            $("#submissionList").on('click', function () {
-                getListSubmissions(testId);
+        function bindEvents(testId) {            
+            $("#formSearch").submit(function (e) {
+                e.preventDefault();
+                doSearch(this, 1);
+                return;
             });
-        }
-        function getListSubmissions(testId) {
-            var url = '@Url.Action("ListSubmissions", "Test")';
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: { testId: testId },
-                success: function (data) {
-                    $('#submissionContent').html(data);
-                },
-                error: function (xhr, status, error) {
-                    handleAjaxError(xhr);
-                }
-            });
-        }
+        }        
         function openModalDeleteTest(testId) {
             openModalWithConfirmation('Xóa kỳ thi', 'Bạn có chắc chắn muốn xóa kỳ thi?', 'Xác nhận', function () {
                 deleteTest(testId);
@@ -152,6 +213,33 @@
                 },
                 error: function (xhr, status, error) {
                     handleAjaxError(xhr);
+                }
+            });
+        }
+        function doSearch(formSearchInput, page) {
+            var url = '@Url.Action("SearchSubmission", "Test")';
+            var container = $(formSearchInput).data("container");
+            var postData = $(formSearchInput).serializeArray();
+            var searchValue = $('#searchValue').val();
+            var statuses = [];
+            $('input[name="Status"]:checked').each(function () {
+                statuses.push($(this).val());
+            });
+            var statusesString = statuses.join(',');
+            postData.push(
+                { "name": "page", "value": page },
+                { "name": "SearchValue", "value": searchValue },
+                { "name": "Statuses", "value": statusesString }
+            );
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                },
+                success: function (data) {
+                    $('#searchResult').html(data);
                 }
             });
         }

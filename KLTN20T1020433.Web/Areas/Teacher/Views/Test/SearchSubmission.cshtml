@@ -1,4 +1,9 @@
-﻿<div class="row">
+﻿@model KLTN20T1020433.Web.Areas.Teacher.Models.SubmissonSearchResult
+@{
+    Layout = null;
+    int i = 0;
+}
+<div class="row">
     <div class="col-md-12">
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
@@ -14,15 +19,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Châu Anh Kiệt</td>
-                        <td>12:30 PM</td>
-                        <td>192.168.1.1</td>
-                        <td class="text-success">Đã nộp</td>
-                        <td>2</td>
-                        <td><a href="Submission">x</a></td>
-                    </tr>
+                    @foreach (var item in Model.Data)
+                    {
+                        <tr>
+                            <td>@(++i)</td>
+                            <td>@item.StudentName</td>
+                            <td>@item.SubmittedTime</td>
+                            <td>@item.IpAddress</td>
+                            <td class="text-success">@item.StatusDisplayName</td>
+                            <td>@item.FilesCount</td>
+                            <td><a href="Submission"><i class="bi bi-x"></i></a></td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
