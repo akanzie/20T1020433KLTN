@@ -31,8 +31,9 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                     List<GetFileResponse> SubmissionResponse = new List<GetFileResponse>();
                     foreach (var file in SubmissionFiles)
                     {
-                        var getSubmissionFileResponse = _mapper.Map<GetFileResponse>(file);                        
-                        SubmissionResponse.Add(getSubmissionFileResponse);
+                        var fileResponse = _mapper.Map<GetFileResponse>(file);
+                        fileResponse.FileType = Path.GetExtension(file.FileName); 
+                        SubmissionResponse.Add(fileResponse);
                     }
                     return SubmissionResponse;
                 }

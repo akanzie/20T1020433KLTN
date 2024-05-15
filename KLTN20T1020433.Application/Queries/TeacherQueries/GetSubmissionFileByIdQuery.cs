@@ -31,7 +31,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 if (file != null)
                 {
                     GetFileResponse fileResponse = _mapper.Map<GetFileResponse>(file);
-                    
+                    fileResponse.FileType = Path.GetExtension(file.FileName);
                     return fileResponse;
                 }
                 return null;

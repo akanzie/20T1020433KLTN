@@ -74,3 +74,7 @@ function checkFileSize(input) {
     return true; // Tất cả các file đều hợp lệ
 }
 
+
+
+
+

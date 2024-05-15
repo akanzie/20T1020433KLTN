@@ -1,4 +1,5 @@
 ﻿@using KLTN20T1020433.Application.Services
+@using KLTN20T1020433.Web.AppCodes
 @model KLTN20T1020433.Web.Areas.Teacher.Models.TestDetailModel
 @{
     ViewData["Title"] = "Index";
@@ -85,7 +86,7 @@
                                         <div class="col-lg-10 col-sm-6 mb-3">
                                             <div class="p-2 border rounded-1">
                                                 <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.Test.TestId})" class="file-link text-dark d-block" data-file="deso1.jpg">
-                                                    <img src="@item.FileIcon" width="60px" class="mx-2">
+                                                    @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
                                                     <span class="text-primary">@item.OriginalName</span>
                                                 </a>
                                             </div>

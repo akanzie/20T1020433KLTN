@@ -12,8 +12,8 @@
             <h2 class="fw-semibold">Danh sách kỳ thi</h2>
             <form class="d-flex justify-content-between align-items-center mb-2" id="formSearch" action="@Url.Action("Search", "Test")" method="post" data-container="#searchResult">
                 <div class="d-flex">
-                    @Html.DropDownListFor(m => m.Status, SelectListHelper.GetTestStatusForTeacher(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
-                    @Html.DropDownListFor(m => m.Type, SelectListHelper.GetTestType(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
+                    @Html.DropDownListFor(m => m.Status, Helper.GetTestStatusForTeacher(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
+                    @Html.DropDownListFor(m => m.Type, Helper.GetTestType(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
                 </div>
                 <div class="d-flex">
                     <label for="fromTime" class="input-group-text">Từ ngày:</label>

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KLTN20T1020433.Web.AppCodes
 {
-    public class SelectListHelper
+    public class Helper
     {
         public static List<SelectListItem> GetTestStatusForStudent()
         {
@@ -96,5 +96,40 @@ namespace KLTN20T1020433.Web.AppCodes
 
             return list;
         }
+        public static string GetIconClassFromFileExtension(string fileExtension)
+        {
+            if (string.IsNullOrWhiteSpace(fileExtension))
+                return ""; // Or whatever default behavior you prefer for empty extensions
+
+            fileExtension = fileExtension.TrimStart('.').ToLower();
+            string defaultIcon = $"<i class=\"bi bi-filetype-{fileExtension}\"></i>";
+
+            switch (fileExtension)
+            {
+                case ".pdf":
+                    return "<i class=\"bi bi-filetype-pdf\"></i>";
+                case ".doc":
+                case ".docx":
+                    return "<i class=\"bi bi-file-word\"></i>";
+                case ".ppt":
+                case ".pptx":
+                    return "<i class=\"bi bi-file-ppt\"></i>";
+                case ".txt":
+                    return "<i class=\"bi bi-file-text\"></i>";
+                case ".zip":
+                    return "<i class=\"bi bi-file-zip\"></i>";
+                case ".rar":
+                    return "<i class=\"bi bi-file-rar\"></i>";
+                case ".jpg":
+                case ".jpeg":
+                case ".png":
+                case ".gif":
+                    return "<i class=\"bi bi-file-image\"></i>";
+                default:
+                    return defaultIcon; // Default icon for other file types
+            }
+        }
+
+
     }
 }

@@ -32,7 +32,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     foreach (var file in testFiles)
                     {
                         var fileResponse = _mapper.Map<GetFileResponse>(file);
-                       
+                        fileResponse.FileType = Path.GetExtension(file.FileName);
                         testResponse.Add(fileResponse);
                     }
                     return testResponse;
