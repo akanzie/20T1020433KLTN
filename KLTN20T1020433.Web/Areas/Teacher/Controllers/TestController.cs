@@ -269,21 +269,30 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             return View();
         }
-        public async Task<IActionResult> Submission(int id = 0)
+        public async Task<IActionResult> Submission(int id = 0, int testId = 0)
         {
             try
             {
                 var user = User.GetUserData();
-                if (id <= 0)
+                if (id <= 0 || testId <= 0)
                     return View("NotFound");
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
+                if (test == null)
+                {
+                    return View("NotFound");
+                }
                 var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
                 if (submission == null)
                     return View("NotFound");
                 var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = id });
+                var submissions = await _mediator.Send(new GetSubmissionsBySearchQuery { Page = 1, PageSize = 50, SearchValue = "", Statuses = "", TestId = testId });
                 var model = new SubmissionModel
                 {
+                    TestId = test.TestId,
+                    Title = test.Title,
                     Files = files,
-                    Submission = submission
+                    Submission = submission,
+                    Submissions = submissions
                 };
                 return View(model);
             }

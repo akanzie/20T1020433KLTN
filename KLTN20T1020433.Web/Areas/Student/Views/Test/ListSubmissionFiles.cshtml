@@ -9,15 +9,10 @@
     @foreach (var item in Model.Files)
     {
         <div class="mb-2">
-            <div class="border rounded-2 overflow-hidden hstack">
-                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.TestId, isTestFile = false})" class="flex-grow-1 overflow-hidden hstack">
-                    <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
-                        @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
-                    </div>
-                    <div class="overflow-hidden">
-                        <span class="text-truncate d-block">@item.OriginalName</span>
-
-                    </div>
+            <div class="p-2 border rounded-1">
+                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.TestId, isTestFile = false})" class="text-dark d-block">
+                    @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
+                    <span class="text-primary">@item.OriginalName</span>
                 </a>
                 @if (Model.Status == SubmissionStatus.NotSubmitted || Model.Status == SubmissionStatus.Absent)
                 {

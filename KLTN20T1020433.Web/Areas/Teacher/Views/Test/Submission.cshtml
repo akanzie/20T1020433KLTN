@@ -1,19 +1,73 @@
-﻿@model KLTN20T1020433.Web.Areas.Teacher.Models.SubmissionModel
+﻿@using KLTN20T1020433.Application.Services
+@using KLTN20T1020433.Web.AppCodes
+@model KLTN20T1020433.Web.Areas.Teacher.Models.SubmissionModel
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
-<div class="container-fluid ps-0 pe-0">
-    <h1>@Model.Submission.StudentName</h1>
-    @if (Model.Files != null && Model.Files.Any())
-    {
-        @foreach (var filePath in Model.Files)
-        {
-            <a href="#" class="file-link" data-file-id="@filePath.FileId">@filePath.OriginalName</a>
-            <br />
-        }
+<style>
+    /* Ghi đè lên quy tắc của Bootstrap */
+    .dropdown-toggle::after {
+        display: none !important;
     }
+</style>
+<div class="container-fluid ps-0 pe-0 mw-100">
+    <div class="card mx-4">
+        <div class="card-body">
+            <h2><span class="">@Model.Title</span></h2>
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="dropdown" style="max-width: 500px">
+                        <button class="dropdown-toggle p-2 border-success rounded-1 bg-success" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-block flex-grow-1">@Model.Submission.StudentName</span>
+                                <span>@Model.Submission.StatusDisplayName</span>
+                                <i class="bi bi-caret-down-fill"></i>
+                            </div>
+
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="studentList">
+                            @foreach (var item in Model.Submissions)
+                            {
+                                <li><a class="dropdown-item" href="@Url.Action("Submission", "Test", new{id = item.SubmissionId, testId = Model.TestId})">@item.StudentName</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-5"></div>
+                <div class="col-lg-2">
+                    <button id="downloadBtn" class="btn btn-primary">
+                        Tải xuống
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-9">
+                    <div id="filePreview"></div>
+                </div>
+                <div class="col-lg-3">
+                    <h1 class=""><span>Tệp</span></h1>
+                    <div class="">@Model.Submission.StatusDisplayName vào @Model.Submission.SubmittedTime.Value.ToString(Converter.TimeWithDateAndMonth)</div>
+                    @foreach (var file in Model.Files)
+                    {
+                        <div class="d-flex">
+                            @Html.Raw(Helper.GetIconClassFromFileExtension(file.FileType))
+                            <span class="text-primary">@file.OriginalName</span>
+                        </div>
+                    }
+                    <div class="">
+                        <div id="comments"></div>
+                    </div>
+                    <form class="" method="post">
+                        <input type="text" placeholder="Thêm nhận xét riêng tư" />
+                        <button class="btn btn-gray">Đăng</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
-<div id="filePreview"></div>
+
 <script>
     $(document).ready(function () {
         $(".file-link").on('click', function (event) {

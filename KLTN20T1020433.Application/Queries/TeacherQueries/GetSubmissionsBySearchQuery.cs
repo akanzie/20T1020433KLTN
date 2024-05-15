@@ -18,16 +18,16 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly ISubmissionRepository _submissionDB;
         private readonly IStudentRepository _studentDB;
-        private readonly IMediator _mediator;
+        
         private readonly IMapper _mapper;
 
-        public GetSubmissionsBySearchQueryHandler(IMediator mediator, ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IStudentRepository studentDB, IMapper mapper)
+        public GetSubmissionsBySearchQueryHandler(ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IStudentRepository studentDB, IMapper mapper)
         {
             _submissionFileDB = submissionFileDB;
             _submissionDB = submissionDB;
             _studentDB = studentDB;
             _mapper = mapper;
-            _mediator = mediator;
+           
         }
         public async Task<IEnumerable<GetSubmissionBySearchResponse>> Handle(GetSubmissionsBySearchQuery request, CancellationToken cancellationToken)
         {

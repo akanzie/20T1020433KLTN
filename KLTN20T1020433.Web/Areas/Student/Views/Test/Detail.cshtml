@@ -54,14 +54,10 @@
                                 @foreach (var item in Model.Files)
                                 {
                                     <div class="col-lg-6 mb-3">
-                                        <div class="rounded-2 border border-dark-light pe-2">
-                                            <a href="@Url.Action("DownLoadFile", "Test", new { id = item.FileId, testId = @Model.Test.TestId })" class="flex-grow-1 overflow-hidden hstack">
-                                                <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
-                                                    @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
-                                                </div>
-                                                <div class="overflow-hidden">
-                                                    <span class="text-truncate d-block">@item.OriginalName</span>
-                                                </div>
+                                        <div class="p-2 border rounded-1">
+                                            <a href="@Url.Action("DownLoadFile", "Test", new { id = item.FileId, testId = @Model.Test.TestId })" class="text-dark d-block">
+                                                @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
+                                                <span class="text-primary">@item.OriginalName</span>
                                             </a>
                                         </div>
                                     </div>
@@ -87,14 +83,10 @@
                                         @foreach (var item in Model.Files)
                                         {
                                             <div class="col-lg-6 mb-3">
-                                                <div class="rounded-2 border border-dark-light pe-2">
-                                                    <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.Test.TestId})" class="flex-grow-1 overflow-hidden hstack">
-                                                        <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
-                                                            @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
-                                                        </div>
-                                                        <div class="overflow-hidden">
-                                                            <span class="text-truncate d-block">@item.OriginalName</span>
-                                                        </div>
+                                                <div class="p-2 border rounded-1">
+                                                    <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.Test.TestId})" class="text-dark d-block">
+                                                        @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
+                                                        <span class="text-primary">@item.OriginalName</span>
                                                     </a>
                                                 </div>
                                             </div>

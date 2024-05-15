@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
+using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
@@ -18,11 +20,13 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     public class GetSubmissionByIdQueryHandler : IRequestHandler<GetSubmissionByIdQuery, GetSubmissionResponse?>
     {
         private readonly ISubmissionRepository _submissionDB;
+        private readonly IStudentRepository _studentDB;
         private readonly IMapper _mapper;
 
-        public GetSubmissionByIdQueryHandler(ISubmissionRepository submissionDB, IMapper mapper)
+        public GetSubmissionByIdQueryHandler(ISubmissionRepository submissionDB, IStudentRepository studentDB, IMapper mapper)
         {
             _submissionDB = submissionDB;
+            _studentDB = studentDB;
             _mapper = mapper;
         }
 
@@ -33,7 +37,10 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 var submission = await _submissionDB.GetById(request.Id);
                 if (submission != null)
                 {
-                    GetSubmissionResponse submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
+                    var submissionResponse = _mapper.Map<GetSubmissionResponse>(submission);
+                    var student = await _studentDB.GetStudentById(submission.StudentId);
+                    submissionResponse.StudentName = $"{student.LastName} {student.FirstName}";
+                    submissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(submission.Status);
                     return submissionResponse;
 
                 }

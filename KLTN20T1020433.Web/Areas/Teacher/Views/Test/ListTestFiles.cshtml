@@ -8,15 +8,10 @@
     @foreach (var item in Model.Files)
     {
         <div class="mb-2">
-            <div class="px-2 border rounded-2 overflow-hidden hstack">
-                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.TestId})" class="flex-grow-1 overflow-hidden hstack">
-                    <div style="height: 3.5rem; width:3.5rem; border-right: .0625rem solid #e0e0e0" class="flex-shrink-0 position-relative mx-1 overflow-hidden">
-                        @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
-                    </div>
-                    <div class="overflow-hidden">
-                        <span class="text-truncate d-block">@item.OriginalName</span>
-
-                    </div>
+            <div class="p-2 border rounded-1">
+                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.TestId})" class="text-dark d-block">
+                    @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
+                    <span class="text-primary">@item.OriginalName</span>
                 </a>
 
                 <div class="hstack overflow-hidden">

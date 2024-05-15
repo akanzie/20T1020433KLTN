@@ -30,10 +30,15 @@
                                 <td>@item.IpAddress</td>
                                 <td class="text-success">@item.StatusDisplayName</td>
                                 <td>@item.FilesCount</td>
-                                <td><a href="Submission"><i class="bi bi-x"></i></a></td>
+                                <td>
+                                    <a href="@Url.Action("Submission","Test", new {id = item.SubmissionId, testId = Model.TestId})">
+                                        <i class="bi bi-x">
+                                        </i>
+                                    </a>
+                                </td>
                             </tr>
                         }
-                    }                   
+                    }
                 </tbody>
             </table>
         </div>
