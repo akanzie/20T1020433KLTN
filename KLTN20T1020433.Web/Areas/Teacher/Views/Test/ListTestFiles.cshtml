@@ -8,9 +8,9 @@
     {
         <div class="mb-2">
             <div class="px-2 border rounded-2 overflow-hidden hstack">
-                <a href="~/Test/DownLoad?id=@item.FileId" class="flex-grow-1 overflow-hidden hstack">
+                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.TestId})" class="flex-grow-1 overflow-hidden hstack">
                     <div style="height: 3.5rem; width:3.5rem; border-right: .0625rem solid #e0e0e0" class="flex-shrink-0 position-relative mx-1 overflow-hidden">
-                        <img src="../assets/images/logos/favicon.png" width="50px" class="mx-1" style="width: 100%; height: auto;">
+                        <img src="@item.FileIcon" width="50px" class="mx-1" style="width: 100%; height: auto;">
                     </div>
                     <div class="overflow-hidden">
                         <span class="text-truncate d-block">@item.OriginalName</span>
@@ -20,9 +20,8 @@
 
                 <div class="hstack overflow-hidden">
                     <button class="remove-button border-0 btn btn-light" type="button" data-fileid="@item.FileId" style="height: 100%;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"></path>
-                        </svg>
+                        <i class="bi bi-x-lg">
+                        </i>
                     </button>
                 </div>
 

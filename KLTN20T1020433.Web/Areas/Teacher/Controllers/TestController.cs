@@ -6,6 +6,7 @@ using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Queries;
 using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Teacher.Commands.Delete;
@@ -14,6 +15,7 @@ using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO.Compression;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -23,6 +25,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
     public class TestController : Controller
     {
         const int TEST_PAGE_SIZE = 10;
+        const int SUBMISSION_PAGE_SIZE = 40;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         public TestController(IMediator mediator, IMapper mapper)
@@ -51,7 +54,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     input = new GetSubmissionsBySearchQuery()
                     {
                         Page = 1,
-                        PageSize = TEST_PAGE_SIZE,
+                        PageSize = SUBMISSION_PAGE_SIZE,
                         SearchValue = "",
                         TestId = id,
                         Statuses = ""
@@ -63,7 +66,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     Files = files,
                     SearchQuery = input
                 };
-
+                ApplicationContext.SetSessionData(Constants.SUBMISSION_SEARCH, input);
                 return View(model);
             }
             catch (Exception ex)
@@ -73,7 +76,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
 
-        }       
+        }
         public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input)
         {
             try
@@ -424,32 +427,66 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(new { success = false, message = ErrorMessages.RequestNotCompleted });
             }
         }
-        public async Task<IActionResult> Download(Guid id)
+        public async Task<ActionResult> DownloadFile(Guid id, int testId, bool isTestFile = true)
         {
-            var user = User.GetUserData();
-            bool isAuthorized = false; //await FileDataService.CheckFileAuthorize(studentId, id);
-            if (isAuthorized)
+            try
             {
-                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return View("NotFound");
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
+                if (test == null)
+                    return View("NotFound");
+                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
 
                 if (file == null)
                 {
-                    return BadRequest();
+                    return View("NotFound");
                 }
                 string filePath = file.FilePath;
                 string mimeType = file.MimeType;
                 if (!System.IO.File.Exists(filePath))
                 {
-                    return Json("Không tìm thấy file");
+                    return View("NotFound");
                 }
                 byte[] fileBytes = await FileUtils.ReadFileAsync(filePath);
                 return File(fileBytes, mimeType, file.OriginalName);
+
+
             }
-            else
+            catch (Exception ex)
             {
-                return Json("Bạn không có quyền truy cập file.");
+                Console.WriteLine($"An exception occurred: {ex.Message}");
+                return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
         }
+        public async Task<IActionResult> DownloadAllSubmissionFile(int testId)
+        {
+            try
+            {
+                var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return View("NotFound");
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
+                if (test == null)
+                    return View("NotFound");
+                string zipName = $"{test.Title.RemoveDiacritics().Trim()}.zip";
+                var submissionFiles = await _mediator.Send(new GetSubmissionFilesByTestIdQuery { TestId = testId });
+                var archiveStream = FileUtils.ZipFiles(submissionFiles);
+                return File(archiveStream, "application/zip", zipName);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An exception occurred: {ex.Message}");
+                return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> UploadTestFile(List<IFormFile> files, int? testId = 0)
         {
@@ -622,6 +659,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
 
                     var model = new TestFileModel
                     {
+                        TestId = testId,
                         Files = files
                     };
                     return View(model);

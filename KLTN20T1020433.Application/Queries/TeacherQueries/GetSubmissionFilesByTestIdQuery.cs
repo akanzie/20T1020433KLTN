@@ -12,31 +12,31 @@ using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetFilesBySubmissionIdQuery : IRequest<IEnumerable<GetFileResponse>>
+    public class GetSubmissionFilesByTestIdQuery : IRequest<IEnumerable<GetFileResponse>>
     {
-        public int SubmissionId { get; set; }
+        public int TestId { get; set; }
     }
-    public class GetFilesBySubmissionIdQueryHandler : IRequestHandler<GetFilesBySubmissionIdQuery, IEnumerable<GetFileResponse>>
+    public class GetSubmissionFilesByTestIdQueryHandler : IRequestHandler<GetSubmissionFilesByTestIdQuery, IEnumerable<GetFileResponse>>
     {
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly IMapper _mapper;
 
-        public GetFilesBySubmissionIdQueryHandler(ISubmissionFileRepository submissionFileDB, IMapper mapper)
+        public GetSubmissionFilesByTestIdQueryHandler(ISubmissionFileRepository submissionFileDB, IMapper mapper)
         {
             _submissionFileDB = submissionFileDB;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<GetFileResponse>> Handle(GetFilesBySubmissionIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetFileResponse>> Handle(GetSubmissionFilesByTestIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var SubmissionFiles = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
+                var SubmissionFiles = await _submissionFileDB.GetFilesByTestId(request.TestId);
                 if (SubmissionFiles != null && SubmissionFiles.Any())
                 {
                     List<GetFileResponse> SubmissionResponse = new List<GetFileResponse>();
                     foreach (var file in SubmissionFiles)
                     {
-                        var fileResponse = _mapper.Map<GetFileResponse>(file);
+                        GetFileResponse fileResponse = _mapper.Map<GetFileResponse>(file);
                         
                         SubmissionResponse.Add(fileResponse);
                     }

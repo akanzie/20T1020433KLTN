@@ -19,21 +19,44 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Data)
+                    @if (Model.Data != null && Model.Data.Any())
                     {
-                        <tr>
-                            <td>@(++i)</td>
-                            <td>@item.StudentName</td>
-                            <td>@item.SubmittedTime</td>
-                            <td>@item.IpAddress</td>
-                            <td class="text-success">@item.StatusDisplayName</td>
-                            <td>@item.FilesCount</td>
-                            <td><a href="Submission"><i class="bi bi-x"></i></a></td>
-                        </tr>
-                    }
+                        @foreach (var item in Model.Data)
+                        {
+                            <tr>
+                                <td>@(++i)</td>
+                                <td>@item.StudentName</td>
+                                <td>@item.SubmittedTime</td>
+                                <td>@item.IpAddress</td>
+                                <td class="text-success">@item.StatusDisplayName</td>
+                                <td>@item.FilesCount</td>
+                                <td><a href="Submission"><i class="bi bi-x"></i></a></td>
+                            </tr>
+                        }
+                    }                   
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
+@if (Model.PageCount > 1)
+{
+    <div class="text-center">
+        <ul class="pagination d-flex justify-content-center">
+
+            @for (int p = 1; p <= Model.PageCount; p++)
+            {
+                if (Model.Page == p)
+                {
+                    <li class="page-item active"><a class="page-link" href="#">@p</a></li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:;" onclick="doSearch('#formSearch',@p)">@p</a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+}

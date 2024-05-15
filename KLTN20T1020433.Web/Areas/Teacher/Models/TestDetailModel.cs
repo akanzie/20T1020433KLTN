@@ -7,7 +7,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Models
     public class TestDetailModel
     {
         public GetTestDetailResponse Test { get; set; }
-        public IEnumerable<GetTestFileResponse> Files { get; set; }
+        public IEnumerable<GetFileResponse> Files { get; set; }
         public GetSubmissionsBySearchQuery SearchQuery { get; set; }
     }
 }

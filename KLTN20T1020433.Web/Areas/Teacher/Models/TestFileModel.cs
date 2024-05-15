@@ -6,6 +6,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Models
 {
     public class TestFileModel
     {
-        public IEnumerable<GetTestFileResponse> Files { get; set; }
+        public int TestId { get; set; }
+        public IEnumerable<GetFileResponse> Files { get; set; }
     }
 }

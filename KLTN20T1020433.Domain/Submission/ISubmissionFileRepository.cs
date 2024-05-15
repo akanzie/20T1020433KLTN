@@ -8,6 +8,7 @@ namespace KLTN20T1020433.Domain.Submission
 {
     public interface ISubmissionFileRepository
     {
+        Task<IEnumerable<SubmissionFile>> GetFilesByTestId(int testId);
         Task<IEnumerable<SubmissionFile>> GetFilesBySubmissionId(int submisionId);
         Task<int> CountFilesBySubmissionId(int submissionId);
         Task<bool> Add(SubmissionFile file);

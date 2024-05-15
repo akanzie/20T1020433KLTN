@@ -110,7 +110,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return View("NotFound");
                 }
-                IEnumerable<GetTestFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
+                IEnumerable<GetFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
                 var model = new TestModel
                 {
                     Test = test,
@@ -283,7 +283,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> DownloadSubmissionFile(Guid id, int testId = 0)
+        public async Task<IActionResult> DownloadFile(Guid id, int testId = 0, bool isTestFile = true)
         {
             try
             {
@@ -297,38 +297,11 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return View("NotFound");
                 }
-                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+
                 if (file == null || !System.IO.File.Exists(file.FilePath))
                 {
-                    return Json(ErrorMessages.FileNotFound);
-                }
-                byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
-                return File(fileBytes, file.MimeType, file.OriginalName);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred in DownloadSubmissionFile: {ex.Message}");
-                return Json(ErrorMessages.RequestNotCompleted);
-            }
-        }
-        public async Task<IActionResult> DownloadTestFile(Guid id, int testId = 0)
-        {
-            try
-            {
-                var user = User.GetUserData();
-                if (testId <= 0)
-                {
                     return View("NotFound");
-                }
-                var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
-                if (submission == null)
-                {
-                    return View("NotFound");
-                }
-                var file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
-                if (file == null || !System.IO.File.Exists(file.FilePath))
-                {
-                    return Json(ErrorMessages.FileNotFound);
                 }
                 byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
                 return File(fileBytes, file.MimeType, file.OriginalName);

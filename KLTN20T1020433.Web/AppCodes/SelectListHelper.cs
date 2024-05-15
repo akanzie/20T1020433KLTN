@@ -25,7 +25,7 @@ namespace KLTN20T1020433.Web.AppCodes
                     list.Add(new SelectListItem()
                     {
                         Value = item.ToString(),
-                        Text = Helper.GetTestStatusDisplayNameForStudent(item)
+                        Text = Utils.GetTestStatusDisplayNameForStudent(item)
                     });
                 }
             }

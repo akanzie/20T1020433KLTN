@@ -54,9 +54,9 @@
                                 {
                                     <div class="col-lg-6 mb-3">
                                         <div class="rounded-2 border border-dark-light pe-2">
-                                            <a href="~/Student/Test/DownLoadTestFile?id=@item.FileId&testId=@Model.Test.TestId" class="flex-grow-1 overflow-hidden hstack">
+                                            <a href="@Url.Action("DownLoadFile", "Test", new { id = item.FileId, testId = @Model.Test.TestId })" class="flex-grow-1 overflow-hidden hstack">
                                                 <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
-                                                    <img src="../assets/images/logos/favicon.png" class="img-file">
+                                                    <img src="@item.FileIcon" class="img-file">
                                                 </div>
                                                 <div class="overflow-hidden">
                                                     <span class="text-truncate d-block">@item.OriginalName</span>
@@ -87,9 +87,9 @@
                                         {
                                             <div class="col-lg-6 mb-3">
                                                 <div class="rounded-2 border border-dark-light pe-2">
-                                                    <a href="~/Student/Test/DownLoadTestFile?id=@item.FileId&testId=@Model.Test.TestId" class="flex-grow-1 overflow-hidden hstack">
+                                                    <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.Test.TestId})" class="flex-grow-1 overflow-hidden hstack">
                                                         <div class="flex-shrink-0 position-relative mx-1 border border-end custom-box">
-                                                            <img src="../assets/images/logos/favicon.png" class="img-file">
+                                                            <img src="@item.FileIcon" class="img-file">
                                                         </div>
                                                         <div class="overflow-hidden">
                                                             <span class="text-truncate d-block">@item.OriginalName</span>

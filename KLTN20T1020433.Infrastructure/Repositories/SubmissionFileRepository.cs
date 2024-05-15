@@ -86,15 +86,34 @@ namespace KLTN20T1020433.Infrastructure.Repositories
         {
             try
             {
-                List<SubmissionFile> files = new List<SubmissionFile>();
+                List<SubmissionFile> files;
                 using (var connection = await OpenConnectionAsync())
                 {
-                    var sql = @"SELECT * FROM SubmissionFiles WHERE SubmissionId = @SubmissionId";
-                    var parameters = new
-                    {
-                        SubmissionId = submissionId
-                    };
-                    files = (await connection.QueryAsync<SubmissionFile>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
+                    files = (await connection.QueryAsync<SubmissionFile>("GetFilesBySubmissionId",
+                                                                         new { SubmissionId = submissionId },
+                                                                         commandType: CommandType.StoredProcedure))
+                                                                         .ToList();
+                }
+                return files;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi khi truy vấn các tệp của bài nộp: " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<SubmissionFile>> GetFilesByTestId(int testId)
+        {
+            try
+            {
+                List<SubmissionFile> files;
+                using (var connection = await OpenConnectionAsync())
+                {
+                    files = (await connection.QueryAsync<SubmissionFile>("GetSubmissionFilesByTestId",
+                                                                         new { TestId = testId },
+                                                                         commandType: CommandType.StoredProcedure))
+                                                                         .ToList();
                 }
                 return files;
             }
@@ -111,13 +130,12 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             {
                 SubmissionFile? file = null;
                 using (var connection = await OpenConnectionAsync())
-                {
-                    var sql = @"SELECT * FROM SubmissionFiles WHERE FileId = @FileId";
+                {                    
                     var parameters = new
                     {
                         FileId = fileId
                     };
-                    file = await connection.QueryFirstOrDefaultAsync<SubmissionFile>(sql: sql, param: parameters, commandType: CommandType.Text);
+                    file = await connection.QueryFirstOrDefaultAsync<SubmissionFile>("GetSubmissionFileById", param: parameters, commandType: CommandType.StoredProcedure);
                 }
                 return file;
             }
@@ -137,7 +155,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 {
                     var parameters = new
                     {
-                        SubmissionId = submissionId                     
+                        SubmissionId = submissionId
 
                     };
                     count = await connection.ExecuteScalarAsync<int>(

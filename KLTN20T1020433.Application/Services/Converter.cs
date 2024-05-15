@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 
 namespace KLTN20T1020433.Application.Services
 {
@@ -21,6 +22,25 @@ namespace KLTN20T1020433.Application.Services
             {
                 return null;
             }
+        }
+        public static string RemoveDiacritics(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            string normalizedString = input.Normalize(NormalizationForm.FormD);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (char c in normalizedString)
+            {
+                UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
         public const string TimeWithDateAndMonth = "H:mm d 'thg' M";
         public const string DateWithMonth = "d 'thg' M";

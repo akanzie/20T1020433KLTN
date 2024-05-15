@@ -3,14 +3,15 @@ using KLTN20T1020433.Domain.Test;
 using MediatR;
 using System.Collections.Generic;
 using KLTN20T1020433.Application.DTOs;
+using KLTN20T1020433.Application.Services;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
-    public class GetFilesByTestIdQuery : IRequest<IEnumerable<GetTestFileResponse>>
+    public class GetFilesByTestIdQuery : IRequest<IEnumerable<GetFileResponse>>
     {
         public int TestId { get; set; }
     }
-    public class GetFilesByTestIdQueryHandler : IRequestHandler<GetFilesByTestIdQuery, IEnumerable<GetTestFileResponse>>
+    public class GetFilesByTestIdQueryHandler : IRequestHandler<GetFilesByTestIdQuery, IEnumerable<GetFileResponse>>
     {
         private readonly ITestFileRepository _testFileDB;
         private readonly IMapper _mapper;
@@ -20,22 +21,23 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
             _testFileDB = testFileDB;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<GetTestFileResponse>> Handle(GetFilesByTestIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetFileResponse>> Handle(GetFilesByTestIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var testFiles = await _testFileDB.GetFilesByTestId(request.TestId);
                 if (testFiles != null && testFiles.Any())
                 {
-                    List<GetTestFileResponse> testResponse = new List<GetTestFileResponse>();
+                    List<GetFileResponse> testResponse = new List<GetFileResponse>();
                     foreach (var file in testFiles)
                     {
-                        GetTestFileResponse getTestFileResponse = _mapper.Map<GetTestFileResponse>(file);
+                        GetFileResponse getTestFileResponse = _mapper.Map<GetFileResponse>(file);
+                        
                         testResponse.Add(getTestFileResponse);
                     }
                     return testResponse;
                 }
-                return new List<GetTestFileResponse>();
+                return new List<GetFileResponse>();
             }
             catch (Exception ex)
             {               

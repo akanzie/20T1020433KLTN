@@ -2,14 +2,16 @@
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Application.DTOs.StudentDTOs;
 using MediatR;
+using KLTN20T1020433.Application.DTOs;
+using KLTN20T1020433.Application.Services;
 
 namespace KLTN20T1020433.Application.Queries.StudentQueries
 {
-    public class GetFilesBySubmissionIdQuery : IRequest<IEnumerable<GetSubmissionFileResponse>>
+    public class GetFilesBySubmissionIdQuery : IRequest<IEnumerable<GetFileResponse>>
     {
         public int SubmissionId { get; set; }
     }
-    public class GetSubmissionFilesBySubmissionIdQueryHandler : IRequestHandler<GetFilesBySubmissionIdQuery, IEnumerable<GetSubmissionFileResponse>>
+    public class GetSubmissionFilesBySubmissionIdQueryHandler : IRequestHandler<GetFilesBySubmissionIdQuery, IEnumerable<GetFileResponse>>
     {
         private readonly ISubmissionFileRepository _submissionFileDB;
         private readonly IMapper _mapper;
@@ -19,22 +21,22 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
             _submissionFileDB = submissionFileDB;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<GetSubmissionFileResponse>> Handle(GetFilesBySubmissionIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetFileResponse>> Handle(GetFilesBySubmissionIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var SubmissionFiles = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
                 if (SubmissionFiles != null && SubmissionFiles.Any())
                 {
-                    List<GetSubmissionFileResponse> SubmissionResponse = new List<GetSubmissionFileResponse>();
+                    List<GetFileResponse> SubmissionResponse = new List<GetFileResponse>();
                     foreach (var file in SubmissionFiles)
                     {
-                        GetSubmissionFileResponse getSubmissionFileResponse = _mapper.Map<GetSubmissionFileResponse>(file);
+                        var getSubmissionFileResponse = _mapper.Map<GetFileResponse>(file);                        
                         SubmissionResponse.Add(getSubmissionFileResponse);
                     }
                     return SubmissionResponse;
                 }
-                return new List<GetSubmissionFileResponse>();
+                return new List<GetFileResponse>();
             }
             catch (Exception ex)
             {                

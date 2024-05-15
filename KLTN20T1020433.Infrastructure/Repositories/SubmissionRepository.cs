@@ -79,7 +79,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         TestId = testId,
                         SearchValue = searchValue ?? "",
-                        SubmissionStatus = statuses
+                        SubmissionStatus = statuses ?? ""
 
                     };
                     count = await connection.ExecuteScalarAsync<int>(
@@ -186,7 +186,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         PageSize = pageSize,
                         TestId = testId,
                         SearchValue = searchValue ?? "",
-                        SubmissionStatus = statuses,
+                        SubmissionStatus = statuses ?? "",
                     };
                     var result = await connection.QueryAsync<Submission>(
                         "GetSubmissions",
