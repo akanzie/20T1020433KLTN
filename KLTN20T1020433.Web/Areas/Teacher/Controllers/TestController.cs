@@ -196,7 +196,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             try
             {
                 var user = User.GetUserData();
-                int rowCount = await _mediator.Send(new GetRowCountTestsQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
+                int rowCount = await _mediator.Send(new GetRowCountTestsQuery 
+                { 
+                    TeacherId = user.UserId, 
+                    SearchValue = input.SearchValue, 
+                    Status = input.Status, 
+                    FromTime = input.FromTime, 
+                    ToTime = input.ToTime, 
+                    Type = input.Type 
+                });
 
                 var data = await _mediator.Send(input);
 
