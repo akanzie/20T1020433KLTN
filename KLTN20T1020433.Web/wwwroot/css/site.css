@@ -4,13 +4,52 @@
     padding: 10px;
     background-color: var(--bs-secondary-bg);
 }
+
 .img-file {
     box-sizing: border-box;
     max-height: 100%;
     max-width: 100%;
 }
+
 .custom-box {
     height: 4rem;
     overflow: hidden;
     width: 6rem;
 }
+
+.btn-select {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+}
+
+    .btn-select::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        border: 5px solid transparent;
+        border-top-color: #000;
+    }
+
+    .btn-select.active {
+        background-color: #007bff;
+        color: white;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+.btn-status {
+    color: black;
+}
+
+
+    .btn-status.active {
+        background-color: rgb(232,240,254);
+        border-color: none;
+        box-shadow: none;
+    }
+
+        .btn-status.active span {
+            color: rgb(83,155,255);
+        }

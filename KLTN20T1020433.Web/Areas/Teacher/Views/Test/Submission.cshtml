@@ -1,5 +1,6 @@
 ﻿@using KLTN20T1020433.Application.Services
 @using KLTN20T1020433.Web.AppCodes
+@using KLTN20T1020433.Domain.Submission
 @model KLTN20T1020433.Web.Areas.Teacher.Models.SubmissionModel
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
@@ -9,6 +10,27 @@
     .dropdown-toggle::after {
         display: none !important;
     }
+
+    .dropdown-menu.show {
+        display: block;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .btn-status {
+        color: black;
+    }
+
+
+        .btn-status.active {
+            background-color: rgb(232,240,254);
+            border-color: none;
+            box-shadow: none;
+        }
+
+            .btn-status.active span {
+                color: rgb(83,155,255);
+            }
 </style>
 <div class="container-fluid ps-0 pe-0 mw-100">
     <div class="card mx-4">
@@ -16,28 +38,66 @@
             <h2><span class="">@Model.Title</span></h2>
             <div class="row">
                 <div class="col-lg-5">
-                    <div class="dropdown" style="max-width: 500px">
-                        <button class="dropdown-toggle p-2 border-success rounded-1 bg-success" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="dropdown" style="width: 35rem; max-width: 600px">
+                        <button class="dropdown-toggle p-6 d-block border-0 rounded-1 w-100 bg-light" type="button" id="dropdownMenuButton">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="d-block flex-grow-1">@Model.Submission.StudentName</span>
-                                <span>@Model.Submission.StatusDisplayName</span>
-                                <i class="bi bi-caret-down-fill"></i>
-                            </div>
+                                <div class=""><i class="bi bi-person"></i><span class="ms-2 text-dark">@Model.Submission.StudentName</span></div>
+                                <div class="d-flex align-items-center">
+                                    <b class="me-3">
+                                        @switch (Model.Submission.Status)
+                                        {
+                                            case SubmissionStatus.Absent:
+                                                <span class="text-warning">@Model.Submission.StatusDisplayName</span>
+                                                break;
 
+                                            case SubmissionStatus.LateSubmission:
+                                                <span class="text-danger">@Model.Submission.StatusDisplayName</span>
+                                                break;
+                                            case SubmissionStatus.PendingProcessing:
+                                                <span class="text-info">@Model.Submission.StatusDisplayName</span>
+                                                break;
+                                            case SubmissionStatus.Submitted:
+                                                <span class="text-success">@Model.Submission.StatusDisplayName</span>
+                                                break;
+                                            case SubmissionStatus.NotSubmitted:
+                                                <span class="text-secondary">@Model.Submission.StatusDisplayName</span>
+                                                break;
+                                            default:
+                                                // Handle other statuses or a default case if needed
+                                                break;
+                                        }
+                                    </b>
+                                    <i class="bi bi-caret-down-fill"></i>
+                                </div>
+                            </div>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="studentList">
-                            @foreach (var item in Model.Submissions)
-                            {
-                                <li><a class="dropdown-item" href="@Url.Action("Submission", "Test", new{id = item.SubmissionId, testId = Model.TestId})">@item.StudentName</a></li>
-                            }
+                        <ul class="dropdown-menu p-0" id="studentList" style="width: 35rem; max-width: 600px">
+                            <li class="d-flex align-items-center p-8 w-100 ">
+                                <div class="me-2">
+                                    <input class="form-control" type="search" placeholder="Tìm kiếm" aria-label="Search" name="SearchValue" value="@Model.SearchQuery.SearchValue">
+                                </div>
+                                <div class="">
+                                    <button class="btn btn-outline-light btn-status" data="Submitted"><span class="">Đã nộp</span></button>
+                                </div>
+                                <div class="">
+                                    <button class="btn btn-outline-light btn-status" data="PendingProcessing"><span class="">Đang chờ xử lý</span></button>
+                                </div>
+                                <div class="">
+                                    <button class="btn btn-outline-light btn-status" data="LateSubmission"><span class="">Đã nộp muộn</span></button>
+                                </div>
+                            </li>
+                            <div id="searchStudent"></div>
                         </ul>
                     </div>
                 </div>
+
                 <div class="col-lg-5"></div>
                 <div class="col-lg-2">
-                    <button id="downloadBtn" class="btn btn-primary">
-                        Tải xuống
-                    </button>
+                    <div class="d-flex justify-content-end">
+                        <button id="downloadBtn" class="btn btn-primary">
+                            Tải xuống
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -67,30 +127,97 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function () {
-        $(".file-link").on('click', function (event) {
-            event.preventDefault();
-            var fileId = $(this).data("file-id");
-            viewFile(fileId);
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var page = @Model.SearchQuery.Page;
+            bindEvents(page);
+            doSearch(page);
         });
-    });
-    function viewFile(fileId) {
-        var url = '@Url.Action("SubmissionFile", "Test")';
-        $.ajax({
-            url: url,
-            type: "GET",
-            data: { fileId: fileId },
-            success: function (data) {
-                $("#filePreview").html(data);
-            },
-            error: function () {
-                alert("Your request is not valid!");
-            }
-        });
-    }
+        function bindEvents(page) {
+            var searchTimeout; // Biến lưu trữ timeout
 
-</script>
+            $('input[name="SearchValue"]').on('input', function () {
+                // Xóa timeout hiện tại nếu có
+                clearTimeout(searchTimeout);
 
+                // Thiết lập timeout mới
+                searchTimeout = setTimeout(function () {
+                    // Lấy giá trị của ô input
+                    var searchValue = $('input[name="SearchValue"]').val();
 
+                    // Gọi hàm thực hiện tìm kiếm với giá trị mới
+                    doSearch(1);
+                }, 2000); // 2000 milliseconds = 2 seconds
+            });
+
+            $(".file-link").on('click', function (event) {
+                event.preventDefault();
+                var fileId = $(this).data("file-id");
+                viewFile(fileId);
+            });
+            $('.btn-status').click(function () {
+                $(this).toggleClass('active');
+                doSearch(page);
+            });
+            $('#dropdownMenuButton').on('click', function (event) {
+                console.log("a");
+                event.preventDefault();
+                var dropdown = $('#studentList');
+                if (dropdown.hasClass('show')) {
+                    dropdown.removeClass('show');
+                } else {
+                    dropdown.addClass('show');
+                }
+            });
+        }
+        function viewFile(fileId) {
+            var url = '@Url.Action("SubmissionFile", "Test")';
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: { fileId: fileId },
+                success: function (data) {
+                    $("#filePreview").html(data);
+                },
+                error: function () {
+                    alert("Your request is not valid!");
+                }
+            });
+        }
+        function doSearch(page) {
+            var url = '@Url.Action("SearchStudent", "Test")';
+            var postData = []; // Initialize postData array
+            var statuses = [];
+            var searchValue = $('#searchValue').val();
+
+            $('.btn-status.active').each(function () {
+                var selectedData = $(this).attr('data');
+                statuses.push(selectedData);
+            });
+
+            var statusesString = statuses.join(',');
+            postData.push(
+                { name: "page", value: page },
+                { name: "pageSize", value: '@Model.SearchQuery.PageSize' },
+                { name: "testId", value: '@Model.TestId' },
+                { name: "searchValue", value: searchValue }, // Changed 'SearchValue' to 'searchValue'
+                { name: "statuses", value: statusesString } // Changed 'Statuses' to 'statuses'
+            );
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                },
+                success: function (data) {
+                    $('#searchStudent').html(data);
+                }
+            });
+        }
+
+    </script>
+
+}

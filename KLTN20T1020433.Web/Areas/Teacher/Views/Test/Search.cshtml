@@ -37,7 +37,7 @@
                                 <div class="dropdown me-1 ms-2">
                                     @if (item.Status == KLTN20T1020433.Domain.Test.TestStatus.Creating || item.Status == KLTN20T1020433.Domain.Test.TestStatus.Upcoming || item.Status == KLTN20T1020433.Domain.Test.TestStatus.Ongoing)
                                     {
-                                        <button class="btn btn-light" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="btn btn-light" type="button" id="dropdownMenuBtn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="bi bi-list"></i>
                                         </button>
                                     }
@@ -47,7 +47,7 @@
                                             <i class="bi bi-list"></i>
                                         </button>
                                     }
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuBtn">
                                         <a class="dropdown-item" href="@Url.Action("Edit","Test", new {id = item.TestId})"><span class="text-dark fs-3">Chỉnh sửa</span></a>
                                         <a class="dropdown-item" href="javascript:;" onclick="openModalDeleteTest(@item.TestId)"><span class="text-dark fs-3">Xóa</span></a>
                                     </div>

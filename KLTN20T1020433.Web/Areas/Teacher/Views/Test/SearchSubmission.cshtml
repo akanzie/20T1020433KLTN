@@ -1,4 +1,5 @@
-﻿@model KLTN20T1020433.Web.Areas.Teacher.Models.SubmissonSearchResult
+﻿@using KLTN20T1020433.Domain.Submission
+@model KLTN20T1020433.Web.Areas.Teacher.Models.SubmissonSearchResult
 @{
     Layout = null;
     int i = 0;
@@ -28,7 +29,31 @@
                                 <td>@item.StudentName</td>
                                 <td>@item.SubmittedTime</td>
                                 <td>@item.IpAddress</td>
-                                <td class="text-success">@item.StatusDisplayName</td>
+                                <td>
+                                    @switch (item.Status)
+                                    {
+                                        case SubmissionStatus.Absent:
+                                            <span class="text-warning">@item.StatusDisplayName</span>
+                                            break;
+
+                                        case SubmissionStatus.LateSubmission:
+                                            <span class="text-danger">@item.StatusDisplayName</span>
+                                            break;
+                                        case SubmissionStatus.PendingProcessing:
+                                            <span class="text-info">@item.StatusDisplayName</span>
+                                            break;
+                                        case SubmissionStatus.Submitted:
+                                            <span class="text-success">@item.StatusDisplayName</span>
+                                            break;
+                                        case SubmissionStatus.NotSubmitted:
+                                            <span class="text-secondary">@item.StatusDisplayName</span>
+                                            break;
+                                        default:
+                                            // Handle other statuses or a default case if needed
+                                            break;
+                                    }
+
+                                </td>
                                 <td>@item.FilesCount</td>
                                 <td>
                                     <a href="@Url.Action("Submission","Test", new {id = item.SubmissionId, testId = Model.TestId})">

@@ -1,5 +1,44 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using KLTN20T1020433.Domain.Submission
+@model KLTN20T1020433.Web.Areas.Teacher.Models.SubmissonSearchResult
 @{
+    Layout = null;
+}
+@foreach (var item in Model.Data)
+{
+    @if (item.Status != SubmissionStatus.NotSubmitted && item.Status != SubmissionStatus.Absent)
+    {
+        <li class="">
+            <a class="dropdown-item p-6 d-block w-100 bg-light border rounded-1" href="@Url.Action("Submission", "Test", new{id = item.SubmissionId, testId = Model.TestId})">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class=""><i class="bi bi-person"></i><span class="ms-2 text-dark">@item.StudentName</span></div>
+
+                    <b class="me-2">
+                        @switch (item.Status)
+                        {
+                            case SubmissionStatus.Absent:
+                                <span class="text-warning">@item.StatusDisplayName</span>
+                                break;
+
+                            case SubmissionStatus.LateSubmission:
+                                <span class="text-danger">@item.StatusDisplayName</span>
+                                break;
+                            case SubmissionStatus.PendingProcessing:
+                                <span class="text-info">@item.StatusDisplayName</span>
+                                break;
+                            case SubmissionStatus.Submitted:
+                                <span class="text-success">@item.StatusDisplayName</span>
+                                break;
+                            case SubmissionStatus.NotSubmitted:
+                                <span class="text-secondary">@item.StatusDisplayName</span>
+                                break;
+                            default:
+                                // Handle other statuses or a default case if needed
+                                break;
+                        }
+                    </b>
+
+                </div>
+            </a>
+        </li>
+    }
 }

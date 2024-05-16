@@ -219,31 +219,34 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> SearchStudent(GetTestsBySearchQuery input)
+        public async Task<IActionResult> SearchStudent(GetSubmissionsBySearchQuery input)
         {
 
-            var user = User.GetUserData();
-            int rowCount = await _mediator.Send(new GetRowCountTestsQuery { TeacherId = user.UserId, SearchValue = input.SearchValue, Status = input.Status, FromTime = input.FromTime, ToTime = input.ToTime, Type = input.Type });
-
-            var data = await _mediator.Send(input);
-
-            var model = new TestSearchResult()
+            try
             {
-                Page = input.Page,
-                PageSize = input.PageSize,
-                SearchValue = input.SearchValue ?? "",
-                RowCount = rowCount,
-                FromTime = input.FromTime ?? null,
-                ToTime = input.ToTime ?? null,
-                Status = input.Status ?? null,
-                Type = input.Type ?? null,
-                Data = data
-            };
+                var user = User.GetUserData();
+                int rowCount = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = input.SearchValue, Statuses = input.Statuses, TestId = input.TestId });
 
-            // Lưu lại vào session điều kiện tìm kiếm
-            ApplicationContext.SetSessionData(Constants.TEST_SEARCH, input);
+                var data = await _mediator.Send(input);
 
-            return View(model);
+                var model = new SubmissonSearchResult()
+                {
+                    Page = input.Page,
+                    PageSize = input.PageSize,
+                    SearchValue = input.SearchValue ?? "",
+                    TestId = input.TestId,
+                    Statuses = input.Statuses ?? "",
+                    RowCount = rowCount,
+                    Data = data
+                };
+                ApplicationContext.SetSessionData(Constants.STUDENT_SEARCH, input);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in SearchSubmission: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
         }
         [HttpPost]
         public async Task<IActionResult> RemoveTestFile(Guid id)
@@ -285,15 +288,27 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 if (submission == null)
                     return View("NotFound");
                 var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = id });
-                var submissions = await _mediator.Send(new GetSubmissionsBySearchQuery { Page = 1, PageSize = 50, SearchValue = "", Statuses = "", TestId = testId });
+                var input = ApplicationContext.GetSessionData<GetSubmissionsBySearchQuery>(Constants.STUDENT_SEARCH);
+                if (input == null)
+                {
+                    input = new GetSubmissionsBySearchQuery()
+                    {
+                        Page = 1,
+                        PageSize = SUBMISSION_PAGE_SIZE,
+                        SearchValue = "",
+                        TestId = testId,
+                        Statuses = ""
+                    };
+                }
                 var model = new SubmissionModel
                 {
                     TestId = test.TestId,
                     Title = test.Title,
                     Files = files,
                     Submission = submission,
-                    Submissions = submissions
-                };
+                    SearchQuery = input
+
+                }; ApplicationContext.SetSessionData(Constants.SUBMISSION_SEARCH, input);
                 return View(model);
             }
             catch (Exception ex)

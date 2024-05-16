@@ -8,6 +8,7 @@
         public const string ACCESS_TOKEN = "AccessToken";
         public const string TEST_SEARCH = "TestSearch";
         public const string SUBMISSION_SEARCH = "SubmissionSearch";
+        public const string STUDENT_SEARCH = "StudentSearch";
         public const string TESTID = "TestId";
 
     }
