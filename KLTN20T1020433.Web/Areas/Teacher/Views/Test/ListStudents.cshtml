@@ -44,25 +44,33 @@
 </table>
 <script>
     $(document).ready(function () {
-        $('#listStudents #selectAll').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('#listStudents .student-checkbox').not(':disabled').prop('checked', isChecked);
+        function initialize() {
+            bindEvents();
+        }
+        $(document).ready(function () {
+            initialize();
         });
+        function bindEvents() {
+            $('#listStudents #selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('#listStudents .student-checkbox').not(':disabled').prop('checked', isChecked);
+            });
 
-        $('#listStudents .student-checkbox').on('change', function () {
-            var allChecked = $('#listStudents .student-checkbox:checked').length === $('#listStudents .student-checkbox:not(:disabled)').length;
-            $('#listStudents #selectAll').prop('checked', allChecked);
-        });
+            $('#listStudents .student-checkbox').on('change', function () {
+                var allChecked = $('#listStudents .student-checkbox:checked').length === $('#listStudents .student-checkbox:not(:disabled)').length;
+                $('#listStudents #selectAll').prop('checked', allChecked);
+            });
 
-        $('#selectedStudents #selectAll').on('change', function () {
-            var isChecked = $(this).prop('checked');
-            $('#selectedStudents .student-checkbox').not(':disabled').prop('checked', isChecked);
-        });
+            $('#selectedStudents #selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('#selectedStudents .student-checkbox').not(':disabled').prop('checked', isChecked);
+            });
 
-        $('#selectedStudents .student-checkbox').on('change', function () {
-            var allChecked = $('#selectedStudents .student-checkbox:checked').length === $('#selectedStudents .student-checkbox:not(:disabled)').length;
-            $('#selectedStudents #selectAll').prop('checked', allChecked);
-        });
+            $('#selectedStudents .student-checkbox').on('change', function () {
+                var allChecked = $('#selectedStudents .student-checkbox:checked').length === $('#selectedStudents .student-checkbox:not(:disabled)').length;
+                $('#selectedStudents #selectAll').prop('checked', allChecked);
+            });
+        }
     });
 
 </script>

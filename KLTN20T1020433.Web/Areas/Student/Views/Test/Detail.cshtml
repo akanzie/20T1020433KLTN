@@ -55,7 +55,7 @@
                                 {
                                     <div class="col-lg-6 mb-3">
                                         <div class="p-2 border rounded-1">
-                                            <a href="@Url.Action("DownLoadFile", "Test", new { id = item.FileId, testId = @Model.Test.TestId })" class="text-dark d-block">
+                                            <a href="@Url.Action("DownLoadFile", "Test", new { id = item.FileId, testId = @Model.Test.TestId })" class="d-block text-truncate">
                                                 @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
                                                 <span class="text-primary">@item.OriginalName</span>
                                             </a>
@@ -84,7 +84,7 @@
                                         {
                                             <div class="col-lg-6 mb-3">
                                                 <div class="p-2 border rounded-1">
-                                                    <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.Test.TestId})" class="text-dark d-block">
+                                                    <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.Test.TestId})" class="d-block text-truncate">
                                                         @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
                                                         <span class="text-primary">@item.OriginalName</span>
                                                     </a>
@@ -120,10 +120,14 @@
 </div>
 @section Scripts {
     <script>
-        $(document).ready(function () {
+        function initialize() {
             var testId = @Model.Test.TestId;
             getSubmission(testId);
-        });
+        }
+        $(document).ready(function () {
+            initialize();
+        });       
+       
         function getSubmission(testId) {
             var url = '@Url.Action("Submission", "Test")';
             $.ajax({

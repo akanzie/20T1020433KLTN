@@ -10,22 +10,28 @@
     <div class="card">
         <div class="card-body pt-3">
             <h2 class="fw-semibold">Danh sách kỳ thi</h2>
-            <form class="d-flex justify-content-between align-items-center mb-2" id="formSearch" action="@Url.Action("Search", "Test")" method="post" data-container="#searchResult">
-                <div class="d-flex">
-                    @Html.DropDownListFor(m => m.Status, Helper.GetTestStatusForTeacher(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
-                    @Html.DropDownListFor(m => m.Type, Helper.GetTestType(), new { @class = "form-select text-center me-2 fs-3 fw-semibold", @style = "width: 170px;", @onchange = "doSearch(this.form, 1);" })
-                </div>
-                <div class="d-flex">
-                    <label for="fromTime" class="input-group-text">Từ ngày:</label>
-                    <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime" value="@(Model.FromTime == null ? "" : Model.FromTime.Value.ToString(Converter.Date))">
-                    <label for="toTime" class="input-group-text">Đến ngày:</label>
-                    <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime" value="@(Model.ToTime == null ? "" : Model.ToTime.Value.ToString(Converter.Date))">
+            <form class="mb-2" id="formSearch" action="@Url.Action("Search", "Test")" method="post">
+                <ul class="nav nav-links">
+                    <li class="nav-item mb-1 d-flex justify-content-between">
+                        @Html.DropDownListFor(m => m.Status, Helper.GetTestStatusForTeacher(), new { @class = "form-select text-center fs-3 fw-semibold text-truncate", @style = "width: 150px;", @onchange = "doSearch(this.form, 1);" })
+                        @Html.DropDownListFor(m => m.Type, Helper.GetTestType(), new { @class = "form-select text-center ms-2 me-2 fs-3 fw-semibold text-truncate", @style = "width: 150px;", @onchange = "doSearch(this.form, 1);" })
+                    </li>                    
+                    <li class="nav-item d-flex mb-1">
+                        <label for="fromTime" class="input-group-text">Từ ngày:</label>
+                        <input id="fromTime" type="date" class="form-control me-2" style="width: 150px;" name="FromTime" value="@(Model.FromTime == null ? "" : Model.FromTime.Value.ToString(Converter.Date))">
+                    </li>
+                    <li class="nav-item d-flex mb-1">
+                        <label for="toTime" class="input-group-text">Đến ngày:</label>
+                        <input id="toTime" type="date" class="form-control me-2" style="width: 150px;" name="ToTime" value="@(Model.ToTime == null ? "" : Model.ToTime.Value.ToString(Converter.Date))">
+                    </li>
+                    <li class="nav-item mb-1">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="bi bi-funnel"></i>
+                            <span class="fw-semibold ms-2">Lọc</span>
+                        </button>
+                    </li>
+                </ul>
 
-                    <button class="btn btn-outline-primary" type="submit">
-                        <i class="bi bi-funnel"></i>
-                        <span class="fw-semibold ms-2">Lọc</span>
-                    </button>
-                </div>
                 @Html.HiddenFor(m => m.PageSize)
                 @Html.HiddenFor(m => m.TeacherId)
             </form>
@@ -35,7 +41,7 @@
                 </button>
                 <button id="btnDelete" class="btn btn-outline-danger" type="button">
                     <i class="bi bi-trash"></i>
-                    <span class="fw-semibold ms-2">Xóa nhiều</span>                    
+                    <span class="fw-semibold ms-2">Xóa nhiều</span>
                 </button>
             </div>
             <div id="searchResult">
@@ -46,7 +52,8 @@
 @section Scripts {
     <script>
         function initialize() {
-            doSearch("#formSearch", @Model.Page);
+            var page = @Model.Page;
+            doSearch("#formSearch", page);
             bindEvents();
         }
         $(document).ready(function () {
@@ -60,15 +67,15 @@
             });
             $("#btnDelete").click(function () {
                 var testIds = getSelectedTestIds();
-                if (testIds.length > 0) {                    
+                if (testIds.length > 0) {
                     deleteTests(testIds);
                 } else {
                     showToast("Vui lòng chọn ít nhất một bài kiểm tra để xóa.");
                 }
             });
-            $('#btnSelect').on('click', function () {                
+            $('#btnSelect').on('click', function () {
                 $('.test-checkbox').prop('checked', true);
-            }); 
+            });
         }
         function getSelectedTestIds() {
             var testIds = [];
@@ -79,13 +86,10 @@
         }
         function doSearch(formSearchInput, page) {
             var url = $(formSearchInput).prop("action");
-            var container = $(formSearchInput).data("container");
             var postData = $(formSearchInput).serializeArray();
             var searchValue = $('#searchValue').val();
             postData.push(
                 { "name": "page", "value": page },
-                { "name": "FromTime", "value": $('#fromTime').val() },
-                { "name": "ToTime", "value": $('#toTime').val() },
                 { "name": "SearchValue", "value": searchValue }
             );
             $.ajax({
@@ -96,10 +100,9 @@
                     handleAjaxError(xhr);
                 },
                 success: function (data) {
-                    $(container).html(data);
+                    $("#searchResult").html(data);
                 }
             });
-
             return;
         }
         function deleteTests(testIds) {

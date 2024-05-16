@@ -12,6 +12,7 @@
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="sautinsoft.rtftohtml" Version="2023.10.18" />
   </ItemGroup>
 
   <ItemGroup>

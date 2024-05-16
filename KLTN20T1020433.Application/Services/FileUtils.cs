@@ -1,13 +1,8 @@
-﻿
-using System.IO;
+﻿using KLTN20T1020433.Application.DTOs;
+using SautinSoft;
+using System.Diagnostics;
 using System.IO.Compression;
-using AutoMapper;
-using KLTN20T1020433.Application.DTOs;
-using KLTN20T1020433.Application.DTOs.TeacherDTOs;
-using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Test;
-using Microsoft.AspNetCore.Http;
-using Xceed.Words.NET;
+using static SautinSoft.RtfToHtml;
 
 
 namespace KLTN20T1020433.Application.Services
@@ -25,23 +20,38 @@ namespace KLTN20T1020433.Application.Services
             // Đọc dữ liệu từ tệp và trả về dưới dạng mảng byte
             return await System.IO.File.ReadAllBytesAsync(filePath);
         }
-        public static string ReadDocxFile(string filePath)
+        public static string ConvertToHtmlAsync(string filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("File not found", filePath);
+            }
+
             try
             {
-                // Mở tệp Word
-                using (DocX document = DocX.Load(filePath))
+                string outputHtmlFile = Path.ChangeExtension(filePath, ".html"); 
+                RtfToHtml r = new RtfToHtml();
+                r.Convert(filePath, outputHtmlFile, new HtmlFixedSaveOptions() { Title = "SautinSoft Example." });
+
+                // Kiểm tra xem tệp HTML đầu ra đã được tạo thành công chưa
+                if (!File.Exists(outputHtmlFile))
                 {
-                    // Đọc nội dung của tệp Word và trả về dưới dạng chuỗi
-                    return document.Text;
+                    throw new Exception("Failed to convert Word file to HTML.");
                 }
+
+                // Đọc nội dung HTML từ tệp HTML đầu ra
+                string html = File.ReadAllText(outputHtmlFile);
+
+                // Trả về chuỗi HTML
+                return html;
             }
             catch (Exception ex)
             {
-                // Xử lý lỗi nếu có
-                return "Error: " + ex.Message;
+                throw new Exception("Error converting Word file to HTML.", ex);
             }
-        }        
+        }
+
+
         public static MemoryStream ZipFiles(IEnumerable<GetFileResponse> files)
         {
             MemoryStream zipStream = new MemoryStream();
@@ -51,7 +61,7 @@ namespace KLTN20T1020433.Application.Services
                 foreach (var item in files)
                 {
                     if (File.Exists(item.FilePath))
-                    {                        
+                    {
                         byte[] fileBytes = File.ReadAllBytes(item.FilePath);
                         ZipArchiveEntry entry = archive.CreateEntry(item.OriginalName);
                         using var entryStream = entry.Open();
@@ -63,6 +73,6 @@ namespace KLTN20T1020433.Application.Services
             zipStream.Seek(0, SeekOrigin.Begin);
 
             return zipStream;
-        }        
+        }
     }
 }

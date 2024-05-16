@@ -14,12 +14,13 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     public class GetSubmissionFileByIdQueryHandler : IRequestHandler<GetSubmissionFileByIdQuery, GetFileResponse?>
     {
         private readonly ISubmissionFileRepository _submissionFileDB;
+        private readonly ISubmissionRepository _submissionDB;
         private readonly IMapper _mapper;
 
-        public GetSubmissionFileByIdQueryHandler(ISubmissionFileRepository submissionFileDB, IMapper mapper)
+        public GetSubmissionFileByIdQueryHandler(ISubmissionFileRepository submissionFileDB, ISubmissionRepository submissionDB, IMapper mapper)
         {
             _submissionFileDB = submissionFileDB;
-
+            _submissionDB = submissionDB;
             _mapper = mapper;
         }
 
@@ -28,11 +29,15 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
             try
             {
                 var file = await _submissionFileDB.GetById(request.Id);
-                if (file != null)
+                var submission = await _submissionDB.GetById(file.SubmissionId);
+                if (submission.Status != SubmissionStatus.NotSubmitted)
                 {
-                    GetFileResponse fileResponse = _mapper.Map<GetFileResponse>(file);
-                    fileResponse.FileType = Path.GetExtension(file.FileName);
-                    return fileResponse;
+                    if (file != null)
+                    {
+                        GetFileResponse fileResponse = _mapper.Map<GetFileResponse>(file);
+                        fileResponse.FileType = Path.GetExtension(file.FileName);
+                        return fileResponse;
+                    }
                 }
                 return null;
             }

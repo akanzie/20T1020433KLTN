@@ -114,12 +114,16 @@
 </div>
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            var testId = @Model.TestId;               
-            bindEvents(testId);            
+        function initialize() {
+            var testId = @Model.TestId;
+            bindEvents(testId);
             getSelectedStudents(testId);
             checkSelectedStudents(getSelectedStudentIds());
+        }
+        $(document).ready(function () {
+            initialize();
         });
+       
         function bindEvents(testId) {
             $('#cancelBtn').on('click', function () {
                 console.log("a");

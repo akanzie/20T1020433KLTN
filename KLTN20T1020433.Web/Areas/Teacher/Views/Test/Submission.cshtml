@@ -17,6 +17,10 @@
         overflow-y: auto;
     }
 
+    .shadow-left {
+        box-shadow: -3px 0 7px -6px rgba(0, 0, 0, 0.5);
+    }
+
     .btn-status {
         color: black;
     }
@@ -31,89 +35,100 @@
             .btn-status.active span {
                 color: rgb(83,155,255);
             }
+
+    .file-container {
+        cursor: pointer;
+    }
+
+        .file-container.selected {
+            background-color: rgba(0, 123, 255, 0.1); /* Change to desired selection color */
+            border: 1px solid rgba(0, 123, 255, 0.5); /* Optional border to indicate selection */
+        }
 </style>
-<div class="container-fluid ps-0 pe-0 mw-100">
+<div class="container-fluid ps-0 pe-0 mw-100 overflow-hidden" style="height: calc(100% - 200px);">
     <div class="card mx-4">
-        <div class="card-body">
+        <div class="card-header shadow">
             <h2><span class="">@Model.Title</span></h2>
-            <div class="row">
-                <div class="col-lg-5">
-                    <div class="dropdown" style="width: 35rem; max-width: 600px">
-                        <button class="dropdown-toggle p-6 d-block border-0 rounded-1 w-100 bg-light" type="button" id="dropdownMenuButton">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class=""><i class="bi bi-person"></i><span class="ms-2 text-dark">@Model.Submission.StudentName</span></div>
-                                <div class="d-flex align-items-center">
-                                    <b class="me-3">
-                                        @switch (Model.Submission.Status)
-                                        {
-                                            case SubmissionStatus.Absent:
-                                                <span class="text-warning">@Model.Submission.StatusDisplayName</span>
-                                                break;
+            <div class="d-flex justify-content-between">
+                <div class="dropdown" style="width: 35rem; max-width: 600px">
+                    <button class="dropdown-toggle p-6 d-block border-0 rounded-1 w-100 bg-light-info" type="button" id="dropdownMenuButton">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class=""><i class="bi bi-person"></i><span class="ms-2 text-dark">@Model.Submission.StudentName</span></div>
+                            <div class="d-flex align-items-center">
+                                <b class="me-3">
+                                    @switch (Model.Submission.Status)
+                                    {
+                                        case SubmissionStatus.Absent:
+                                            <span class="text-warning">@Model.Submission.StatusDisplayName</span>
+                                            break;
 
-                                            case SubmissionStatus.LateSubmission:
-                                                <span class="text-danger">@Model.Submission.StatusDisplayName</span>
-                                                break;
-                                            case SubmissionStatus.PendingProcessing:
-                                                <span class="text-info">@Model.Submission.StatusDisplayName</span>
-                                                break;
-                                            case SubmissionStatus.Submitted:
-                                                <span class="text-success">@Model.Submission.StatusDisplayName</span>
-                                                break;
-                                            case SubmissionStatus.NotSubmitted:
-                                                <span class="text-secondary">@Model.Submission.StatusDisplayName</span>
-                                                break;
-                                            default:
-                                                // Handle other statuses or a default case if needed
-                                                break;
-                                        }
-                                    </b>
-                                    <i class="bi bi-caret-down-fill"></i>
-                                </div>
+                                        case SubmissionStatus.LateSubmission:
+                                            <span class="text-danger">@Model.Submission.StatusDisplayName</span>
+                                            break;
+                                        case SubmissionStatus.PendingProcessing:
+                                            <span class="text-info">@Model.Submission.StatusDisplayName</span>
+                                            break;
+                                        case SubmissionStatus.Submitted:
+                                            <span class="text-success">@Model.Submission.StatusDisplayName</span>
+                                            break;
+                                        case SubmissionStatus.NotSubmitted:
+                                            <span class="text-secondary">@Model.Submission.StatusDisplayName</span>
+                                            break;
+                                        default:
+                                            // Handle other statuses or a default case if needed
+                                            break;
+                                    }
+                                </b>
+                                <i class="bi bi-caret-down-fill"></i>
                             </div>
-                        </button>
-                        <ul class="dropdown-menu p-0" id="studentList" style="width: 35rem; max-width: 600px">
-                            <li class="d-flex align-items-center p-8 w-100 ">
-                                <div class="me-2">
-                                    <input class="form-control" type="search" placeholder="Tìm kiếm" aria-label="Search" name="SearchValue" value="@Model.SearchQuery.SearchValue">
-                                </div>
-                                <div class="">
-                                    <button class="btn btn-outline-light btn-status" data="Submitted"><span class="">Đã nộp</span></button>
-                                </div>
-                                <div class="">
-                                    <button class="btn btn-outline-light btn-status" data="PendingProcessing"><span class="">Đang chờ xử lý</span></button>
-                                </div>
-                                <div class="">
-                                    <button class="btn btn-outline-light btn-status" data="LateSubmission"><span class="">Đã nộp muộn</span></button>
-                                </div>
-                            </li>
-                            <div id="searchStudent"></div>
-                        </ul>
-                    </div>
-                </div>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu p-0" id="studentList" style="width: 35rem; max-width: 600px">
+                        <form id="formSearch" method="post" action="@Url.Action("SearchStudent", "Test")">
+                        <li class="d-flex align-items-center p-8 w-100 ">
 
-                <div class="col-lg-5"></div>
-                <div class="col-lg-2">
-                    <div class="d-flex justify-content-end">
-                        <button id="downloadBtn" class="btn btn-primary">
-                            Tải xuống
-                        </button>
-                    </div>
+                            <div class="me-2">
+                                <input class="form-control" type="search" placeholder="Tìm kiếm" aria-label="Search" name="SearchValue" value="@Model.SearchQuery.SearchValue">
+                            </div>
+                            <div class="">
+                                <button tye="button" class="btn btn-outline-light btn-status" data="Submitted"><span class="">Đã nộp</span></button>
+                            </div>
+                            <div class="">
+                                <button tye="button" class="btn btn-outline-light btn-status" data="PendingProcessing"><span class="">Đang chờ xử lý</span></button>
+                            </div>
+                            <div class="">
+                                <button tye="button" class="btn btn-outline-light btn-status" data="LateSubmission"><span class="">Đã nộp muộn</span></button>
+                            </div>
+                            <input type="hidden" name="PageSize" value="@Model.SearchQuery.PageSize">
+                            <input type="hidden" name="TestId" value="@Model.TestId">
+
+                        </li>
+                        </form>
+                        <div id="searchStudent"></div>
+                    </ul>
                 </div>
+                <button id="downloadBtn" class="btn btn-primary">
+                    Tải xuống
+                </button>
             </div>
+        </div>
+        <div class="card-body pt-0">
             <div class="row">
                 <div class="col-lg-9">
                     <div id="filePreview"></div>
                 </div>
-                <div class="col-lg-3">
-                    <h1 class=""><span>Tệp</span></h1>
-                    <div class="">@Model.Submission.StatusDisplayName vào @Model.Submission.SubmittedTime.Value.ToString(Converter.TimeWithDateAndMonth)</div>
-                    @foreach (var file in Model.Files)
-                    {
-                        <div class="d-flex">
-                            @Html.Raw(Helper.GetIconClassFromFileExtension(file.FileType))
-                            <span class="text-primary">@file.OriginalName</span>
-                        </div>
-                    }
+                <div class="col-lg-3 shadow-left">
+                    <div class="py-3 border-bottom">
+                        <h4 class=""><span class="fw-semibold">Tệp</span></h4>
+                        <div class="fs-3">Đã nộp vào @Model.Submission.SubmittedTime.Value.ToString(Converter.TimeWithDateAndMonth)</div>
+                        @foreach (var file in Model.Files)
+                        {
+                            <div class="d-flex p-2 border rounded-1 file-container" data-file-id="@file.FileId">
+                                @Html.Raw(Helper.GetIconClassFromFileExtension(file.FileType))
+                                <span class="text-primary text-truncate me-2">@file.OriginalName</span>
+                            </div>
+                        }
+                    </div>
                     <div class="">
                         <div id="comments"></div>
                     </div>
@@ -129,95 +144,86 @@
 </div>
 @section scripts {
     <script>
-        $(document).ready(function () {
+        function initialize() {
             var page = @Model.SearchQuery.Page;
-            bindEvents(page);
-            doSearch(page);
+            bindEvents();
+            doSearch("#formSearch", page);
+            var firstFileId = '@Model.Files.First().FileId';
+            selectAndViewFile(firstFileId);
+        }
+        $(document).ready(function () {
+            initialize();
         });
-        function bindEvents(page) {
-            var searchTimeout; // Biến lưu trữ timeout
-
+        function bindEvents() {
+            var searchTimeout;
             $('input[name="SearchValue"]').on('input', function () {
-                // Xóa timeout hiện tại nếu có
                 clearTimeout(searchTimeout);
-
-                // Thiết lập timeout mới
                 searchTimeout = setTimeout(function () {
-                    // Lấy giá trị của ô input
-                    var searchValue = $('input[name="SearchValue"]').val();
-
-                    // Gọi hàm thực hiện tìm kiếm với giá trị mới
-                    doSearch(1);
-                }, 2000); // 2000 milliseconds = 2 seconds
+                    doSearch("#formSearch", 1);
+                }, 2000);
             });
 
-            $(".file-link").on('click', function (event) {
+            $('.file-container').on('click', function (event) {
                 event.preventDefault();
-                var fileId = $(this).data("file-id");
-                viewFile(fileId);
+                var fileId = $(this).data('file-id');
+                selectAndViewFile(fileId);
             });
-            $('.btn-status').click(function () {
+
+            $('.btn-status').on('click', function () {
                 $(this).toggleClass('active');
-                doSearch(page);
+                doSearch("#formSearch", 1);
             });
+
             $('#dropdownMenuButton').on('click', function (event) {
-                console.log("a");
                 event.preventDefault();
-                var dropdown = $('#studentList');
-                if (dropdown.hasClass('show')) {
-                    dropdown.removeClass('show');
-                } else {
-                    dropdown.addClass('show');
-                }
+                $('#studentList').toggleClass('show');
             });
         }
+
+        function selectAndViewFile(fileId) {
+            $('.file-container').removeClass('selected');
+            $(".file-container[data-file-id='" + fileId + "']").addClass('selected');
+            viewFile(fileId);
+        }
+
         function viewFile(fileId) {
-            var url = '@Url.Action("SubmissionFile", "Test")';
+            var testId = @Model.TestId;
+            var submissionId = @Model.Submission.SubmissionId;
             $.ajax({
-                url: url,
-                type: "GET",
-                data: { fileId: fileId },
+                url: '@Url.Action("SubmissionFile", "Test")',
+                type: 'GET',
+                data: { fileId: fileId, testId: testId, submissionId: submissionId },
                 success: function (data) {
-                    $("#filePreview").html(data);
+                    $('#filePreview').html(data);
                 },
                 error: function () {
-                    alert("Your request is not valid!");
+                    alert('Your request is not valid!');
                 }
             });
         }
-        function doSearch(page) {
-            var url = '@Url.Action("SearchStudent", "Test")';
-            var postData = []; // Initialize postData array
+
+        function doSearch(formSearchInput, page) {
+            var url = $(formSearchInput).prop("action");
+            var postData = $(formSearchInput).serializeArray();
             var statuses = [];
-            var searchValue = $('#searchValue').val();
-
             $('.btn-status.active').each(function () {
-                var selectedData = $(this).attr('data');
-                statuses.push(selectedData);
+                statuses.push($(this).data('status'));
             });
-
-            var statusesString = statuses.join(',');
             postData.push(
-                { name: "page", value: page },
-                { name: "pageSize", value: '@Model.SearchQuery.PageSize' },
-                { name: "testId", value: '@Model.TestId' },
-                { name: "searchValue", value: searchValue }, // Changed 'SearchValue' to 'searchValue'
-                { name: "statuses", value: statusesString } // Changed 'Statuses' to 'statuses'
+                { name: 'page', value: page },
+                { name: 'statuses', value: statuses.join(',') }
             );
-
             $.ajax({
                 url: url,
-                type: "POST",
+                type: 'POST',
                 data: postData,
-                error: function (xhr, status, error) {
-                    handleAjaxError(xhr);
-                },
                 success: function (data) {
                     $('#searchStudent').html(data);
+                },
+                error: function (xhr) {
+                    handleAjaxError(xhr);
                 }
             });
         }
-
     </script>
-
 }

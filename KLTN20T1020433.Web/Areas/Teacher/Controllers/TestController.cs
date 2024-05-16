@@ -6,7 +6,7 @@ using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Queries;
 using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
-using KLTN20T1020433.Domain.Student;
+using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
 using KLTN20T1020433.Web.Areas.Teacher.Commands.Delete;
@@ -15,7 +15,6 @@ using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO.Compression;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -82,6 +81,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             try
             {
                 var user = User.GetUserData();
+                var test = await _mediator.Send(new GetTestDetailQuery { Id = input.TestId, TeacherId = user.UserId });
+                if (test == null)
+                {
+                    return View("NotFound");
+                }
                 int rowCount = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = input.SearchValue, Statuses = input.Statuses, TestId = input.TestId });
 
                 var data = await _mediator.Send(input);
@@ -225,6 +229,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             try
             {
                 var user = User.GetUserData();
+                var test = await _mediator.Send(new GetTestDetailQuery { Id = input.TestId, TeacherId = user.UserId });
+                if (test == null)
+                {
+                    return View("NotFound");
+                }
                 int rowCount = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = input.SearchValue, Statuses = input.Statuses, TestId = input.TestId });
 
                 var data = await _mediator.Send(input);
@@ -287,7 +296,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
                 if (submission == null)
                     return View("NotFound");
-                var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = id });
+                var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = id , Status = submission.Status});
+                if(files == null || !files.Any())
+                {
+                    return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.FileNotFound });
+                }
                 var input = ApplicationContext.GetSessionData<GetSubmissionsBySearchQuery>(Constants.STUDENT_SEARCH);
                 if (input == null)
                 {
@@ -317,41 +330,51 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
         }
-        public async Task<IActionResult> SubmissionFile(Guid fileId)
+        public async Task<IActionResult> SubmissionFile(Guid fileId, int testId = 0, int submissionId = 0)
         {
             try
             {
                 var user = User.GetUserData();
+                if (testId <= 0)
+                {
+                    return View("NotFound");
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
+                if (test == null)
+                {
+                    return View("NotFound");
+                }
+                var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = submissionId });
+                if (submission == null)
+                    return View("NotFound");
                 var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = fileId });
                 if (file == null)
                 {
-                    return NotFound();
+                    return View("NotFound");
                 }
-                switch (file.MimeType)
+                var fileViewModel = new FileViewModel
                 {
-                    case "image/jpeg":
-                    case "image/png":
-                    case "image/gif":
-                        return File(file.FilePath, file.MimeType);
-                    case "text/plain":
-                    case "application/octet-stream":
-                    case "application/vnd.openxmlformats-officedocument.word":
-                    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                    case "application/msword":
-                        return PartialView(FileUtils.ReadDocxFile(file.FilePath));
-                    default:
-                        {
-                            byte[] fileBytes = await FileUtils.ReadFileAsync(file.FilePath);
-                            return File(fileBytes, file.MimeType, file.OriginalName);
-                        }
-                }
+                    FileId = file.FileId,
+                    FileName = file.OriginalName,
+                    FilePath = file.FilePath,
+                    MimeType = file.MimeType,
+                    Content = file.MimeType.StartsWith("text") || file.MimeType.Contains("word")
+                        ? FileUtils.ConvertToHtmlAsync(file.FilePath)
+                        : null,
+                    IsImage = file.MimeType.StartsWith("image"),
+                    IsText = file.MimeType.StartsWith("text") || file.MimeType.Contains("word"),
+                    TestId = testId
+                };
+
+                return View(fileViewModel);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred in RemoveTestFile: {ex.Message}");
+                Console.WriteLine($"Exception occurred in SubmissionFile: {ex.Message}");
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
+
         public async Task<IActionResult> Edit(int id = 0)
         {
             try
@@ -463,7 +486,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
                 if (test == null)
                     return View("NotFound");
-                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id});
 
                 if (file == null)
                 {

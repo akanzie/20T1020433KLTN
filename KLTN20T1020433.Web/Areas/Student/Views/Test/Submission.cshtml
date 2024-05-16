@@ -106,11 +106,14 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () {
+    function initialize() {
         var testId = @Model.Submission.TestId;
         bindEvents(testId);
         getFiles(testId);
-    });
+    }
+    $(document).ready(function () {
+        initialize();
+    });   
     function bindEvents(testId) {
         $('#selectFileBtn').off('click').on('click', function () {
             $('#fileInput').click();

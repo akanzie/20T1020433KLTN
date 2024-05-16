@@ -15,6 +15,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     public class GetSubmissionFilesByTestIdQuery : IRequest<IEnumerable<GetFileResponse>>
     {
         public int TestId { get; set; }
+
     }
     public class GetSubmissionFilesByTestIdQueryHandler : IRequestHandler<GetSubmissionFilesByTestIdQuery, IEnumerable<GetFileResponse>>
     {

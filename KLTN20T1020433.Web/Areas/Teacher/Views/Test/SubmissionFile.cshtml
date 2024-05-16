@@ -1,5 +1,26 @@
-﻿@model string
+﻿@model KLTN20T1020433.Web.Areas.Teacher.Models.FileViewModel
 @{
     Layout = null;
 }
-<iframe src="https://docs.google.com/gview?url=@Model&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe>
+
+
+<div class="overflow-y-auto mw-100 text-center" style="height: calc(100vh - 255px);">
+        @if (Model.IsImage)
+        {
+            <img src="@Url.Action("DownloadFile", "Test", new { id = Model.FileId, testId = Model.TestId , isTestFile = false})" alt="Image" />
+        }
+        else if (Model.IsText)
+        {
+            <div>
+                @Html.Raw(Model.Content)
+            </div>
+        }
+        else
+        {
+            <div>
+                <p>@Model.FileName</p>
+                <a href="@Url.Action("DownloadFile", "Test", new { fileId = Model.FileId, testId = Model.TestId , isTestFile = false })" class="btn btn-primary">Tải xuống</a>
+            </div>
+        }
+    </div>
+

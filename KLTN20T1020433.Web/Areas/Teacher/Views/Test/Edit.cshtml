@@ -115,13 +115,14 @@
             .catch(error => {
                 console.error('There was an error initializing the editor', error);
             });
-        function initialize(testId) {
+        function initialize() {
+            var testId = @Model.TestId;
             getFiles(testId);
             bindEvents(testId);
             getSelectedStudents(testId);
         }
         $(document).ready(function () {
-            initialize(@Model.TestId);
+            initialize();
         });
         function bindEvents(testId) {
             $('#selectFileBtn').off('click').on('click', function () {

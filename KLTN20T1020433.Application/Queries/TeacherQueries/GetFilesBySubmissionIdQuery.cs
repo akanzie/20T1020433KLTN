@@ -15,6 +15,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     public class GetFilesBySubmissionIdQuery : IRequest<IEnumerable<GetFileResponse>>
     {
         public int SubmissionId { get; set; }
+        public SubmissionStatus Status { get; set; }
     }
     public class GetFilesBySubmissionIdQueryHandler : IRequestHandler<GetFilesBySubmissionIdQuery, IEnumerable<GetFileResponse>>
     {
@@ -30,17 +31,20 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         {
             try
             {
-                var SubmissionFiles = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
-                if (SubmissionFiles != null && SubmissionFiles.Any())
+                if (request.Status != SubmissionStatus.NotSubmitted)
                 {
-                    List<GetFileResponse> SubmissionResponse = new List<GetFileResponse>();
-                    foreach (var file in SubmissionFiles)
+                    var SubmissionFiles = await _submissionFileDB.GetFilesBySubmissionId(request.SubmissionId);
+                    if (SubmissionFiles != null && SubmissionFiles.Any())
                     {
-                        var fileResponse = _mapper.Map<GetFileResponse>(file);
-                        fileResponse.FileType = Path.GetExtension(file.FileName);
-                        SubmissionResponse.Add(fileResponse);
+                        List<GetFileResponse> SubmissionResponse = new List<GetFileResponse>();
+                        foreach (var file in SubmissionFiles)
+                        {
+                            var fileResponse = _mapper.Map<GetFileResponse>(file);
+                            fileResponse.FileType = Path.GetExtension(file.FileName);
+                            SubmissionResponse.Add(fileResponse);
+                        }
+                        return SubmissionResponse;
                     }
-                    return SubmissionResponse;
                 }
                 return new List<GetFileResponse>();
             }

@@ -5,7 +5,7 @@
     Layout = "~/Areas/Student/Views/Shared/_Layout.cshtml";
 }
 <div class="container-fluid">
-    <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="@Url.Action("Search", "Test")" method="post" data-container="#searchResult">
+    <form class="d-flex justify-content-between align-items-center mb-4" id="formSearch" action="@Url.Action("Search", "Test")" method="post">
         <div class="d-flex">
             @Html.DropDownListFor(m => m.Status, Helper.GetTestStatusForStudent(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
             @Html.DropDownListFor(m => m.Type, Helper.GetTestType(), new { @class = "form-select filter-select me-2", @style = "width: 200px;" })
@@ -27,25 +27,29 @@
 </div>
 @section Scripts {
     <script>
+        function initialize() {
+            var page = @Model.Page;           
+            doSearch("#formSearch", page);
+            bindEvents();
+        }
         $(document).ready(function () {
+            initialize();
+        });
+
+        function bindEvents() {
             $("#formSearch").submit(function (e) {
                 e.preventDefault();
                 doSearch(this, 1);
                 return;
             });
-
-            doSearch("#formSearch", @Model.Page);
-        });
+        }  
 
         function doSearch(formSearchInput, page) {
-            var url = $(formSearchInput).prop("action");
-            var container = $(formSearchInput).data("container");
+            var url = $(formSearchInput).prop("action");            
             var postData = $(formSearchInput).serializeArray();
             var searchValue = $('#searchValue').val();
             postData.push(
-                { "name": "page", "value": page },
-                { "name": "FromTime", "value": $('#fromTime').val() },
-                { "name": "ToTime", "value": $('#toTime').val() },
+                { "name": "page", "value": page },                
                 { "name": "SearchValue", "value": searchValue }
             );
             $.ajax({
@@ -56,7 +60,7 @@
                     handleAjaxError(xhr);
                 },
                 success: function (data) {
-                    $(container).html(data);
+                    $("$searchResult").html(data);
                 }
             });
 
