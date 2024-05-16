@@ -107,39 +107,39 @@
                                 <input type="hidden" name="TestId" value="@Model.Test.TestId" />
                                 <div class="d-sm-flex align-items-center mb-3 d-none">
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="checkAll" checked>
+                                        <input class="form-check-input" type="checkbox" id="checkAll" checked value="">
                                         <label class="form-check-label fw-bold" for="checkAll">
-                                            Tất cả (7)
+                                            Tất cả (<span></span>)
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input status-checkbox" type="checkbox" id="checkSubmitted" name="Status" value="Submitted">
                                         <label class="form-check-label text-success fw-bold" for="checkSubmitted">
-                                            Đã nộp (1)
+                                            Đã nộp (<span></span>)
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input status-checkbox" type="checkbox" id="checkSubmitted" name="Status" value="NotSubmitted">
                                         <label class="form-check-label text-secondary fw-bold" for="checkSubmitted">
-                                            Chưa nộp bài (1)
+                                            Chưa nộp bài (<span></span>)
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input status-checkbox" type="checkbox" id="checkAbsent" name="Status" value="Absent">
                                         <label class="form-check-label text-warning fw-bold" for="checkAbsent">
-                                            Thiếu (1)
+                                            Thiếu (<span></span>)
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input status-checkbox" type="checkbox" id="checkPending" name="Status" value="PendingProcessing">
                                         <label class="form-check-label text-info fw-bold" for="checkPending">
-                                            Đang chờ xử lý (1)
+                                            Đang chờ xử lý (<span></span>)
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input status-checkbox" type="checkbox" id="checkLate" name="Status" value="LateSubmission">
                                         <label class="form-check-label text-danger fw-bold" for="checkLate">
-                                            Đã nộp muộn (4)
+                                            Đã nộp muộn (<span></span>)
                                         </label>
                                     </div>
                                 </div>
@@ -184,13 +184,14 @@
     <script>
         function initialize() {
             var page = @Model.SearchQuery.Page;
-            bindEvents();
+            var testId = @Model.Test.TestId;
+            bindEvents(testId);
             doSearch("#formSearch", page);
         }
         $(document).ready(function () {
             initialize();
-        });       
-        function bindEvents() {
+        });
+        function bindEvents(testId) {
             $("#formSearch").submit(function (e) {
                 e.preventDefault();
                 doSearch(this, 1);
@@ -213,11 +214,33 @@
                     }
                 }
                 doSearch("#formSearch", 1);
-            });            
+            });
+            $('.form-check-input').each(function () {
+                var item = $(this).closest('.form-check').find('label span');               
+                var status = $(this).val();
+                getSubmissionCount(item, testId, status);
+            });
         }
         function openModalDeleteTest(testId) {
             openModalWithConfirmation('Xóa kỳ thi', 'Bạn có chắc chắn muốn xóa kỳ thi?', 'Xác nhận', function () {
                 deleteTest(testId);
+            });
+        }
+        function getSubmissionCount(item, testId, status) {
+            var url = '@Url.Action("GetSubmissionCount", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId , status: status},
+                success: function (response) {
+                    if (response.success)
+                        $(item).text(response.count);
+                    else
+                        $(item).text(0);
+                },
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                }
             });
         }
         function deleteTest(testId) {

@@ -296,8 +296,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = id });
                 if (submission == null)
                     return View("NotFound");
-                var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = id , Status = submission.Status});
-                if(files == null || !files.Any())
+                var files = await _mediator.Send(new GetFilesBySubmissionIdQuery { SubmissionId = id, Status = submission.Status });
+                if (files == null || !files.Any())
                 {
                     return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.FileNotFound });
                 }
@@ -374,7 +374,19 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-
+        public async Task<IActionResult> GetSubmissionCount(int testId, string status)
+        {
+            try
+            {
+                int count = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = "", Statuses = status, TestId = testId });
+                return Json(new { success = true, count = count });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in Edit: {ex.Message}");
+                return Json(new { success = false, count = 0 });
+            }
+        }
         public async Task<IActionResult> Edit(int id = 0)
         {
             try
@@ -486,7 +498,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
                 if (test == null)
                     return View("NotFound");
-                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id});
+                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
 
                 if (file == null)
                 {
