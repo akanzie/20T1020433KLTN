@@ -43,6 +43,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                         getTestResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForTeacher(item.Status);
                         testResponse.Add(getTestResponse);
                     }
+                    await _testDB.CountTestsOfTeacher(request.TeacherId, request.SearchValue, request.Type, request.Status, request.FromTime, request.ToTime);
                     return testResponse;
                 }
                 return new List<GetTestBySearchResponse>();

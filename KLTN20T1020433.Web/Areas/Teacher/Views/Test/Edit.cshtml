@@ -8,13 +8,17 @@
     <form action="@action" method="post">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center me-9">
+                <div class="d-flex justify-content-between align-items-center me-9 flex-wrap">
                     <h2 class="fw-semibold align-items-center">@ViewBag.Title</h2>
                     <input type="hidden" name="TestId" value="@Model.TestId" />
                     <div class="d-flex justify-content-end">
                         @if (ViewBag.IsEdit)
                         {
                             <button id="deleteBtn" type="button" class="btn btn-outline-danger me-2" style="width: 100px;"><span class="fw-semibold">Xóa</span></button>
+                        }
+                        else
+                        {
+                            <button id="cancelBtn" type="button" class="btn btn-outline-danger me-2" style="width: 100px;"><span class="fw-semibold">Hủy</span></button>
                         }
                         <button type="submit" class="btn btn-outline-primary" style="width: 154px;"><i class="bi bi-person-plus"></i><span class="fw-semibold ms-2">Chọn sinh viên</span></button>
                     </div>
@@ -103,7 +107,7 @@
         ClassicEditor
             .create(document.querySelector('#instructionInput'), {
                 toolbar: ['undo', 'redo', '|', 'bold', 'italic', 'underline', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', '|', 'bulletedList', 'numberedList']
-                
+
             })
             .then(editor => {
                 console.log('Editor was initialized', editor);
@@ -119,7 +123,6 @@
             var testId = @Model.TestId;
             getFiles(testId);
             bindEvents(testId);
-            getSelectedStudents(testId);
         }
         $(document).ready(function () {
             initialize();
@@ -133,7 +136,9 @@
                 if (check)
                     uploadFiles(testId);
             });
-
+            $('#cancelBtn').on('click', function () {
+                cancelCreation(testId);
+            });
             // Bắt sự kiện khi click vào nút xóa file
             $(document).on('click', '.remove-button', function () {
                 var fileId = $(this).data('fileid');
@@ -221,6 +226,20 @@
                 },
                 error: function (xhr, status, error) {
                     handleAjaxError(xhr);
+                }
+            });
+        }
+        function cancelCreation(testId) {
+            var url = '@Url.Action("CancelCreation", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (result) {
+                    window.location.href = '@Url.Action("Index", "Test")';
+                },
+                error: function (error) {
+                    alert("Your request is not valid!");
                 }
             });
         }

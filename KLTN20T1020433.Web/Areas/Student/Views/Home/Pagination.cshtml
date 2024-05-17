@@ -8,21 +8,21 @@
 
 <div class="table-responsive">
     <table class="table text-nowrap mb-0 align-middle">
-        <thead class="text-dark fs-4">
+        <thead class="text-dark fs-4 sticky-top table-secondary">
             <tr>
-                <th class="border-bottom-0">
+                <th scope="col" class="border-bottom-0">
                     <h6 class="fw-semibold mb-0">STT</h6>
                 </th>
-                <th class="border-bottom-0">
+                <th scope="col" class="border-bottom-0">
                     <h6 class="fw-semibold mb-0">Tên kì thi/ bài kiểm tra</h6>
                 </th>
-                <th class="border-bottom-0">
+                <th scope="col" class="border-bottom-0 d-none d-md-table-cell">
                     <h6 class="fw-semibold mb-0">Thời gian bắt đầu</h6>
                 </th>
-                <th class="border-bottom-0">
+                <th scope="col" class="border-bottom-0 d-none d-md-table-cell">
                     <h6 class="fw-semibold mb-0">Thời gian kết thúc</h6>
                 </th>
-                <th class="border-bottom-0">
+                <th scope="col" class="border-bottom-0">
                     <h6 class="fw-semibold mb-0">Trạng thái</h6>
                 </th>
             </tr>
@@ -36,13 +36,13 @@
                         <td class="border-bottom-0">
                             <h6 class="fw-semibold mb-0">@(i++)</h6>
                         </td>
-                        <td class="border-bottom-0">
+                        <td class="border-bottom-0 ">
                             <h6 class="fw-semibold mb-1"><a href="~/Student/Test/Detail/@item.TestId">@item.Title</a></h6>
                         </td>
-                        <td class="border-bottom-0">
+                        <td class="border-bottom-0 d-none d-md-table-cell">
                             <h6 class="fw-semibold mb-1">@item.StartTime</h6>
                         </td>
-                        <td class="border-bottom-0">
+                        <td class="border-bottom-0 d-none d-md-table-cell">
                             <h6 class="fw-semibold mb-1">@item.EndTime</h6>
                         </td>
                         <td class="border-bottom-0">

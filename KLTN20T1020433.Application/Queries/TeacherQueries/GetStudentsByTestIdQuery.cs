@@ -1,18 +1,13 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
-using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetStudentsByTestIdQuery : IRequest<IEnumerable<GetStudentResponse>>
+    public class GetStudentsByTestIdQuery : PaginationSearchInput, IRequest<IEnumerable<GetStudentResponse>>
     {
         public int TestId { get; set; }
     }
@@ -31,7 +26,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         {
             try
             {
-                var submissions = await _submissionDB.GetSubmissionsBySearch(1, 0, request.TestId, "", "");
+                var submissions = await _submissionDB.GetSubmissionsBySearch(request.Page, request.PageSize, request.TestId, request.SearchValue, "");
                 if (submissions != null && submissions.Any())
                 {
                     List<GetStudentResponse> studentsResponse = new List<GetStudentResponse>();
@@ -40,7 +35,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                         var student = await _studentDB.GetStudentById(item.StudentId);
                         GetStudentResponse studentResponse = _mapper.Map<GetStudentResponse>(student);
                         studentsResponse.Add(studentResponse);
-                    }
+                    }                    
                     return studentsResponse;
                 }
                 return new List<GetStudentResponse>();

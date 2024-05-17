@@ -8,7 +8,7 @@ namespace KLTN20T1020433.Application.Queries
 {
     public class GetTokenResponse
     {
-        public string Token { get; set; }
-        public string Signature { get; set; }
+        public string Token { get; set; } = "";
+        public string Signature { get; set; } = "";
     }
 }

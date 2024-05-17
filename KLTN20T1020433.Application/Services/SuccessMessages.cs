@@ -8,5 +8,7 @@
         public const string SubmitSuccess = "Nộp bài thành công.";
         public const string UpdateTestSuccess = "Cập nhật kỳ thi thành công.";
         public const string DeleteTestSuccess = "Xóa kỳ thi thành công.";
+
+        public const string CommentSuccess = "Nhận xét thành công.";
     }
 }

@@ -1,4 +1,5 @@
-﻿@model KLTN20T1020433.Web.Areas.Teacher.Models.CourseModel
+﻿@using KLTN20T1020433.Web.AppCodes
+@model KLTN20T1020433.Web.Areas.Teacher.Models.CourseModel
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
@@ -7,9 +8,9 @@
         <div class="card-body">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item fw-semibold fs-8 text-dark">@ViewBag.Title</li>
-                <li class="breadcrumb-item fw-semibold fs-8 text-dark">Chọn sinh viên tham gia</li>
+                <li class="breadcrumb-item fw-semibold fs-8 text-dark d-md-flex d-none">Chọn sinh viên tham gia</li>
             </ol>
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between flex-wrap">
                 <div class="d-flex">
                     <div class="mb-3">
                         <!-- Button trigger modal -->
@@ -29,16 +30,21 @@
                                                 aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="input-group mb-3">
+                                        <form class="input-group mb-3" action="@Url.Action("SearchStudents","Test")" id="searchStudents" data-container="#searchResult" method="post">
                                             <input type="text" class="form-control" placeholder="Tìm kiếm..."
-                                                   aria-label="Tìm kiếm...">
-                                            <button class="btn btn-outline-secondary" type="button">
+                                                   aria-label="Tìm kiếm..." name="searchValue">                                            
+                                            <button class="btn btn-outline-secondary" type="submit">
                                                 Tìm
                                                 kiếm
                                             </button>
+                                        </form>
+                                        <div id="searchResult">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
+                                        <button id="selectButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                            Chọn
+                                        </button>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                             Đóng
                                         </button>
@@ -56,13 +62,14 @@
             <div class="row mt-4">
                 <div class="col-md-5">
                     <div class="col-lg mb-4 border rounded p-3">
+
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="d-flex align-items-center">
                                 <h4 class="mb-0 me-1 fw-semibold">Sinh viên</h4>
-                                <span class="fw-semibold" id="countStudentsCourse"></span>
+                                <span class="fw-semibold" id="studentCount"></span>
                             </div>
                             <div class="">
-                                <select class="form-select" id="Course" name="Course">
+                                <select class="form-select" id="Course" name="courseId">
                                     <option selected value="">Chọn lớp học phần</option>
                                     @foreach (var item in Model.Courses)
                                     {
@@ -74,10 +81,11 @@
                         </div>
                         <div class="mb-4">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm..." aria-label="Tìm kiếm...">
-                                <button class="btn btn-outline-secondary" type="button">Tìm kiếm</button>
+                                <input type="text" class="form-control search-input" placeholder="Tìm kiếm..." aria-label="Tìm kiếm...">
+                                <button class="btn btn-outline-secondary" type="button" id="searchStudentBtn">Tìm kiếm</button>
                             </div>
                         </div>
+
                         <div id="listStudents">
                         </div>
                     </div>
@@ -95,14 +103,15 @@
                     <div class="col-lg mb-4 border rounded p-3">
                         <div class="d-flex align-items-center mb-4">
                             <h4 class="mb-0 me-1 fw-semibold">Danh sách tham gia</h4>
-                            <span class="fw-semibold" id="countSelectedStudent"></span>
+                            <span class="fw-semibold" id="selectedStudentCount"></span>
                         </div>
                         <div class="mb-4">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm..." aria-label="Tìm kiếm...">
-                                <button class="btn btn-outline-secondary" type="button">Tìm kiếm</button>
+                                <input type="text" class="form-control search-input" placeholder="Tìm kiếm..." aria-label="Tìm kiếm...">
+                                <button class="btn btn-outline-secondary" type="button" id="searchSelectedBtn">Tìm kiếm</button>
                             </div>
                         </div>
+
                         <div id="selectedStudents"></div>
 
                     </div>
@@ -118,31 +127,81 @@
             var testId = @Model.TestId;
             bindEvents(testId);
             getSelectedStudents(testId);
+            countSubmission("#selectedStudentCount", testId);
             checkSelectedStudents(getSelectedStudentIds());
         }
         $(document).ready(function () {
             initialize();
         });
-       
         function bindEvents(testId) {
+            $("#searchStudents").submit(function (e) {
+                e.preventDefault();
+                doSearchStudents("#searchStudents");
+                return;
+            });
+            $("#searchSelectedBtn").on('click', function () {
+                searchStudents("#selectedStudents");
+                return;
+            });
+            $("#searchStudentBtn").on('click', function () {
+                
+                searchStudents("#listStudents");
+                return;
+            });
+
             $('#cancelBtn').on('click', function () {
-                console.log("a");
+                
                 cancelCreation(testId);
             });
             $("#saveBtn").on('click', function () {
-                console.log("a");
+                
                 saveSelection(testId, getSelectedStudentIds());
             });
             $('#Course').on('change', function () {
                 selectCourse(getSelectedStudentIds());
             });
+            $('#selectButton').on('click', function () {
+                selectStudents("#searchResult");
+                checkSelectedStudents(getSelectedStudentIds());
+            });
             $('#selectBtn').on('click', function () {
-                selectStudents();
+                selectStudents("#listStudents");
                 checkSelectedStudents(getSelectedStudentIds());
             });
             $('#removeBtn').on('click', function () {
                 removeSelectedStudents();
                 checkSelectedStudents(getSelectedStudentIds());
+            });
+        }
+        function searchStudents(resultContainer) {
+            var searchValue = $(resultContainer).closest('.mb-4').find('.search-input').val().toLowerCase();
+            
+            $(resultContainer + " tbody tr").each(function () {
+                var studentId = $(this).find("td:nth-child(2)").text().toLowerCase();
+                var studentName = $(this).find("td:nth-child(3)").text().toLowerCase();
+                if (studentName.includes(searchValue) || studentId.includes(searchValue)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+        function countSubmission(item, testId) {
+            var url = '@Url.Action("CountSubmission", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (response) {
+                    if (response.success)
+                        $(item).text("(" + response.count + ")");
+                    else
+                        $(item).text(0);
+                },
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                }
             });
         }
         function getSelectedStudentIds() {
@@ -153,14 +212,49 @@
             });
             return selectedStudentIds;
         }
-        function getSelectedStudents(TestId) {
-            var url = '@Url.Action("SelectedStudents", "Test")';
+
+        function getStudents(type, courseId) {
+            var url = '@Url.Action("GetStudents", "Test")';
             $.ajax({
                 url: url,
                 type: 'GET',
-                data: { testId: TestId },
-                success: function (data) {
-                    $('#selectedStudents').html(data);                    
+                data: {
+                    courseId: courseId,
+                    type: type
+                },
+                success: function (response) {
+                    $("#listStudents").html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function getSelectedStudents(testId) {
+            var url = '@Url.Action("GetSelectedStudents", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { testId: testId },
+                success: function (response) {
+                    $("#selectedStudents").html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+        function doSearchStudents(formSearchInput) {
+            var url = "@Url.Action("SearchStudents", "Test")";
+            var container = $(formSearchInput).data('container');
+            var postData = $(formSearchInput).serializeArray();           
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: postData,
+                success: function (response) {
+                    $(container).html(response);
                 },
                 error: function (error) {
                     console.log(error);
@@ -169,26 +263,11 @@
         }
         function selectCourse(selectedStudentIds) {
             var courseId = $('#Course').val();
-            var courseName = $('#Course').find(':selected').text();
+            getStudents('Quiz', courseId);
             var studentCount = $('#Course').find(':selected').attr('data');
-
-            $('#selectCourse').text(courseName);
-            var url = '@Url.Action("ListStudents", "Test")';
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: { courseId: courseId },
-                success: function (data) {
-                    $('#countStudentsCourse').text(studentCount)
-                    $('#listStudents').html(data);
-                    checkSelectedStudents(selectedStudentIds);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
+            $('#studentCount').text(studentCount);
+            checkSelectedStudents(selectedStudentIds);
         }
-
         function saveSelection(testId, studentIds) {
             var url = '@Url.Action("Save", "Test")';
             $.ajax({
@@ -221,9 +300,9 @@
                 }
             });
         }
-        function selectStudents() {
+        function selectStudents(listStudent) {
             var students = [];
-            $('#listStudents .student-checkbox:checked').each(function () {
+            $(listStudent + ' .student-checkbox:checked').each(function () {
                 $(this).prop('checked', false);
                 var studentId = $(this).val();
                 var studentRow = $(this).closest('tr');
@@ -232,10 +311,11 @@
                 // Di chuyển sinh viên được chọn vào danh sách đã chọn
                 var clonedStudentRow = studentRow.clone();
                 // Thêm hàng sinh viên đã sao chép vào danh sách mới
-                $('#selectedStudents tbody').append(clonedStudentRow);               
+                $('#selectedStudents tbody').append(clonedStudentRow);
             });
-            updateSelectedStudentCount();            
+            updateSelectedStudentCount();
         }
+
         function checkSelectedStudents(selectedStudentIds) {
             $('#listStudents .student-checkbox').each(function () {
                 var studentId = $(this).val();
@@ -258,10 +338,8 @@
         }
         function updateSelectedStudentCount() {
             var selectedStudentCount = $('#selectedStudents .student-checkbox').length;
-            $('#countSelectedStudent').text("(" + selectedStudentCount + ")");
+            $('#selectedStudentCount').text("(" + selectedStudentCount + ")");
         }
-        // Bắt sự kiện khi nút "Bỏ" được nhấn
-       
 
     </script>
 }

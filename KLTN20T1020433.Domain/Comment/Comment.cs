@@ -12,7 +12,6 @@ namespace KLTN20T1020433.Domain.Comment
         public string Body { get; set; } = "";
         public DateTime CommentedTime { get; set; }
         public string TeacherId { get; set; }
-        public string TeacherName { get; set; } = "";
         public int SubmissionId { get; set; }
     }
 }

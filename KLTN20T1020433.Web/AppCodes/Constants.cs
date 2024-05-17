@@ -10,6 +10,8 @@
         public const string SUBMISSION_SEARCH = "SubmissionSearch";
         public const string STUDENT_SEARCH = "StudentSearch";
         public const string TESTID = "TestId";
-
+        public const string STUDENT_COUNT = "StudentCount";
+        public const string SELECTED_STUDENT_COUNT = "SelectedStudentCount";
+        public const string SEARCH_STUDENT_COUNT = "SearchStudentCount";
     }
 }

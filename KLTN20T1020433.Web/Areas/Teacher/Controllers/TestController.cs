@@ -2,10 +2,12 @@
 using KLTN20T1020433.Application.Commands.TeacherCommands.Create;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Delete;
 using KLTN20T1020433.Application.Commands.TeacherCommands.Update;
+using KLTN20T1020433.Application.DTOs;
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Queries;
 using KLTN20T1020433.Application.Queries.TeacherQueries;
 using KLTN20T1020433.Application.Services;
+using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using KLTN20T1020433.Web.AppCodes;
@@ -15,6 +17,8 @@ using KLTN20T1020433.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Buffers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KLTN20T1020433.Web.Controllers.Teacher
 {
@@ -76,7 +80,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
 
         }
-        public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input)
+        public async Task<IActionResult> SearchSubmission(GetSubmissionsBySearchQuery input, bool searchInDetail = true)
         {
             try
             {
@@ -101,7 +105,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     Data = data
                 };
                 ApplicationContext.SetSessionData(Constants.SUBMISSION_SEARCH, input);
-                return View(model);
+                return searchInDetail ? View(model) : View("SearchStudentInSubmission", model);
+
             }
             catch (Exception ex)
             {
@@ -117,7 +122,9 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var user = User.GetUserData();
                 if (testId <= 0)
                 {
-                    return Json(ErrorMessages.GeneralError);
+                    if (ApplicationContext.GetDataInt32(Constants.TESTID) == null)
+                        return Json(ErrorMessages.GeneralError);
+                    testId = ApplicationContext.GetDataInt32(Constants.TESTID).Value;
                 }
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
                 if (test == null)
@@ -196,14 +203,14 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             try
             {
                 var user = User.GetUserData();
-                int rowCount = await _mediator.Send(new GetRowCountTestsQuery 
-                { 
-                    TeacherId = user.UserId, 
-                    SearchValue = input.SearchValue, 
-                    Status = input.Status, 
-                    FromTime = input.FromTime, 
-                    ToTime = input.ToTime, 
-                    Type = input.Type 
+                int rowCount = await _mediator.Send(new GetRowCountTestsQuery
+                {
+                    TeacherId = user.UserId,
+                    SearchValue = input.SearchValue,
+                    Status = input.Status,
+                    FromTime = input.FromTime,
+                    ToTime = input.ToTime,
+                    Type = input.Type
                 });
 
                 var data = await _mediator.Send(input);
@@ -231,40 +238,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> SearchStudent(GetSubmissionsBySearchQuery input)
-        {
 
-            try
-            {
-                var user = User.GetUserData();
-                var test = await _mediator.Send(new GetTestDetailQuery { Id = input.TestId, TeacherId = user.UserId });
-                if (test == null)
-                {
-                    return View("NotFound");
-                }
-                int rowCount = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = input.SearchValue, Statuses = input.Statuses, TestId = input.TestId });
-
-                var data = await _mediator.Send(input);
-
-                var model = new SubmissonSearchResult()
-                {
-                    Page = input.Page,
-                    PageSize = input.PageSize,
-                    SearchValue = input.SearchValue ?? "",
-                    TestId = input.TestId,
-                    Statuses = input.Statuses ?? "",
-                    RowCount = rowCount,
-                    Data = data
-                };
-                ApplicationContext.SetSessionData(Constants.STUDENT_SEARCH, input);
-                return View(model);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred in SearchSubmission: {ex.Message}");
-                return Json(ErrorMessages.RequestNotCompleted);
-            }
-        }
         [HttpPost]
         public async Task<IActionResult> RemoveTestFile(Guid id)
         {
@@ -382,11 +356,11 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> GetSubmissionCount(int testId, string status)
+        public async Task<IActionResult> CountSubmission(GetRowCountSubmissionsQuery input)
         {
             try
             {
-                int count = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = "", Statuses = status, TestId = testId });
+                int count = await _mediator.Send(new GetRowCountSubmissionsQuery { SearchValue = input.SearchValue, Statuses = input.Statuses, TestId = input.TestId });
                 return Json(new { success = true, count = count });
             }
             catch (Exception ex)
@@ -669,38 +643,94 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
         }
-        public async Task<IActionResult> ListStudents(TestType type, string courseId)
+        public async Task<IActionResult> GetComments(int submissionId = 0, int testId = 0)
         {
             try
             {
-                ViewBag.IsSelectedList = false;
+                var user = User.GetUserData();
+                if (submissionId <= 0 || testId <= 0)
+                    return View("NotFound");
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
+                if (test == null)
+                {
+                    return View("NotFound");
+                }
+                var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = submissionId });
+                if (submission == null)
+                    return View("NotFound");
+                var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submissionId });
+
+                return View("Comments", new CommentModel { Comments = comments });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in GetStudents: {ex.Message}");
+                return BadRequest(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        public async Task<IActionResult> GetStudents(TestType type, string courseId = "", string examId = "")
+        {
+            try
+            {
                 var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+                if (token == null)
+                {
+                    token = new GetTokenResponse();
+                }
                 IEnumerable<GetStudentResponse> students = new List<GetStudentResponse>();
                 if (type == TestType.Quiz)
                 {
-                    students = await _mediator.Send(new GetStudentsByCourseIdQuery { CourseId = courseId, GetTokenResponse = token });
+                    students = await _mediator.Send(new GetStudentsByCourseIdQuery { CourseId = courseId, Token = token.Token, Signature = token.Signature });
                 }
                 else
                 {
-                    students = await _mediator.Send(new GetStudentsByExamIdQuery { ExamId = courseId, GetTokenResponse = token });
+                    students = await _mediator.Send(new GetStudentsByExamIdQuery { ExamId = examId, Token = token.Token, Signature = token.Signature });
                 }
+                return View("SearchStudents", new StudentModel { Students = students });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in GetStudents: {ex.Message}");
+                return BadRequest(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        public async Task<IActionResult> GetSelectedStudents(int testId = 0)
+        {
+            try
+            {
+                if (testId <= 0)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var students = await _mediator.Send(new GetStudentsByTestIdQuery
+                {
+                    TestId = testId
+
+                });
+                return View("SearchStudents", new StudentModel { Students = students });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in GetSelectedStudents: {ex.Message}");
+                return BadRequest(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        public async Task<IActionResult> SearchStudents(string searchValue = "")
+        {
+            try
+            {
+                var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+
+                var students = await _mediator.Send(new GetStudentsBySearchQuery { SearchValue = searchValue });
+
+
                 return View(new StudentModel { Students = students });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred in EditStudents: {ex.Message}");
-                return BadRequest(ErrorMessages.RequestNotCompleted);
+                Console.WriteLine($"Exception occurred in SearchStudent: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
             }
-        }
-        public async Task<IActionResult> SelectedStudents(int testId = 0)
-        {
-            if (testId <= 0)
-            {
-                return Json(ErrorMessages.GeneralError);
-            }
-            ViewBag.IsSelectedList = true;
-            IEnumerable<GetStudentResponse> students = await _mediator.Send(new GetStudentsByTestIdQuery { TestId = testId });
-            return View("ListStudents", new StudentModel { Students = students });
         }
         public IActionResult QuizSelectStudents()
         {
@@ -737,6 +767,21 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             {
                 Console.WriteLine($"Exception occurred in ListTestFiles: {ex.Message}");
                 return BadRequest(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        public async Task<IActionResult> Comment(CreateCommentCommand command)
+        {
+            try
+            {
+                var user = User.GetUserData();
+                command.TeacherId = user.UserId;
+                var message = await _mediator.Send(command);
+                return Json(message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in SelectStudents: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
             }
         }
     }

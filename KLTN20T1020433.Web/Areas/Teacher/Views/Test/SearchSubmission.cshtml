@@ -4,70 +4,77 @@
     Layout = null;
     int i = 0;
 }
-<div class="row">
-    <div class="col-md-12">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">STT</th>
-                        <th scope="col">Tên sinh viên</th>
-                        <th scope="col">Giờ nộp</th>
-                        <th scope="col">Địa chỉ IP</th>
-                        <th scope="col">Trạng thái</th>
-                        <th scope="col">Số file đính kèm</th>
-                        <th scope="col">Xem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.Data != null && Model.Data.Any())
+<div class="overflow-y-auto mw-100 text-center mb-2" style="height: calc(100vh - 295px);">
+    <div class="table-responsive-md">
+        <table class="table table-bordered table-hover">
+            <thead class="sticky-top table-info">
+                <tr>
+                    <th scope="col" class="d-none d-md-table-cell" >STT</th>
+                    <th scope="col">Tên sinh viên</th>
+                    <th scope="col" class="d-none d-sm-table-cell">Giờ nộp</th>
+                    <th scope="col">Địa chỉ IP</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col" class="d-none d-md-table-cell">Số tệp đính kèm</th>
+                    <th scope="col">Xem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Data != null && Model.Data.Any())
+                {
+                    @foreach (var item in Model.Data)
                     {
-                        @foreach (var item in Model.Data)
-                        {
-                            <tr>
-                                <td>@(++i)</td>
-                                <td>@item.StudentName</td>
-                                <td>@item.SubmittedTime</td>
-                                <td>@item.IpAddress</td>
-                                <td>
-                                    @switch (item.Status)
-                                    {
-                                        case SubmissionStatus.Absent:
-                                            <span class="text-warning">@item.StatusDisplayName</span>
-                                            break;
+                        <tr>
+                            <td class="d-none d-md-table-cell" >@(++i)</td>
+                            <td>@item.StudentName</td>
+                            <td class="d-none d-sm-table-cell">@item.SubmittedTime</td>
+                            <td>@item.IpAddress</td>
+                            <td>
+                                @switch (item.Status)
+                                {
+                                    case SubmissionStatus.Absent:
+                                        <span class="text-warning">@item.StatusDisplayName</span>
+                                        break;
 
-                                        case SubmissionStatus.LateSubmission:
-                                            <span class="text-danger">@item.StatusDisplayName</span>
-                                            break;
-                                        case SubmissionStatus.PendingProcessing:
-                                            <span class="text-info">@item.StatusDisplayName</span>
-                                            break;
-                                        case SubmissionStatus.Submitted:
-                                            <span class="text-success">@item.StatusDisplayName</span>
-                                            break;
-                                        case SubmissionStatus.NotSubmitted:
-                                            <span class="text-secondary">@item.StatusDisplayName</span>
-                                            break;
-                                        default:
-                                            // Handle other statuses or a default case if needed
-                                            break;
-                                    }
+                                    case SubmissionStatus.LateSubmission:
+                                        <span class="text-danger">@item.StatusDisplayName</span>
+                                        break;
+                                    case SubmissionStatus.PendingProcessing:
+                                        <span class="text-info">@item.StatusDisplayName</span>
+                                        break;
+                                    case SubmissionStatus.Submitted:
+                                        <span class="text-success">@item.StatusDisplayName</span>
+                                        break;
+                                    case SubmissionStatus.NotSubmitted:
+                                        <span class="text-secondary">@item.StatusDisplayName</span>
+                                        break;
+                                    default:
+                                        // Handle other statuses or a default case if needed
+                                        break;
+                                }
 
-                                </td>
-                                <td>@item.FilesCount</td>
-                                <td>
+                            </td>
+                            <td class="d-none d-md-table-cell">@item.FilesCount</td>
+                            <td>
+                                @if (@item.FilesCount > 0)
+                                {
                                     <a href="@Url.Action("Submission","Test", new {id = item.SubmissionId, testId = Model.TestId})">
-                                        <i class="bi bi-x">
-                                        </i>
+                                        <i class="bi bi-eye"></i>
                                     </a>
-                                </td>
-                            </tr>
-                        }
+                                }
+                                else
+                                {
+                                    <a href="#" disabled>
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
     </div>
+
 </div>
 @if (Model.PageCount > 1)
 {

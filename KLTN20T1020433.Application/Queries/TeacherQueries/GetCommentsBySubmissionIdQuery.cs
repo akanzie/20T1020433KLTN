@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
+using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Domain.Comment;
-using KLTN20T1020433.Application.DTOs.StudentDTOs;
-using MediatR;
 using KLTN20T1020433.Domain.Teacher;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace KLTN20T1020433.Application.Queries.StudentQueries
+namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetCommentsBySubmissionIdQuery : IRequest<IEnumerable<GetCommentResponse>>
     {
@@ -13,8 +18,8 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     public class GetCommentsBySubmissionIdQueryHandler : IRequestHandler<GetCommentsBySubmissionIdQuery, IEnumerable<GetCommentResponse>>
     {
         private readonly ICommentRepository _commentDB;
-        private readonly IMapper _mapper;
         private readonly ITeacherRepository _teacherDB;
+        private readonly IMapper _mapper;
 
         public GetCommentsBySubmissionIdQueryHandler(ICommentRepository commentDB, ITeacherRepository teacherDB, IMapper mapper)
         {
@@ -27,7 +32,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
             try
             {
                 var comments = await _commentDB.GetCommentsBySubmissionId(request.SubmissionId);
-
+                
                 if (comments != null && comments.Any())
                 {
                     List<GetCommentResponse> commentResponses = new List<GetCommentResponse>();
@@ -48,6 +53,5 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                 throw;
             }
         }
-
     }
 }

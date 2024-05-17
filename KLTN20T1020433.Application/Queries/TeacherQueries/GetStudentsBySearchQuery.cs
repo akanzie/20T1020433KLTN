@@ -2,39 +2,48 @@
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
 using MediatR;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetStudentsByCourseIdQuery : GetTokenResponse, IRequest<IEnumerable<GetStudentResponse>>
-    {       
-        public string CourseId { get; set; }
+    public class GetStudentsBySearchQuery : PaginationSearchInput, IRequest<IEnumerable<GetStudentResponse>>
+    {
+        public GetTokenResponse GetTokenResponse { get; set; }       
     }
-    public class GetStudentsByCourseIdQueryHandler : IRequestHandler<GetStudentsByCourseIdQuery, IEnumerable<GetStudentResponse>>
+    public class GetStudentsBySearchQueryHandler : IRequestHandler<GetStudentsBySearchQuery, IEnumerable<GetStudentResponse>>
     {
         private readonly ApiService _apiService;
 
-        public GetStudentsByCourseIdQueryHandler(ApiService apiService)
+        public GetStudentsBySearchQueryHandler(ApiService apiService)
         {
             _apiService = apiService;
         }
-        public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsBySearchQuery request, CancellationToken cancellationToken)
         {
-           var students = new List<GetStudentResponse>();
+            var students = new List<GetStudentResponse>();
             int j = 0;
             for (int i = 0; i < 100; i++)
             {
                 var student = new GetStudentResponse
                 {
-                    StudentId = $"20T102000{j++}",
-                    FirstName = $"Kiệt{j++}",
+                    StudentId = $"20T102000{j}",
+                    FirstName = $"Kiệt{j}",
                     LastName = $"Châu Anh",
-                    Email = $"20T102000{j++}@husc.edu.vn"
+                    Email = $"20T102000{j}@husc.edu.vn"
                 };
-                students.Add(student);
+                j++;
+                if (student.FirstName.Contains(request.SearchValue) || student.LastName.Contains(request.SearchValue) || student.StudentId.Contains(request.SearchValue))
+                {
+                    students.Add(student);
+                }
             }
             return students;
         }
+
         /*public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
         {
             string endpoint = " $"api/v1/student/course/{request.CourseId}";

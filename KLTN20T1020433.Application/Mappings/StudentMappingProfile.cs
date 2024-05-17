@@ -15,7 +15,7 @@ namespace KLTN20T1020433.Application.Mappings
             // Đưa hết các cấu hình bạn muốn map giữa các object vào đây
             // Thuộc tính FullName trong UserViewModel được kết hợp từ FirstName và LastName trong User
             CreateMap<Test, GetTestByIdResponse>();
-            CreateMap<Comment, GetCommentResponse>();
+            CreateMap<Comment, GetCommentResponse>().ForMember(dest => dest.CommentedTime, opt => opt.MapFrom(src => src.CommentedTime.ToString(Converter.DateWithMonth)));
             CreateMap<Submission, GetSubmissionResponse>();
             CreateMap<SubmissionFile, GetFileResponse>();
             CreateMap<TestFile, GetFileResponse>();

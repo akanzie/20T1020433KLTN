@@ -1,10 +1,10 @@
 ﻿@using KLTN20T1020433.Application.Queries.TeacherQueries
 @using KLTN20T1020433.Web.AppCodes
 <header class="app-header p-0 border-bottom">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light ps-2">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light ps-2 justify-content-between">
         <ul class="navbar-nav">
             <li class="nav-item d-block d-xl-none">
-                <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)" style="height: 35px">
                     <i class="ti ti-menu-2"></i>
                 </a>
             </li>
@@ -23,7 +23,7 @@
                 </form>
             </li>
         </ul>
-        <div class="collapse navbar-collapse justify-content-end px-0" id="navbarNav" style="flex-basis: content">
+        <div class="navbar-nav justify-content-end px-0" id="navbarNav" style="flex-basis: content">
             <ul class="navbar-nav d-flex align-items-center">
                 <li class="nav-item d-none d-sm-flex">
                     <span class="fw-semibold btn" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Học kỳ: 1, Năm học: 2023-2024</span>
@@ -35,12 +35,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                <span class="d-none d-md-inline fw-semibold">@userData.DisplayName</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user d-inline d-md-none">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                </svg>
+                                <span class="d-inline fw-semibold">@userData.DisplayName</span>                                
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                                 <div class="message-body">

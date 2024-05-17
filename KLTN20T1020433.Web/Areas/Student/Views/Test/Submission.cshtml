@@ -77,11 +77,11 @@
             <span><i class="ti ti-user me-2"></i></span>
             @if (Model.Comments != null && Model.Comments.Any())
             {
-                <span class="card-title mb-0">@Model.Comments.Count() nhận xét riêng tư</span>
+                <span class="fw-semibold fs-3">@Model.Comments.Count() nhận xét riêng tư</span>
             }
             else
             {
-                <span class="card-title mb-0">Chưa có nhận xét riêng tư</span>
+                <span class="fw-semibold fs-3">Chưa có nhận xét riêng tư</span>
             }
         </div>
     </div>
@@ -93,9 +93,9 @@
                     @foreach (var item in Model.Comments)
                     {
                         <div class="col">
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-0  "><strong>@item.TeacherName</strong></p>
-                                <p class="mb-0 text-muted">@item.CommentedTime</p>
+                            <div class="d-flex justify-content-start align-items-center">
+                                <p class="mb-0 me-2"><strong>@item.TeacherName</strong></p>
+                                <p class="mb-0 text-muted fs-2">@item.CommentedTime</p>
                             </div>
                             <p class="mb-0  fw-bold text-dark">@item.Body</p>
                         </div>

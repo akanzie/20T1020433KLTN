@@ -9,20 +9,20 @@
             <ul class="list-unstyled">
                 @foreach (var item in Model.Data)
                 {
-                    <li class="d-none d-lg-flex card mb-3">
+                    <li class="d-none d-md-flex card mb-3 li-card">
                         <div class="row">
-                            <div class="col-lg-8 d-flex align-items-center justify-content-start">
+                            <div class="col-md-8 d-flex align-items-center justify-content-start">
                                 <input type="checkbox" class="form-check-input test-checkbox ms-4 me-3" style="transform: scale(1.2);"
                                        name="TestSelecting" value="@item.TestId">
                                 <a href="@Url.Action("Detail", "Test", new {Id = item.TestId})" class="card-link py-3 d-block w-100">
                                     <div class="ms-2">
-                                        <p class="mb-0 fs-5 fw-semibold text-dark">@item.Title</p>
+                                        <p class="mb-0 fs-4 fw-semibold text-dark">@item.Title</p>
                                         <p class="mb-0 fw-semibold">@item.StatusDisplayName</p>
                                     </div>
 
                                 </a>
                             </div>
-                            <div class="col-lg-4 d-flex align-items-center justify-content-end">
+                            <div class="col-md-4 d-flex align-items-center justify-content-end">
                                 <p class="mb-0 text-muted">
                                     @if (@item.LastUpdateTime != "")
                                     {
@@ -54,10 +54,10 @@
                                 </div>
                             </div>
                     </li>
-                    <li class="d-flex d-lg-none card mb-3">
-                        <div class="d-flex align-items-center justify-content-start">                            
+                    <li class="d-flex d-md-none card mb-3 li-card">
+                        <div class="d-flex align-items-center justify-content-between">
                             <a href="@Url.Action("Detail", "Test", new {Id = item.TestId})" class="me-2 ms-2 py-3 d-block text-truncate">
-                                <span class="mb-0 fs-3 fw-semibold text-dark ">@item.Title</span>
+                                <span class="mb-0 fs-7 fw-semibold text-dark ">@item.Title</span>
                             </a>
                             <div class="dropdown me-1 ms-2">
                                 @if (item.Status == KLTN20T1020433.Domain.Test.TestStatus.Creating || item.Status == KLTN20T1020433.Domain.Test.TestStatus.Upcoming || item.Status == KLTN20T1020433.Domain.Test.TestStatus.Ongoing)
@@ -114,6 +114,16 @@
     </div>
 </div>
 <script>
+    $(document).ready(function () {
+        $('.test-checkbox').on('change', function () {
+            if ($(this).is(':checked')) {
+                $(this).closest('li').addClass('border rounded-2 border-info shadow bg-light');
+            } else {
+                $(this).closest('li').removeClass('border rounded-2 border-info shadow bg-light');
+            }
+        });
+    });
+
     function openModalDeleteTest(testId) {
         openModalWithConfirmation('Xóa kỳ thi', 'Bạn có chắc chắn muốn xóa kỳ thi?', 'Xác nhận', function () {
             deleteTest(testId);

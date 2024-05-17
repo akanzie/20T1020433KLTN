@@ -3,8 +3,8 @@ using KLTN20T1020433.Web.Models;
 
 namespace KLTN20T1020433.Web.Areas.Teacher.Models
 {
-    public class StudentModel 
-    {        
-        public IEnumerable<GetStudentResponse> Students { get; set; }
+    public class StudentSearchResult : BasePaginationResult
+    {      
+        public IEnumerable<GetStudentResponse> Data { get; set; }        
     }
 }

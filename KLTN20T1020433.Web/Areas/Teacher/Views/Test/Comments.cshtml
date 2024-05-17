@@ -1,0 +1,19 @@
+﻿@using KLTN20T1020433.Web.AppCodes
+@model KLTN20T1020433.Web.Areas.Teacher.Models.CommentModel
+@{
+    Layout = null;
+}
+<h4 class=""><span class="fw-semibold">Nhận xét riêng tư</span></h4>
+@if (Model.Comments != null && Model.Comments.Any())
+{
+    @foreach (var item in Model.Comments)
+    {
+        <div class="mb-2 border">
+            <div class="p-2">
+                <div class=""><span class="fs-3 fw-semibold">@item.TeacherName</span></div>
+                <div class=""><span class="text-muted fs-2">@item.CommentedTime</span></div>
+            </div>
+            <div class=""><span class="fs-3 fw-semibold">@item.Body</span></div>
+        </div>
+    }
+}

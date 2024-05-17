@@ -44,11 +44,29 @@
             background-color: rgba(0, 123, 255, 0.1); /* Change to desired selection color */
             border: 1px solid rgba(0, 123, 255, 0.5); /* Optional border to indicate selection */
         }
+
+    .right-sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 270px;
+        height: 100%;
+        background-color: #f8f9fa;
+        box-shadow: -3px 0 7px -6px rgba(0, 0, 0, 0.5);
+        padding: 1rem;
+        z-index: 11;
+        display: none;
+    }
+
+    .main-content {
+        margin-right: 270px;
+    }
 </style>
 <div class="container-fluid ps-0 pe-0 mw-100 overflow-hidden" style="height: calc(100% - 200px);">
     <div class="card mx-4">
         <div class="card-header shadow">
-            <h2><span class="">@Model.Title</span></h2>
+            <h2 class="d-none d-md-flex"><span class="">@Model.Title</span></h2>
+            <h4 class="d-flex d-md-none"><span class="">@Model.Title</span></h4>
             <div class="d-flex justify-content-between">
                 <div class="dropdown" style="width: 35rem; max-width: 600px">
                     <button class="dropdown-toggle p-6 d-block border-0 rounded-1 w-100 bg-light-info" type="button" id="dropdownMenuButton">
@@ -84,20 +102,20 @@
                         </div>
                     </button>
                     <ul class="dropdown-menu p-0" id="studentList" style="width: 35rem; max-width: 600px">
-                        <form id="formSearch" method="post" action="@Url.Action("SearchStudent", "Test")">
+                        <form id="formSearch" method="post" action="@Url.Action("SearchSubmission", "Test")">
                         <li class="d-flex align-items-center p-8 w-100 ">
 
                             <div class="me-2">
                                 <input class="form-control" type="search" placeholder="Tìm kiếm" aria-label="Search" name="SearchValue" value="@Model.SearchQuery.SearchValue">
                             </div>
                             <div class="">
-                                <button tye="button" class="btn btn-outline-light btn-status" data="Submitted"><span class="">Đã nộp</span></button>
+                                <button tye="submit" class="btn btn-outline-light btn-status" data-status="Submitted"><span class="">Đã nộp</span></button>
                             </div>
                             <div class="">
-                                <button tye="button" class="btn btn-outline-light btn-status" data="PendingProcessing"><span class="">Đang chờ xử lý</span></button>
+                                <button tye="submit" class="btn btn-outline-light btn-status" data-status="PendingProcessing"><span class="">Đang chờ xử lý</span></button>
                             </div>
                             <div class="">
-                                <button tye="button" class="btn btn-outline-light btn-status" data="LateSubmission"><span class="">Đã nộp muộn</span></button>
+                                <button tye="submit" class="btn btn-outline-light btn-status" data-status="LateSubmission"><span class="">Đã nộp muộn</span></button>
                             </div>
                             <input type="hidden" name="PageSize" value="@Model.SearchQuery.PageSize">
                             <input type="hidden" name="TestId" value="@Model.TestId">
@@ -107,9 +125,10 @@
                         <div id="searchStudent"></div>
                     </ul>
                 </div>
-                <button id="downloadBtn" class="btn btn-primary">
+                <button id="downloadBtn" class="btn btn-primary d-none d-lg-flex">
                     Tải xuống
                 </button>
+                <button id="toggleOnBtn" class="btn btn-secondary toggle-button d-lg-none d-flex"><i class="bi bi-toggle-on"></i></button>
             </div>
         </div>
         <div class="card-body pt-0">
@@ -117,7 +136,7 @@
                 <div class="col-lg-9">
                     <div id="filePreview"></div>
                 </div>
-                <div class="col-lg-3 shadow-left">
+                <div class="col-lg-3 shadow-left d-lg-block d-none">
                     <div class="py-3 border-bottom">
                         <h4 class=""><span class="fw-semibold">Tệp</span></h4>
                         <div class="fs-3">Đã nộp vào @Model.Submission.SubmittedTime.Value.ToString(Converter.TimeWithDateAndMonth)</div>
@@ -132,15 +151,39 @@
                     <div class="">
                         <div id="comments"></div>
                     </div>
-                    <form class="" method="post">
-                        <input type="text" placeholder="Thêm nhận xét riêng tư" />
-                        <button class="btn btn-gray">Đăng</button>
+                    <form id="formComment" action="@Url.Action("Comment", "Test")" class="input-group-lg" method="post">
+                        <input class="form-control mb-2" type="text" placeholder="Thêm nhận xét riêng tư" name="Body" required/>
+                        <input type="hidden" name="SubmissionId" value="@Model.Submission.SubmissionId" />
+                        <button class="btn btn-outline-info" type="submit">Đăng</button>
                     </form>
                 </div>
             </div>
 
         </div>
     </div>
+</div>
+<div class="right-sidebar" id="detailContainer">
+    <div class="py-3 border-bottom">
+        <h4 class=""><span class="fw-semibold">Tệp</span></h4>
+        <div class="fs-3">Đã nộp vào @Model.Submission.SubmittedTime.Value.ToString(Converter.TimeWithDateAndMonth)</div>
+        @foreach (var file in Model.Files)
+        {
+            <div class="d-flex p-2 border rounded-1 file-container" data-file-id="@file.FileId">
+                @Html.Raw(Helper.GetIconClassFromFileExtension(file.FileType))
+                <span class="text-primary text-truncate me-2">
+                    @file.OriginalName
+                </span>
+            </div>
+        }
+    </div>
+    <div class="">
+        <div id="comments"></div>
+    </div>
+    <form class="" method="post">
+        <input type="text" placeholder="Thêm nhận xét riêng tư" />
+        <button class="btn btn-gray">Đăng</button>
+    </form>
+    <button id="toggleOffBtn" class="btn btn-secondary toggle-button"><i class="bi bi-toggle-off"></i></button>
 </div>
 @section scripts {
     <script>
@@ -150,6 +193,7 @@
             doSearch("#formSearch", page);
             var firstFileId = '@Model.Files.First().FileId';
             selectAndViewFile(firstFileId);
+            getComments();
         }
         $(document).ready(function () {
             initialize();
@@ -162,7 +206,16 @@
                     doSearch("#formSearch", 1);
                 }, 2000);
             });
-
+            $("#formSearch").submit(function (e) {
+                e.preventDefault();
+                doSearch(this, 1);
+                return;
+            });
+            $("#formComment").submit(function (e) {
+                e.preventDefault();
+                comment(this);
+                return;
+            });
             $('.file-container').on('click', function (event) {
                 event.preventDefault();
                 var fileId = $(this).data('file-id');
@@ -178,6 +231,16 @@
                 event.preventDefault();
                 $('#studentList').toggleClass('show');
             });
+            $('#toggleOnBtn').on('click', function () {
+                $('#detailContainer').show();
+
+            });
+
+            $('#toggleOffBtn').on('click', function () {
+                $('#detailContainer').hide();
+
+            });
+
         }
 
         function selectAndViewFile(fileId) {
@@ -185,7 +248,21 @@
             $(".file-container[data-file-id='" + fileId + "']").addClass('selected');
             viewFile(fileId);
         }
-
+        function getComments() {
+            var testId = @Model.TestId;
+            var submissionId = @Model.Submission.SubmissionId;
+            $.ajax({
+                url: '@Url.Action("GetComments", "Test")',
+                type: 'GET',
+                data: { testId: testId, submissionId: submissionId },
+                success: function (data) {
+                    $('#comments').html(data);
+                },
+                error: function () {
+                    alert('Your request is not valid!');
+                }
+            });
+        }
         function viewFile(fileId) {
             var testId = @Model.TestId;
             var submissionId = @Model.Submission.SubmissionId;
@@ -211,7 +288,8 @@
             });
             postData.push(
                 { name: 'page', value: page },
-                { name: 'statuses', value: statuses.join(',') }
+                { name: 'statuses', value: statuses.join(',') },
+                { name: "searchInDetail", value: false }
             );
             $.ajax({
                 url: url,
@@ -219,6 +297,23 @@
                 data: postData,
                 success: function (data) {
                     $('#searchStudent').html(data);
+                },
+                error: function (xhr) {
+                    handleAjaxError(xhr);
+                }
+            });
+        }
+        function comment(formSearchInput) {
+            var url = $(formSearchInput).prop("action");
+            var postData = $(formSearchInput).serializeArray();
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: postData,
+                success: function (response) {
+                    showToast(response);
+                    getComments();
                 },
                 error: function (xhr) {
                     handleAjaxError(xhr);
