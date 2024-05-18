@@ -11,6 +11,8 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
     {
         public int SubmissionId { get; set; }
         public bool IsCheckIP { get; set; }
+        public bool CanSubmitLate { get; set; }
+        public DateTime? TestStartTime { get; set; } = null;
         public DateTime? TestEndTime { get; set; } = null;
         public string IPAddress { get; set; }
         public DateTime SubmittedTime { get; set; }
@@ -28,6 +30,14 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         {
             try
             {
+                if (request.TestStartTime >= DateTime.Now && request.TestStartTime != null)
+                {
+                    return ErrorMessages.CannotSubmit;
+                }
+                if (!request.CanSubmitLate && DateTime.Now > request.TestEndTime)
+                {
+                    return ErrorMessages.CannotSubmit;
+                }
                 var submission = await _submissionDB.GetById(request.SubmissionId);
                 if (submission == null)
                 {

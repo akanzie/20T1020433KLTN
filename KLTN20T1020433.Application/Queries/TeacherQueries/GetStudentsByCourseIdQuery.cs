@@ -20,18 +20,20 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
         {
-           var students = new List<GetStudentResponse>();
-            int j = 0;
-            for (int i = 0; i < 100; i++)
+            var students = new List<GetStudentResponse>();
+            int j = 400;
+
+            for (int i = 0; i < 34; i++)  // Loop 34 times to cover 20T1020400 to 20T1020433
             {
                 var student = new GetStudentResponse
                 {
-                    StudentId = $"20T102000{j++}",
-                    FirstName = $"Kiệt{j++}",
-                    LastName = $"Châu Anh",
-                    Email = $"20T102000{j++}@husc.edu.vn"
+                    StudentId = $"20T1020{j}",
+                    FirstName = $"Kiệt{j}",
+                    LastName = "Châu Anh",
+                    Email = $"20T1020{j}@husc.edu.vn"
                 };
                 students.Add(student);
+                j++;
             }
             return students;
         }

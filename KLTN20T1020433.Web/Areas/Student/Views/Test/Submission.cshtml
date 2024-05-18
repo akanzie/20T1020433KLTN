@@ -32,7 +32,7 @@
                 {
                     <span class="text-dark">@Model.Submission.StatusDisplayName</span>
                 }
-            </p>           
+            </p>
 
         </div>
     </div>
@@ -44,24 +44,23 @@
             <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
 
                 <input type="file" class="d-none" multiple id="fileInput" />
-                @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
-                {
-                    <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
-                }
-                else if (Model.Submission.Status == SubmissionStatus.Absent)
+                @if (Model.TestStartTime >= DateTime.Now && Model.TestStartTime != null || Model.Submission.Status == SubmissionStatus.Absent)
                 {
                     <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control disabled" disabled>Thêm file</button>
                 }
+                else if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
+                {
+                    <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
+                }
             </form>
-
-            @if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
+            @if (Model.TestStartTime >= DateTime.Now && Model.TestStartTime != null || Model.Submission.Status == SubmissionStatus.Absent)
+            {
+                <button id="submitBtn" class="btn btn-primary mt-4 form-control disabled" disabled type="button">Nộp bài</button>
+            }
+            else if (Model.Submission.Status == SubmissionStatus.NotSubmitted)
             {
                 <button id="submitBtn" class="btn btn-primary mt-4 form-control" type="button">Nộp bài</button>
 
-            }
-            else if (Model.Submission.Status == SubmissionStatus.Absent)
-            {
-                <button id="submitBtn" class="btn btn-primary mt-4 form-control disabled" disabled type="button">Nộp bài</button>
             }
             else
             {
@@ -113,7 +112,7 @@
     }
     $(document).ready(function () {
         initialize();
-    });   
+    });
     function bindEvents(testId) {
         $('#selectFileBtn').off('click').on('click', function () {
             $('#fileInput').click();

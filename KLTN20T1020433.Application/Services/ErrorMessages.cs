@@ -13,6 +13,9 @@
         public const string FileUploadErrorGeneric = "Có lỗi khi tải lên tệp.";
         public const string SubmissionNotFound = "Không tìm thấy bài nộp.";
         public const string CannotSubmitWithoutUpload = "Bạn không thể nộp bài khi chưa tải bài nộp lên.";
+        public const string CannotSubmit = "Bạn không thể nộp bài.";
+        public const string CannotCancelSubmit = "Bạn không thể hủy nộp bài.";
+        public const string CannotRemoveFile = "Bạn không thể xóa tệp.";
         public const string TestNotFound = "Không tìm thấy kỳ thi.";
         public const string CannotDeleteFinishedTest = "Không thể xóa kỳ thi khi kỳ thi đã kết thúc.";
         public const string CannotEditFinishedTest = "Không thể chỉnh sửa kỳ thi khi kỳ thi đã kết thúc.";

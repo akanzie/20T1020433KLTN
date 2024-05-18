@@ -110,7 +110,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return View("NotFound");
                 }
-                IEnumerable<GetFileResponse> files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id });
+                var files = await _mediator.Send(new GetFilesByTestIdQuery { TestId = id, TestStartTime = test.StartTime });
                 var model = new TestModel
                 {
                     Test = test,
@@ -136,11 +136,23 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     return BadRequest(ErrorMessages.GeneralError);
                 }
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
+                if (submission == null)
+                {
+                    return BadRequest(ErrorMessages.GeneralError);
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                if (test == null)
+                {
+                    return BadRequest(ErrorMessages.GeneralError);
+                }
                 if (submission != null)
                 {
                     var comments = await _mediator.Send(new GetCommentsBySubmissionIdQuery { SubmissionId = submission.SubmissionId });
                     var model = new SubmissionModel
                     {
+                        CanSubmitLate = test.CanSubmitLate,
+                        TestStartTime = test.StartTime,
+                        TestEndTime = test.EndTime,
                         Submission = submission,
                         Comments = comments
                     };
@@ -165,8 +177,14 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return Json(ErrorMessages.GeneralError);
                 }
+
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission == null)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                if (test == null)
                 {
                     return Json(ErrorMessages.GeneralError);
                 }
@@ -178,7 +196,7 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     {
                         return Json(ErrorMessages.InvalidOrLargeFile);
                     }
-                    if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId })))
+                    if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId, CanSubmitLate = test.CanSubmitLate, TestEndTime = test.EndTime, TestTitle = test.Title })))
                         return Json(ErrorMessages.FileUploadError);
                 }
                 return Json(SuccessMessages.FileUploadSuccess);
@@ -204,12 +222,17 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return Json(ErrorMessages.GeneralError);
                 }
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                if (test == null)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
                 if (file == null)
                     return Json(ErrorMessages.FileNotFound);
                 else
                 {
-                    var message = await _mediator.Send(new RemoveSubmissionFileCommand { Id = id });
+                    var message = await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, CanSubmitLate = test.CanSubmitLate, TestEndTime = test.EndTime });
                     return Json(message);
                 }
             }
@@ -234,7 +257,11 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return Json(ErrorMessages.GeneralError);
                 }
-                var test = await _mediator.Send(new GetTestByIdQuery { Id = submission.TestId });
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                if (test == null)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
                 if (test!.IsConductedAtSchool && !Utils.CheckIPAddress(user.ClientIP!))
                 {
                     return Json(ErrorMessages.InvalidIPAddress);
@@ -249,7 +276,8 @@ namespace KLTN20T1020433.Web.Controllers.Student
                     IPAddress = user.ClientIP!,
                     IsCheckIP = test.IsCheckIP,
                     SubmittedTime = DateTime.Now,
-                    TestEndTime = test.EndTime
+                    TestEndTime = test.EndTime,
+                    CanSubmitLate = test.CanSubmitLate
                 });
                 return Json(message);
             }
@@ -274,7 +302,12 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return Json(ErrorMessages.GeneralError);
                 }
-                var message = await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId });
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                if (test == null)
+                {
+                    return Json(ErrorMessages.GeneralError);
+                }
+                var message = await _mediator.Send(new CancelSubmissionCommand { SubmissionId = submission.SubmissionId, CanSubmitLate = test.CanSubmitLate, TestEndTime = test.EndTime });
                 return Json(message);
             }
             catch (Exception ex)
@@ -292,12 +325,18 @@ namespace KLTN20T1020433.Web.Controllers.Student
                 {
                     return View("NotFound");
                 }
+
                 var submission = await _mediator.Send(new GetSubmissionByStudentIdAndTestIdQuery { TestId = testId, StudentId = user.UserId! });
                 if (submission == null)
                 {
                     return View("NotFound");
                 }
-                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                var test = await _mediator.Send(new GetTestByIdQuery { Id = testId });
+                if (test == null)
+                {
+                    return View("NotFound");
+                }
+                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id, TestId = testId, TestStartTime = test.StartTime }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
 
                 if (file == null || !System.IO.File.Exists(file.FilePath))
                 {

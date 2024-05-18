@@ -55,7 +55,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
                             await _submissionDB.Add(submission);
                         }
                     }
-                }
+                }                
                 return 1;
             }
             catch (Exception ex)

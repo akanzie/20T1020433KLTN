@@ -7,6 +7,9 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
     public class RemoveSubmissionFileCommand : IRequest<string>
     {
         public Guid Id { get; set; }
+        public DateTime? TestEndTime { get; set; } = null;
+        public DateTime? TestStartTime { get; set; } = null;
+        public bool CanSubmitLate { get; set; }
     }
     public class RemoveSubmissionFileCommandHandler : IRequestHandler<RemoveSubmissionFileCommand, string>
     {
@@ -20,6 +23,12 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
         {
             try
             {
+                if (request.TestStartTime >= DateTime.Now && request.TestStartTime != null)
+                {
+                    return ErrorMessages.CannotRemoveFile;
+                }
+                if (!request.CanSubmitLate && DateTime.Now > request.TestEndTime)
+                    return ErrorMessages.CannotRemoveFile;
                 var file = await _submissionFileDB.GetById(request.Id);
                 if (file == null || !File.Exists(file.FilePath))
                 {

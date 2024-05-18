@@ -10,6 +10,8 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
     public class GetTestFileByIdQuery : IRequest<GetFileResponse?>
     {
         public Guid Id { get; set; }
+        public int TestId { get; set; }
+        public DateTime? TestStartTime { get; set; } = null;
     }
     public class GetTestFileByIdQueryHandler : IRequestHandler<GetTestFileByIdQuery, GetFileResponse?>
     {
@@ -19,13 +21,17 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         public GetTestFileByIdQueryHandler(ITestFileRepository testFileDB, IMapper mapper)
         {
             _testFileDB = testFileDB;
-
             _mapper = mapper;
+
         }
         public async Task<GetFileResponse?> Handle(GetTestFileByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
+                if (request.TestStartTime >= DateTime.Now && request.TestStartTime != null)
+                {
+                    return null;
+                }
                 var file = await _testFileDB.GetById(request.Id);
                 if (file != null)
                 {

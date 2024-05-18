@@ -9,6 +9,8 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
     public class CancelSubmissionCommand : IRequest<string>
     {
         public int SubmissionId { get; set; }
+        public bool CanSubmitLate { get; set; }
+        public DateTime? TestEndTime { get; set; } = null;
     }
     public class CancelSubmissionCommandHandler : IRequestHandler<CancelSubmissionCommand, string>
     {
@@ -21,6 +23,11 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         {
             try
             {
+
+                if (!request.CanSubmitLate && DateTime.Now > request.TestEndTime)
+                {
+                    return ErrorMessages.CannotCancelSubmit;
+                }
                 var submission = await _submissionDB.GetById(request.SubmissionId);
                 if (submission == null)
                 {
@@ -29,6 +36,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
                 submission.Status = SubmissionStatus.NotSubmitted;
                 await _submissionDB.Update(submission);
                 return SuccessMessages.CancelSubmissionSuccess;
+
             }
             catch (Exception ex)
             {
