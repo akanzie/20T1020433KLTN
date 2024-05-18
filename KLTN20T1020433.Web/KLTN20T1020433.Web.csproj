@@ -33,8 +33,7 @@
     <None Include="Areas\Teacher\Views\Home\Index.cshtml" />
     <None Include="Areas\Teacher\Views\Test\Detail.cshtml" />
     <None Include="Areas\Teacher\Views\Test\Index.cshtml" />
-    <None Include="Areas\Teacher\Views\Test\SelectCourses.cshtml" />
-    <None Include="Areas\Teacher\Views\Test\Submission.cshtml" />
+    <None Include="Areas\Teacher\Views\Submission\Detail.cshtml" />
     <None Include="Areas\Teacher\Views\Test\Edit.cshtml" />
     <None Include="wwwroot\Modernize-1.0.0\.gitignore" />
     <None Include="wwwroot\Modernize-1.0.0\ckeditor5-41.3.1-vpa9zder318e\build\ckeditor.js" />

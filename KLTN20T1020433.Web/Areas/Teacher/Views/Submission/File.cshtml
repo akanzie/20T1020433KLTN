@@ -7,7 +7,7 @@
 <div class="overflow-y-auto mw-100" style="height: calc(100vh - 255px);">
     <div class="d-flex align-items-center justify-content-between my-2">
         <h3><span class="text-muted">@Model.FileName</span></h3>
-        <a href="@Url.Action("DownloadFile", "Test", new { fileId = Model.FileId, testId = Model.TestId , isTestFile = false })" class="btn btn-primary"><i class="bi bi-download"></i></a>
+        <a href="@Url.Action("DownloadFile", "Test", new { id = Model.FileId, testId = Model.TestId , isTestFile = false })" class="btn btn-primary"><i class="bi bi-download"></i></a>
     </div>
     @if (Model.IsImage)
     {

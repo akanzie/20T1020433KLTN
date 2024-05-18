@@ -102,7 +102,7 @@
                         </div>
                     </button>
                     <ul class="dropdown-menu p-0" id="studentList" style="width: 35rem; max-width: 600px">
-                        <form id="formSearch" method="post" action="@Url.Action("SearchSubmission", "Test")">
+                        <form id="formSearch" method="post" action="@Url.Action("Search", "Submission")">
                         <li class="d-flex align-items-center p-8 w-100 ">
 
                             <div class="me-2">
@@ -267,7 +267,7 @@
             var testId = @Model.TestId;
             var submissionId = @Model.Submission.SubmissionId;
             $.ajax({
-                url: '@Url.Action("SubmissionFile", "Test")',
+                url: '@Url.Action("File", "Submission")',
                 type: 'GET',
                 data: { fileId: fileId, testId: testId, submissionId: submissionId },
                 success: function (data) {

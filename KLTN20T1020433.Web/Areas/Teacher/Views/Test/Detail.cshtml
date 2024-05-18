@@ -103,7 +103,7 @@
                     <div class="row" style="height: calc(100vh - 80px);">
                         <div class="col-12">
                             <h2 class="mt-3 my-4"><span class="fw-semibold">@Model.Test.Title</span></h2>
-                            <form class="" id="formSearch" action="@Url.Action("SearchSubmission", "Test")" method="post">
+                            <form class="" id="formSearch" action="@Url.Action("Search", "Submission")" method="get">
                                 <input type="hidden" name="PageSize" value="@Model.SearchQuery.PageSize" />
                                 <input type="hidden" name="TestId" value="@Model.Test.TestId" />
                                 <div class="d-flex align-items-center mb-3 flex-wrap">
@@ -150,7 +150,7 @@
                                         <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
                                     </div>
                                     <div class="d-none d-sm-inline ms-3">
-                                        <a href="@Url.Action("DownloadAllSubmissionFile", "Test", new {testId = Model.Test.TestId})" class="btn btn-outline-secondary">Tải xuống tất cả</a>
+                                        <a href="@Url.Action("DownloadAllSubmissionFile", "Submission", new {testId = Model.Test.TestId})" class="btn btn-outline-secondary">Tải xuống tất cả</a>
                                     </div>
                                     <div class="d-inline d-sm-none ms-3">
                                         <button class="btn btn-outline-secondary" type="button">
@@ -216,7 +216,7 @@
             });
         }
         function countSubmission(item, testId, status) {
-            var url = '@Url.Action("CountSubmission", "Test")';
+            var url = '@Url.Action("CountSubmission", "Submission")';
             $.ajax({
                 url: url,
                 type: 'POST',

@@ -8,7 +8,7 @@
     @if (item.Status != SubmissionStatus.NotSubmitted && item.Status != SubmissionStatus.Absent)
     {
         <li class="">
-            <a class="dropdown-item p-6 d-block w-100 bg-light border rounded-1" href="@Url.Action("Submission", "Test", new{id = item.SubmissionId, testId = Model.TestId})">
+            <a class="dropdown-item p-6 d-block w-100 bg-light border rounded-1" href="@Url.Action("Detail", "Submission", new{id = item.SubmissionId, testId = Model.TestId})">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class=""><i class="bi bi-person"></i><span class="ms-2 text-dark">@item.StudentName</span></div>
 

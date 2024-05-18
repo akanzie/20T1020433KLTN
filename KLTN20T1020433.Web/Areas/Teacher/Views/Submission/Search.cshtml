@@ -57,7 +57,7 @@
                             <td>
                                 @if (@item.FilesCount > 0)
                                 {
-                                    <a href="@Url.Action("Submission","Test", new {id = item.SubmissionId, testId = Model.TestId})">
+                                    <a href="@Url.Action("Detail","Submission", new {id = item.SubmissionId, testId = Model.TestId})">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                 }
