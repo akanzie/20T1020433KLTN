@@ -15,14 +15,13 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Controllers
     [TeacherOnlyFilter]
     public class SubmissionController : Controller
     {
-        const int TEST_PAGE_SIZE = 10;
+        
         const int SUBMISSION_PAGE_SIZE = 40;
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
-        public SubmissionController(IMediator mediator, IMapper mapper)
+        
+        public SubmissionController(IMediator mediator)
         {
-            _mediator = mediator;
-            _mapper = mapper;
+            _mediator = mediator;            
         }
 
         public async Task<IActionResult> Search(GetSubmissionsBySearchQuery input, bool searchInDetail = true)

@@ -73,7 +73,12 @@ function checkFileSize(input) {
 
     return true; // Tất cả các file đều hợp lệ
 }
-
+function saveSemester() {
+    var semester = $('#Semester').val();
+    var scholastic = $('#Scholastic').val();
+    $('#selectSemester').text('Học kỳ: ' + semester + ', Năm học: ' + scholastic);
+    $('#selectSemesterModal').modal('hide');
+}
 
 
 

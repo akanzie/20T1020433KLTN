@@ -8,6 +8,20 @@ namespace KLTN20T1020433.Web.AppCodes
 {
     public class Helper
     {
+        public static List<string> GetScholastics()
+        {
+            List<string> scholastics = new List<string>();
+            int startYear = 2015;
+            int currentYear = DateTime.Now.Year;
+            int endYear = DateTime.Now.Month >= 9 ? currentYear + 1 : currentYear;
+
+            for (int year = startYear; year < endYear; year++)
+            {
+                scholastics.Add($"{year}-{year + 1}");
+            }
+            return scholastics;
+        }
+
         public static List<SelectListItem> GetTestStatusForStudent()
         {
             List<SelectListItem> list = new List<SelectListItem>();

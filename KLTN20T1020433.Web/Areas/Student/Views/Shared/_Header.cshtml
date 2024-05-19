@@ -25,9 +25,7 @@
         </ul>
         <div class="navbar-nav justify-content-end px-0" id="navbarNav" style="flex-basis: content">
             <ul class="navbar-nav d-flex align-items-center">
-                <li class="nav-item d-none d-sm-flex">
-                    <span class="fw-semibold btn" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Học kỳ: 1, Năm học: 2023-2024</span>
-                </li>
+               
                 @{
                     var userData = User.GetUserData();
                     if (userData != null)
@@ -49,38 +47,3 @@
         </div>
     </nav>
 </header>
-<div class="modal fade" id="selectSemesterModal" tabindex="-1" aria-labelledby="selectSemesterModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="selectSemesterLabel">Chọn học kỳ và năm học</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="Semester">Học kỳ:</label>
-                        <select class="form-select" id="Semester" name="Semester">
-                            <option value="1">Học kỳ 1</option>
-                            <option value="2">Học kỳ 2</option>
-                            <option value="3">Học kỳ 3</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="Scholastic">Năm học:</label>
-                        <select class="form-select" id="Scholastic" name="Scholastic">
-                            <option value="2023-2024">2022-2023</option>
-                            <option value="2023-2024">2023-2024</option>
-                            <option value="2024-2025">2024-2025</option>
-                            <option value="2025-2026">2025-2026</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" onclick="SaveSemester">Lưu</button>
-            </div>
-        </div>
-    </div>
-</div>

@@ -1,4 +1,5 @@
 ﻿@using KLTN20T1020433.Application.Services
+@using KLTN20T1020433.Web.AppCodes
 @model KLTN20T1020433.Application.DTOs.TeacherDTOs.GetTestByIdResponse
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
@@ -63,22 +64,7 @@
                     </div>
 
                     <!-- Cột phải -->
-                    <div class="col-lg-4 mt-4 me-0">
-                        @if (Model.TestType == KLTN20T1020433.Domain.Test.TestType.Quiz)
-                        {
-                            <div class="col-lg mb-4 card">
-                                <div class="card-body">
-                                    <div class="">
-                                        <p class="form-label">Học phần:</p>
-                                        <div id="class-list" class="btn-group mt-1" role="group" aria-label="Class List">
-                                            <button type="button" class="btn btn-outline-primary class-btn">Lập trình web</button>
-                                            <button type="button" class="btn btn-outline-primary class-btn">Kỹ thuật lập trình</button>
-                                            <button type="button" class="btn btn-outline-primary class-btn">Nhập môn trí tuệ nhân tạo</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                    <div class="col-lg-4 mt-4 me-0">                        
                         <div class="col-lg card">
                             <div class="card-body">
                                 <div class="mb-3">
@@ -242,7 +228,7 @@
                     alert("Your request is not valid!");
                 }
             });
-        }
+        }        
     </script>
 
 }

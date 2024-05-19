@@ -14,6 +14,8 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     {
         public GetTokenResponse GetTokenResponse { get; set; }
         public string TeacherId { get; set; }
+        public int Semester { get; set; }
+        public string Scholastic { get; set; }
     }
     public class GetExamsByTeacherIdQueryHandler : IRequestHandler<GetExamsByTeacherIdQuery, IEnumerable<GetExamResponse>>
     {

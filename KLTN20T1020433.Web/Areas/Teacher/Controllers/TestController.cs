@@ -560,14 +560,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        public IActionResult QuizSelectStudents()
-        {
-            return View();
-        }
-        public IActionResult ExamSelectStudents()
-        {
-            return View();
-        }
+       
         public async Task<IActionResult> ListTestFiles(int testId = 0)
         {
             try
