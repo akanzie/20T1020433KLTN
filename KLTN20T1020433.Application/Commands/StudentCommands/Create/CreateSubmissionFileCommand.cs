@@ -34,7 +34,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
         {
             try
             {
-                if (request.TestStartTime >= DateTime.Now && request.TestStartTime != null)
+                if (request.TestStartTime > DateTime.Now && request.TestStartTime != null)
                 {
                     throw new ArgumentException("Cannot Create.");
                 }

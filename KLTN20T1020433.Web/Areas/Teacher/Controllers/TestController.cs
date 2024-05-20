@@ -22,7 +22,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
     [TeacherOnlyFilter]
     public class TestController : Controller
     {
-        const int TEST_PAGE_SIZE = 10;
+        const int TEST_PAGE_SIZE = 7;
         const int SUBMISSION_PAGE_SIZE = 40;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -305,6 +305,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 {
                     return Json(new { success = false, message = ErrorMessages.GeneralError });
                 }
+                if (selectedStudentIds.Count() == 0)
+                {
+                    return Json(new { success = false, message = ErrorMessages.ListStudentsIsEmpty });
+                }
                 var user = User.GetUserData();
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
                 if (test == null)
@@ -321,7 +325,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(new { success = false, message = ErrorMessages.RequestNotCompleted });
             }
         }
-        public async Task<ActionResult> DownloadFile(Guid id, int testId, bool isTestFile = true)
+        public async Task<ActionResult> DownloadFile(Guid id, int testId)
         {
             try
             {
@@ -333,7 +337,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = testId, TeacherId = user.UserId });
                 if (test == null)
                     return View("NotFound");
-                var file = isTestFile ? await _mediator.Send(new GetTestFileByIdQuery { Id = id }) : await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id });
+                var file = await _mediator.Send(new GetTestFileByIdQuery { Id = id });
 
                 if (file == null)
                 {
@@ -353,8 +357,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 Console.WriteLine($"An exception occurred: {ex.Message}");
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
-        }
-        
+        }        
 
         [HttpPost]
         public async Task<IActionResult> UploadTestFile(List<IFormFile> files, int? testId = 0)

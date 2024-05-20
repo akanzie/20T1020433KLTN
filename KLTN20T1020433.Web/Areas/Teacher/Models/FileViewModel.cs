@@ -10,6 +10,6 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Models
         public string? Content { get; set; }
         public bool IsImage { get; set; }
         public bool IsText { get; set; }
-        public int TestId { get; set; }
+        public int SubmissionId { get; set; }
     }
 }

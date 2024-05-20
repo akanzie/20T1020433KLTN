@@ -6,7 +6,7 @@
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid" >
+<div class="container-fluid">
     <div class="card">
         <div class="card-body py-1">
             <nav>
@@ -86,7 +86,7 @@
                                     {
                                         <div class="col-lg-10 col-sm-6 mb-3">
                                             <div class="p-2 border rounded-1">
-                                                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.Test.TestId})" class="d-block text-truncate" data-file="deso1.jpg">
+                                                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId= Model.Test.TestId})" class="d-block text-truncate" data-file="deso1.jpg">
                                                     @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
                                                     <span class="text-primary">@item.OriginalName</span>
                                                 </a>
@@ -157,8 +157,8 @@
                                             <i class="bi bi-download"></i>
                                         </button>
                                     </div>
-                                </div>                              
-                               
+                                </div>
+
                             </form>
                             <div id="searchResult" class="mt-3"></div>
                         </div>
@@ -205,7 +205,7 @@
                 doSearch("#formSearch", 1);
             });
             $('.form-check-input').each(function () {
-                var item = $(this).closest('.form-check').find('label span');               
+                var item = $(this).closest('.form-check').find('label span');
                 var status = $(this).val();
                 countSubmission(item, testId, status);
             });
@@ -246,10 +246,10 @@
                     handleAjaxError(xhr);
                 }
             });
-        }       
+        }
         function doSearch(formSearchInput, page) {
-            var url = $(formSearchInput).prop("action");           
-            var postData = $(formSearchInput).serializeArray();            
+            var url = $(formSearchInput).prop("action");
+            var postData = $(formSearchInput).serializeArray();
             var statuses = [];
             $('input[name="Status"]:checked').each(function () {
                 statuses.push($(this).val());

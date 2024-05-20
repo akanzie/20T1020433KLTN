@@ -38,7 +38,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
                     var teacher = await _teacherDB.GetTeacherById(test.TeacherId);
                     testResponse.StatusDisplayName = Utils.GetTestStatusDisplayNameForStudent(test.Status);
                     testResponse.TeacherName = teacher!.TeacherName;
-                    if (test.StartTime >= DateTime.Now && test.StartTime != null)
+                    if (test.StartTime > DateTime.Now && test.StartTime != null)
                     {
                         testResponse.Instruction = "";
                     }

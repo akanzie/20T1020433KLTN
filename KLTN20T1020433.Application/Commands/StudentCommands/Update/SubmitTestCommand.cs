@@ -30,7 +30,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         {
             try
             {
-                if (request.TestStartTime >= DateTime.Now && request.TestStartTime != null)
+                if (request.TestStartTime > DateTime.Now && request.TestStartTime != null)
                 {
                     return ErrorMessages.CannotSubmit;
                 }

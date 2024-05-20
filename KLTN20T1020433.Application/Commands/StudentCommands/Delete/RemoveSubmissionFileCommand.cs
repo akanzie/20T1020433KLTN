@@ -23,7 +23,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
         {
             try
             {
-                if (request.TestStartTime >= DateTime.Now && request.TestStartTime != null)
+                if (request.TestStartTime > DateTime.Now && request.TestStartTime != null)
                 {
                     return ErrorMessages.CannotRemoveFile;
                 }

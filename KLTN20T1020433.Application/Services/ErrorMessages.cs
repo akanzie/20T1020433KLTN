@@ -21,6 +21,7 @@
         public const string CannotEditFinishedTest = "Không thể chỉnh sửa kỳ thi khi kỳ thi đã kết thúc.";
         public const string InvalidIPAddress = "Địa chỉ IP không hợp lệ. Bạn không được phép nộp bài.";
         public const string SubmissionTimeExceeded = "Đã quá thời gian cho phép nộp bài. Bạn không được phép nộp bài.";
+        public const string ListStudentsIsEmpty = "Danh sách sinh viên tham gia rỗng.";
     }
 }
 

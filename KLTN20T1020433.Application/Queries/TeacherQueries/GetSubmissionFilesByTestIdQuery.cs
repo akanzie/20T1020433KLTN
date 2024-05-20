@@ -36,7 +36,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 {
                     List<GetFileResponse> SubmissionResponse = new List<GetFileResponse>();
                     foreach (var file in SubmissionFiles)
-                    {
+                    {                        
                         GetFileResponse fileResponse = _mapper.Map<GetFileResponse>(file);
                         fileResponse.FileType = Path.GetExtension(file.FileName);
                         SubmissionResponse.Add(fileResponse);

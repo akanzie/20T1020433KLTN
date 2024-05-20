@@ -10,7 +10,7 @@
     {
         <div class="mb-2">
             <div class="d-flex p-2 border rounded-1 justify-content-between align-items-center">
-                <a href="@Url.Action("DownLoadFile", "Test" , new { id = item.FileId, testId=@Model.TestId, isTestFile = false})" class="d-block text-truncate">
+                <a href="@Url.Action("DownLoadFile", "Submission" , new { id = item.FileId, testId=@Model.TestId})" class="d-block text-truncate">
                     @Html.Raw(Helper.GetIconClassFromFileExtension(item.FileType))
                     <span class="text-primary">@item.OriginalName</span>
                 </a>

@@ -15,13 +15,13 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Controllers
     [TeacherOnlyFilter]
     public class SubmissionController : Controller
     {
-        
+
         const int SUBMISSION_PAGE_SIZE = 40;
         private readonly IMediator _mediator;
-        
+
         public SubmissionController(IMediator mediator)
         {
-            _mediator = mediator;            
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> Search(GetSubmissionsBySearchQuery input, bool searchInDetail = true)
@@ -124,7 +124,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Controllers
                 var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = submissionId });
                 if (submission == null)
                     return View("NotFound");
-                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = fileId });
+                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = fileId , Status = submission.Status});
                 if (file == null)
                 {
                     return View("NotFound");
@@ -140,7 +140,7 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Controllers
                         : null,
                     IsImage = file.MimeType.StartsWith("image"),
                     IsText = file.MimeType.StartsWith("text") || file.MimeType.Contains("word"),
-                    TestId = testId
+                    SubmissionId = submissionId
                 };
 
                 return View(fileViewModel);
@@ -185,6 +185,38 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"An exception occurred in DownloadAllSubmissionFile: {ex.Message}");
+                return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
+            }
+        }
+        public async Task<ActionResult> DownloadFile(Guid id, int submissionId)
+        {
+            try
+            {
+                var user = User.GetUserData();
+                if (submissionId <= 0)
+                {
+                    return View("NotFound");
+                }
+                var submission = await _mediator.Send(new GetSubmissionByIdQuery { Id = submissionId });
+                if (submission == null)
+                    return View("NotFound");
+                var file = await _mediator.Send(new GetSubmissionFileByIdQuery { Id = id, Status = submission.Status });
+                if (file == null)
+                {
+                    return View("NotFound");
+                }
+                string filePath = file.FilePath;
+                string mimeType = file.MimeType;
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return View("NotFound");
+                }
+                byte[] fileBytes = await FileUtils.ReadFileAsync(filePath);
+                return File(fileBytes, mimeType, file.OriginalName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An exception occurred: {ex.Message}");
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
         }

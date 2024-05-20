@@ -13,10 +13,11 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Delete
     public class DeleteTestCommandHandler : IRequestHandler<DeleteTestCommand, string>
     {
         private readonly ITestRepository _testDB;
-
-        public DeleteTestCommandHandler(ITestRepository testDB)
+        private readonly ISubmissionRepository _submissionDB;
+        public DeleteTestCommandHandler(ITestRepository testDB, ISubmissionRepository submissionDB)
         {
             _testDB = testDB;
+            _submissionDB = submissionDB;
         }
         public async Task<string> Handle(DeleteTestCommand request, CancellationToken cancellationToken)
         {
@@ -27,7 +28,10 @@ namespace KLTN20T1020433.Web.Areas.Teacher.Commands.Delete
                 {
                     return ErrorMessages.TestNotFound;
                 }
-                if (test.Status == TestStatus.Finished)
+                string statuses = $"{SubmissionStatus.Submitted},{SubmissionStatus.LateSubmission},{SubmissionStatus.PendingProcessing}";
+
+                var submissionCount = await _submissionDB.CountSubmissions(request.Id, "", statuses);
+                if (test.Status == TestStatus.Finished && submissionCount <= 0)
                 {
                     return ErrorMessages.CannotDeleteFinishedTest;
                 }

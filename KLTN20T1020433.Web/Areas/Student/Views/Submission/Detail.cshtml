@@ -44,7 +44,7 @@
             <form action="UploadSubmissionFile" class="form-group" enctype="multipart/form-data">
 
                 <input type="file" class="d-none" multiple id="fileInput" />
-                @if (Model.TestStartTime >= DateTime.Now && Model.TestStartTime != null || Model.Submission.Status == SubmissionStatus.Absent)
+                @if (Model.TestStartTime > DateTime.Now && Model.TestStartTime != null || Model.Submission.Status == SubmissionStatus.Absent)
                 {
                     <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control disabled" disabled>Thêm file</button>
                 }
@@ -53,7 +53,7 @@
                     <button id="selectFileBtn" type="button" class="btn btn-outline-secondary form-control">Thêm file</button>
                 }
             </form>
-            @if (Model.TestStartTime >= DateTime.Now && Model.TestStartTime != null || Model.Submission.Status == SubmissionStatus.Absent)
+            @if (Model.TestStartTime > DateTime.Now && Model.TestStartTime != null || Model.Submission.Status == SubmissionStatus.Absent)
             {
                 <button id="submitBtn" class="btn btn-primary mt-4 form-control disabled" disabled type="button">Nộp bài</button>
             }
@@ -140,7 +140,7 @@
         });
     }
     function getFiles(testId) {
-        var url = '@Url.Action("ListSubmissionFiles", "Test")';
+        var url = '@Url.Action("SubmissionFiles", "Submission")';
         $.ajax({
             url: url,
             type: "GET",
@@ -154,7 +154,7 @@
         });
     }
     function removeFile(fileId, testId) {
-        var url = '@Url.Action("RemoveSubmissionFile", "Test")';
+        var url = '@Url.Action("RemoveSubmissionFile", "Submission")';
         $.ajax({
             url: url,
             type: 'POST',
@@ -175,7 +175,7 @@
             formData.append('files', file);
         });
         formData.append('testId', testId);
-        var url = '@Url.Action("UploadSubmissionFile", "Test")';
+        var url = '@Url.Action("UploadSubmissionFile", "Submission")';
         $.ajax({
             url: url,
             type: 'POST',
@@ -193,7 +193,7 @@
         });
     }
     function submit(testId) {
-        var url = '@Url.Action("Submit", "Test")';
+        var url = '@Url.Action("Submit", "Submission")';
         $.ajax({
             url: url,
             type: 'POST',
@@ -208,7 +208,7 @@
         });
     }
     function cancel(testId) {
-        var url = '@Url.Action("Cancel", "Test")';
+        var url = '@Url.Action("Cancel", "Submission")';
         $.ajax({
             url: url,
             type: 'POST',

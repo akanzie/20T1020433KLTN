@@ -27,7 +27,7 @@ namespace KLTN20T1020433.Application.Queries.StudentQueries
         {
             try
             {
-                if (request.TestStartTime >= DateTime.Now && request.TestStartTime != null)
+                if (request.TestStartTime > DateTime.Now && request.TestStartTime != null)
                 {
                     return new List<GetFileResponse>();
                 }
