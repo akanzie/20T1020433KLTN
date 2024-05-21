@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Test;
 using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
@@ -55,7 +53,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
                             await _submissionDB.Add(submission);
                         }
                     }
-                }                
+                }
                 return 1;
             }
             catch (Exception ex)

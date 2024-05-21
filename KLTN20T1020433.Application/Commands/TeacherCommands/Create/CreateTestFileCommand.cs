@@ -1,14 +1,8 @@
 ﻿using KLTN20T1020433.Application.Configuration;
-using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
 {

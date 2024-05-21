@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using KLTN20T1020433.Application.Queries.StudentQueries;
-using KLTN20T1020433.Application.Services;
+﻿using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
 using MediatR;
-using System.Net;
 
 namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
 {

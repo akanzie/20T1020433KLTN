@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using KLTN20T1020433.Application.Services;
+﻿using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Test;
 using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.StudentCommands.Update

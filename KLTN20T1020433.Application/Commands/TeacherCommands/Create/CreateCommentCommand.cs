@@ -1,16 +1,8 @@
-﻿using AutoMapper;
-using KLTN20T1020433.Application.Services;
+﻿using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Comment;
-using KLTN20T1020433.Domain.Student;
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
 {

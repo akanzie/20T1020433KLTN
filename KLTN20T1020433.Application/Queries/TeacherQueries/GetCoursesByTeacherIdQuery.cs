@@ -1,13 +1,6 @@
-﻿using KLTN20T1020433.Application.DTOs.StudentDTOs;
-using KLTN20T1020433.Application.DTOs.TeacherDTOs;
+﻿using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
 using MediatR;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
@@ -15,7 +8,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     {
         public GetTokenResponse GetTokenResponse { get; set; }
         public string TeacherId { get; set; }
-        public int Semester {  get; set; }
+        public int Semester { get; set; }
         public string Scholastic { get; set; }
     }
     public class GetCoursesByTeacherIdQueryHandler : IRequestHandler<GetCoursesByTeacherIdQuery, IEnumerable<GetCourseResponse>>

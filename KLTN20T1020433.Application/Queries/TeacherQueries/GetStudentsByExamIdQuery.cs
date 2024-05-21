@@ -1,14 +1,11 @@
-﻿using KLTN20T1020433.Application.DTOs;
-using KLTN20T1020433.Application.DTOs.TeacherDTOs;
+﻿using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
-using KLTN20T1020433.Domain.Student;
 using MediatR;
-using Newtonsoft.Json;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetStudentsByExamIdQuery : GetTokenResponse, IRequest<IEnumerable<GetStudentResponse>>
-    {       
+    {
         public string ExamId { get; set; }
     }
     public class GetStudentsByExamIdQueryHandler : IRequestHandler<GetStudentsByExamIdQuery, IEnumerable<GetStudentResponse>>
@@ -21,7 +18,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByExamIdQuery request, CancellationToken cancellationToken)
         {
-           var students = new List<GetStudentResponse>();
+            var students = new List<GetStudentResponse>();
             int j = 0;
             for (int i = 0; i < 9; i++)
             {

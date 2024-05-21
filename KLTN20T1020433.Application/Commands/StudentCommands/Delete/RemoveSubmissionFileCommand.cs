@@ -1,5 +1,6 @@
 ﻿using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
+using KLTN20T1020433.Domain.Test;
 using MediatR;
 
 namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
@@ -10,6 +11,7 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
         public DateTime? TestEndTime { get; set; } = null;
         public DateTime? TestStartTime { get; set; } = null;
         public bool CanSubmitLate { get; set; }
+        public SubmissionStatus SubmissionStatus { get; set; }
     }
     public class RemoveSubmissionFileCommandHandler : IRequestHandler<RemoveSubmissionFileCommand, string>
     {
@@ -23,6 +25,8 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Delete
         {
             try
             {
+                if (request.SubmissionStatus != SubmissionStatus.NotSubmitted)
+                    return ErrorMessages.CannotRemoveFile;
                 if (request.TestStartTime > DateTime.Now && request.TestStartTime != null)
                 {
                     return ErrorMessages.CannotRemoveFile;

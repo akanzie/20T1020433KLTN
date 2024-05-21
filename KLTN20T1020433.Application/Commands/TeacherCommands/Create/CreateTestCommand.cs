@@ -1,13 +1,7 @@
 ﻿using AutoMapper;
-using KLTN20T1020433.Domain.Submission;
 using KLTN20T1020433.Domain.Teacher;
 using KLTN20T1020433.Domain.Test;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
 {
@@ -43,7 +37,7 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
             try
             {
                 Test test = _mapper.Map<Test>(request);
-                test.CreatedTime = DateTime.Now;                
+                test.CreatedTime = DateTime.Now;
                 int testId = await _testDB.Add(test);
                 if (await _teacherDB.GetTeacherById(request.TeacherId) == null)
                 {

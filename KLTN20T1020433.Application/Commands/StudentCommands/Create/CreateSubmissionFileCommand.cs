@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using KLTN20T1020433.Application.Configuration;
-using KLTN20T1020433.Application.DTOs;
+﻿using KLTN20T1020433.Application.Configuration;
 using KLTN20T1020433.Application.Services;
 using KLTN20T1020433.Domain.Submission;
-using KLTN20T1020433.Domain.Test;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -18,6 +15,8 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
         public DateTime? TestEndTime { get; set; } = null;
         public string TestTitle { get; set; } = "";
         public bool CanSubmitLate { get; set; }
+        public SubmissionStatus SubmissionStatus { get; set; }
+
     }
     public class CreateSubmissionFileCommandHandler : IRequestHandler<CreateSubmissionFileCommand, bool>
     {
@@ -34,12 +33,14 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Create
         {
             try
             {
+                if (request.SubmissionStatus != SubmissionStatus.NotSubmitted)
+                    throw new ArgumentException("Cannot Create.");
                 if (request.TestStartTime > DateTime.Now && request.TestStartTime != null)
                 {
                     throw new ArgumentException("Cannot Create.");
                 }
                 if (!request.CanSubmitLate && DateTime.Now > request.TestEndTime)
-                    throw new ArgumentException("Cannot Create.");               
+                    throw new ArgumentException("Cannot Create.");
                 if (request.File == null || request.File.Length == 0 || request.File.Length >= FileUtils.MAX_FILE_SIZE)
                 {
                     throw new ArgumentException("Invalid file.");

@@ -92,7 +92,7 @@ namespace KLTN20T1020433.Web.Areas.Student.Controllers
                     {
                         return Json(ErrorMessages.InvalidOrLargeFile);
                     }
-                    if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId, CanSubmitLate = test.CanSubmitLate, TestEndTime = test.EndTime, TestTitle = test.Title })))
+                    if (!(await _mediator.Send(new CreateSubmissionFileCommand { File = item, SubmissionId = submission.SubmissionId, CanSubmitLate = test.CanSubmitLate, TestEndTime = test.EndTime, TestTitle = test.Title, TestStartTime = test.StartTime, SubmissionStatus = submission.Status })))
                         return Json(ErrorMessages.FileUploadError);
                 }
                 return Json(SuccessMessages.FileUploadSuccess);
@@ -128,7 +128,7 @@ namespace KLTN20T1020433.Web.Areas.Student.Controllers
                     return Json(ErrorMessages.FileNotFound);
                 else
                 {
-                    var message = await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, CanSubmitLate = test.CanSubmitLate, TestEndTime = test.EndTime });
+                    var message = await _mediator.Send(new RemoveSubmissionFileCommand { Id = id, CanSubmitLate = test.CanSubmitLate, TestEndTime = test.EndTime, SubmissionStatus = submission.Status, TestStartTime = test.StartTime });
                     return Json(message);
                 }
             }
