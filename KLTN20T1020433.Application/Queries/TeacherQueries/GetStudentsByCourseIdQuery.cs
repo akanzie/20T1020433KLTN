@@ -6,9 +6,12 @@ using Newtonsoft.Json;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
-    public class GetStudentsByCourseIdQuery : GetTokenResponse, IRequest<IEnumerable<GetStudentResponse>>
-    {       
+    public class GetStudentsByCourseIdQuery : IRequest<IEnumerable<GetStudentResponse>>
+    {
+        public string Token { get; set; }
+        public string Signature { get; set; }
         public string CourseId { get; set; }
+
     }
     public class GetStudentsByCourseIdQueryHandler : IRequestHandler<GetStudentsByCourseIdQuery, IEnumerable<GetStudentResponse>>
     {
@@ -20,34 +23,23 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
         {
-            var students = new List<GetStudentResponse>();
-            int j = 400;
-
-            for (int i = 0; i < 34; i++)  // Loop 34 times to cover 20T1020400 to 20T1020433
+            try
             {
-                var student = new GetStudentResponse
+                string endpoint = $"teacher-services/v1/get-teaching-students?courseId={request.CourseId}";
+                string jsonResponse = await _apiService.SendAsync(endpoint, request.Token, request.Signature);
+                if (jsonResponse != null)
                 {
-                    StudentId = $"20T1020{j}",
-                    FirstName = $"Kiệt{j}",
-                    LastName = "Châu Anh",
-                    Email = $"20T1020{j}@husc.edu.vn"
-                };
-                students.Add(student);
-                j++;
+                    var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                    IEnumerable<GetStudentResponse> students = JsonConvert.DeserializeObject<List<GetStudentResponse>>(responseData.Data.ToString())!;
+                    return students;
+                }
+                return new List<GetStudentResponse>();
             }
-            return students;
-        }
-        /*public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
-        {
-            string endpoint = " $"api/v1/student/course/{request.CourseId}";
-            string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
-            if (jsonResponse != null)
+            catch (Exception ex)
             {
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                IEnumerable<GetStudentResponse> students = JsonConvert.DeserializeObject<GetStudentResponse>(responseData.Data.ToString())!;
-                return students;
+                Console.WriteLine($"Đã xảy ra ngoại lệ khi lấy danh sách sinh viên của lớp học phần: {ex.Message}");
+                throw;
             }
-            return new List<GetStudentResponse>();
-        }*/
+        }
     }
 }

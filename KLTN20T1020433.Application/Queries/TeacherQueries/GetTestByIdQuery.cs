@@ -31,7 +31,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 {
                     if (request.TeacherId == test.TeacherId)
                     {
-                        GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);
+                        GetTestByIdResponse testResponse = _mapper.Map<GetTestByIdResponse>(test);                        
                         return testResponse;
                     }
                 }

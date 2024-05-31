@@ -16,6 +16,8 @@ namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
         public bool IsConductedAtSchool { get; set; }
         public bool CanSubmitLate { get; set; }
         public TestStatus? Status { get; set; } = null;
+        public string ModuleId { get; set; } = string.Empty;
+        public string Semester { get; set; } = string.Empty;
     }
 
 }

@@ -12,7 +12,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetStudentsBySearchQuery : PaginationSearchInput, IRequest<IEnumerable<GetStudentResponse>>
     {
-        public GetTokenResponse GetTokenResponse { get; set; }       
+        public GetTokenResponse GetTokenResponse { get; set; }
     }
     public class GetStudentsBySearchQueryHandler : IRequestHandler<GetStudentsBySearchQuery, IEnumerable<GetStudentResponse>>
     {
@@ -33,7 +33,6 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     StudentId = $"20T102000{j}",
                     FirstName = $"Kiệt{j}",
                     LastName = $"Châu Anh",
-                    Email = $"20T102000{j}@husc.edu.vn"
                 };
                 j++;
                 if (student.FirstName.Contains(request.SearchValue) || student.LastName.Contains(request.SearchValue) || student.StudentId.Contains(request.SearchValue))

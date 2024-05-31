@@ -1,15 +1,16 @@
 ﻿using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
 using MediatR;
+using Newtonsoft.Json;
 
 namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetCoursesByTeacherIdQuery : IRequest<IEnumerable<GetCourseResponse>>
     {
-        public GetTokenResponse GetTokenResponse { get; set; }
-        public string TeacherId { get; set; }
-        public int Semester { get; set; }
-        public string Scholastic { get; set; }
+        public string Token { get; set; }
+        public string Signature { get; set; }
+        public string Semester { get; set; }
+        public string ModuleId { get; set; } = "";
     }
     public class GetCoursesByTeacherIdQueryHandler : IRequestHandler<GetCoursesByTeacherIdQuery, IEnumerable<GetCourseResponse>>
     {
@@ -21,32 +22,62 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetCourseResponse>> Handle(GetCoursesByTeacherIdQuery request, CancellationToken cancellationToken)
         {
-            int j = 0;
-            var courses = new List<GetCourseResponse>();
-            for (int i = 0; i < 3; i++)
+            try
             {
-                var course1 = new GetCourseResponse
+                string endpoint = $"teacher-services/v1/get-teaching-courses?semester={request.Semester}";
+                string jsonResponse = await _apiService.SendAsync(endpoint, request.Token, request.Signature);
+                if (jsonResponse != null)
                 {
-                    CourseId = $"{j++}",
-                    CourseName = $"Lập trình web - Nhóm {j}",
-                    StudentCount = j
-                };
-                courses.Add(course1);
+                    var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                    var data = JsonConvert.DeserializeObject<List<CourseData>>(responseData.Data.ToString())!;
+                    List<GetCourseResponse> courses = new List<GetCourseResponse>();
+                    foreach (var courseData in data)
+                    {
+                        if (courseData.LopHocPhan.MaHocPhan == request.ModuleId || request.ModuleId == "")
+                        {
+                            GetCourseResponse response = new GetCourseResponse
+                            {
+                                CourseId = courseData.LopHocPhan.MaLopHocPhan,
+                                CourseName = courseData.LopHocPhan.TenLopHocPhan,
+                                StudentCount = courseData.LopHocPhan.SoSinhVienDaDuyet 
+                            };
+                            courses.Add(response);
+                        }
+                    }
+                    return courses;
+                }
+                return new List<GetCourseResponse>();
             }
-            return courses;
-        }
-        /*public async Task<IEnumerable<GetCourseResponse>> Handle(GetCoursesByTeacherIdQuery request, CancellationToken cancellationToken)
-        {
-            string endpoint =  $"api/v1/course";
-            string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
-            if (jsonResponse != null)
+            catch (Exception ex)
             {
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                IEnumerable<GetCourseResponse> courses = JsonConvert.DeserializeObject<GetCourseResponse>(responseData.Data.ToString())!;
-                return courses;
+
+                Console.WriteLine($"Đã xảy ra ngoại lệ khi lấy danh sách lớp học phần: {ex.Message}");
+                throw;
             }
-            return new List<GetCourseResponse>();
-        }*/
+        }
+    }
+    public class CourseData
+    {
+        public string MaGiangVien { get; set; }
+        public string MaSoTayGiangVien { get; set; }
+        public int TongSoGio { get; set; }
+        public int SoGioLyThuyet { get; set; }
+        public int SoGioBaiTap { get; set; }
+        public int SoGioThaoLuan { get; set; }
+        public int SoGioThucHanh { get; set; }
+        public int SoGioTuHoc { get; set; }
+        public LopHocPhan LopHocPhan { get; set; }
+    }
+
+    public class LopHocPhan
+    {
+        public string MaLopHocPhan { get; set; }
+        public string TenLopHocPhan { get; set; }
+        public string MaHocPhan { get; set; }
+        public string TenHocPhan { get; set; }
+        public int SoTinChi { get; set; }
+        public int SoSinhVienDaDuyet { get; set; }
+        // Add other properties as needed
     }
 
 }

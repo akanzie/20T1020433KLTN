@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<KLTN20T1020433.Application.DTOs.TeacherDTOs.GetCourseResponse>
+@{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,173 +14,32 @@
     </div>
     <h5 class="card-title fw-semibold mb-4 mt-4">Danh sách lớp học</h5>
     <div class="row">
-        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
-            <div class="card overflow-hidden rounded-2" style="justify-content: center">
-                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
-                    <a href="~/TeacherCourse/Detail">
-                        <h6 class="fw-semibold fs-4 overflow-hidden" style="color: white; text-overflow: ellipsis; white-space: nowrap;">Nhập môn trí tuệ nhân tạo - Nhóm 1</h6>
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-6 col-xl-3 col-10 col-md-4">
+                <div class="card overflow-hidden rounded-2" style="justify-content: center">
+                    <div class="card-body pt-3 p-3" style="background-color: royalblue;">
+
+                        <h6 class="fw-semibold fs-4 overflow-hidden" style="color: white; text-overflow: ellipsis; white-space: nowrap;">@item.CourseName</h6>
                         <div class="d-flex align-items-center justify-content-between">
                             <p class="mb-0" style="color: white;">
-                                Nguyễn Văn A
+
                             </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="position-relative" style="background-color: white;">
-                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
-                        <!-- Container content and buttons -->
-                        <div>
-                            <b>Lịch thi kết thúc học phần</b>
-                            <br>
-                            <p class="text-dark">7g30 21 thg 3, 2024</p>
-                        </div>
-                        <div class="text-end">
-                            <a class="btn btn-secondary ms-2" href="~/TeacherExam/CreateTest">Tạo đợt kiểm tra</a>
                         </div>
 
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
-            <div class="card overflow-hidden rounded-2" style="justify-content: center">
-                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
-                    <a href="~/TeacherCourse/Detail">
-                        <h6 class="fw-semibold fs-4 overflow-hidden" style="color: white; text-overflow: ellipsis; white-space: nowrap;">Lập trình web - Nhóm 1</h6>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <p class="mb-0" style="color: white;">
-                                Nguyễn Văn A
-                            </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="position-relative" style="background-color: white;">
-                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
-                        <!-- Container content and buttons -->
-                        <div>
-                            <b>Lịch thi kết thúc học phần</b>
-                            <br>
-                            <p class="text-dark">Chưa có</p>
-                        </div>
-                        <div class="text-end">
-                            <a class="btn btn-secondary ms-2" href="~/TeacherExam/CreateTest">Tạo đợt kiểm tra</a>
-                        </div>
+                    <div class="position-relative" style="background-color: white;">
+                        <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
+                            <!-- Container content and buttons -->
+                            
+                            <div class="text-end">
+                                <a class="btn btn-secondary ms-2" href="@Url.Action("Create","Test",new{type = "quiz"})">Tạo đợt kiểm tra</a>
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
-            <div class="card overflow-hidden rounded-2" style="justify-content: center">
-                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
-                    <a href="~/TeacherCourse/Detail">
-                        <h6 class="fw-semibold fs-4 overflow-hidden" style="color: white; text-overflow: ellipsis; white-space: nowrap;">Nhập môn trí tuệ nhân tạo</h6>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <p class="mb-0" style="color: white;">
-                                Nguyễn Văn A
-                            </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="position-relative" style="background-color: white;">
-                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
-                        <!-- Container content and buttons -->
-                        <div>
-                            <b>Lịch thi kết thúc học phần</b>
-                            <br>
-                            <p class="text-dark">7g30 21 thg 3, 2024</p>
-                        </div>
-                        <div class="text-end">
-                            <a class="btn btn-secondary ms-2" href="~/TeacherExam/CreateTest">Tạo đợt kiểm tra</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
-            <div class="card overflow-hidden rounded-2" style="justify-content: center">
-                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
-                    <a href="~/TeacherCourse/Detail">
-                        <h6 class="fw-semibold fs-4 overflow-hidden" style="color: white; text-overflow: ellipsis; white-space: nowrap;">Nhập môn trí tuệ nhân tạo</h6>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <p class="mb-0" style="color: white;">
-                                Nguyễn Văn A
-                            </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="position-relative" style="background-color: white;">
-                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
-                        <!-- Container content and buttons -->
-                        <div>
-                            <b>Lịch thi kết thúc học phần</b>
-                            <br>
-                            <p class="text-dark">7g30 21 thg 3, 2024</p>
-                        </div>
-                        <div class="text-end">
-                            <a class="btn btn-secondary ms-2" href="~/TeacherExam/CreateTest">Tạo đợt kiểm tra</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
-            <div class="card overflow-hidden rounded-2" style="justify-content: center">
-                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
-                    <a href="~/TeacherCourse/Detail">
-                        <h6 class="fw-semibold fs-4 overflow-hidden" style="color: white; text-overflow: ellipsis; white-space: nowrap;">Nhập môn trí tuệ nhân tạo</h6>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <p class="mb-0" style="color: white;">
-                                Nguyễn Văn A
-                            </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="position-relative" style="background-color: white;">
-                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
-                        <!-- Container content and buttons -->
-                        <div>
-                            <b>Lịch thi kết thúc học phần</b>
-                            <br>
-                            <p class="text-dark">7g30 21 thg 3, 2024</p>
-                        </div>
-                        <div class="text-end">
-                            <a class="btn btn-secondary ms-2" href="~/TeacherExam/CreateTest">Tạo đợt kiểm tra</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3 col-10 col-md-4">
-            <div class="card overflow-hidden rounded-2" style="justify-content: center">
-                <div class="card-body pt-3 p-3" style="background-color: royalblue;">
-                    <a href="~/TeacherCourse/Detail">
-                        <h6 class="fw-semibold fs-4 overflow-hidden" style="color: white; text-overflow: ellipsis; white-space: nowrap;">Nhập môn trí tuệ nhân tạo</h6>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <p class="mb-0" style="color: white;">
-                                Nguyễn Văn A
-                            </p>
-                        </div>
-                    </a>
-                </div>
-                <div class="position-relative" style="background-color: white;">
-                    <div class="container p-3 d-flex flex-column justify-content-between" style="height: 180px;">
-                        <!-- Container content and buttons -->
-                        <div>
-                            <b>Lịch thi kết thúc học phần</b>
-                            <br>
-                            <p class="text-dark">7g30 21 thg 3, 2024</p>
-                        </div>
-                        <div class="text-end">
-                            <a class="btn btn-secondary ms-2" href="~/TeacherExam/CreateTest">Tạo đợt kiểm tra</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>

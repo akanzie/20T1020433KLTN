@@ -199,7 +199,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Đã xảy ra lỗi khi lấy danh sách bài kiểm tra của giáo viên: " + ex.Message);
+                Console.WriteLine("Đã xảy ra lỗi khi lấy danh sách bài nộp của kỳ thi: " + ex.Message);
                 throw;
             }
         }

@@ -11,6 +11,5 @@ namespace KLTN20T1020433.Domain.Student
         public string StudentId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
     }
 }

@@ -26,8 +26,8 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     {
                         StudentId = student.StudentId,
                         FirstName = student.FirstName,
-                        LastName = student.LastName,
-                        Email = student.Email
+                        LastName = student.LastName
+                        
                     };
 
                     await connection.ExecuteAsync(

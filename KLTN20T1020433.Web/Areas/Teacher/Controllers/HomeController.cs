@@ -23,11 +23,12 @@ namespace KLTN20T1020433.Web.Controllers
         {
             _mediator = mediator;
         }
-        public async Task<IActionResult> Index(string teacherId)
+        public async Task<IActionResult> Index()
         {
             try
             {
-                var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { TeacherId = teacherId });
+                var user = User.GetUserData();
+                var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { Semester = "2022-2023.1" , Token = user.Token, Signature = user.Signature});
                 return View(courses);
             }
             catch (Exception ex)

@@ -1,5 +1,5 @@
 ﻿@using KLTN20T1020433.Web.AppCodes
-@model KLTN20T1020433.Web.Areas.Teacher.Models.CourseModel
+@model KLTN20T1020433.Web.Areas.Teacher.Models.SelectStudentModel
 @{
     Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
 }
@@ -11,14 +11,22 @@
                 <li class="breadcrumb-item fw-semibold fs-8 text-dark d-md-flex d-none">Chọn sinh viên tham gia</li>
             </ol>
             <div class="d-flex justify-content-between flex-wrap">
-                <div class="d-flex justify-content-start align-items-center flex wrap mb-3">
+                <div class="d-flex justify-content-start align-items-center flex-wrap mb-3">
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
                             data-bs-target="#studentModal">
                         Chọn sinh viên khác
                     </button>
-                    <span class="fw-semibold btn btn-outline-info" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Học kỳ: 1, Năm học: 2023-2024</span>   
+                    @if (Model.Semester != 0)
+                    {
+                        <span class="fw-semibold btn btn-outline-info me-2" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Học kỳ: @Model.Semester , Năm học: @Model.SchoolYear</span>
+                    }
+                    else
+                    {
+                        <span class="fw-semibold btn btn-outline-info me-2" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Chọn học kỳ, năm học</span>
+                    }
                 </div>
+
                 <div class="mb-3">
                     <button id="cancelBtn" type="button" class="btn btn-outline-muted me-2" style="width:100px">Hủy</button>
                     <button id="saveBtn" type="button" class="btn btn-success" style="width:100px">Lưu</button>
@@ -27,18 +35,14 @@
             <div class="row mt-4">
                 <div class="col-md-5">
                     <div class="col-lg mb-4 border rounded p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="d-flex align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+                            <div class="d-flex align-items-center mb-2">
                                 <h4 class="mb-0 me-1 fw-semibold">Sinh viên</h4>
                                 <span class="fw-semibold" id="studentCount"></span>
                             </div>
                             <div class="">
                                 <select class="form-select" id="Course" name="courseId">
                                     <option selected value="">Chọn lớp học phần</option>
-                                    @foreach (var item in Model.Courses)
-                                    {
-                                        <option value="@item.CourseId" data="(@item.StudentCount)">@item.CourseName</option>
-                                    }
 
                                 </select>
                             </div>
@@ -125,29 +129,67 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row">
+                <div class="row mb-2">
                     <div class="col-md-6">
                         <label for="Semester">Học kỳ:</label>
                         <select class="form-select" id="Semester" name="Semester">
-                            <option value="1">Học kỳ 1</option>
-                            <option value="2">Học kỳ 2</option>
-                            <option value="3">Học kỳ 3</option>
+                            @switch (Model.Semester)
+                            {
+                                case 1:
+                                    <option value="1" selected>Học kỳ 1</option>
+                                    <option value="2">Học kỳ 2</option>
+                                    <option value="3">Học kỳ 3</option>
+                                    break;
+                                case 2:
+                                    <option value="1">Học kỳ 1</option>
+                                    <option value="2" selected>Học kỳ 2</option>
+                                    <option value="3">Học kỳ 3</option>
+                                    break;
+                                case 3:
+                                    <option value="1">Học kỳ 1</option>
+                                    <option value="2">Học kỳ 2</option>
+                                    <option value="3" selected>Học kỳ 3</option>
+                                    break;
+                                default:
+                                    <option value="1" selected>Học kỳ 1</option>
+                                    <option value="2">Học kỳ 2</option>
+                                    <option value="3">Học kỳ 3</option>
+                                    break;
+                            }
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="Scholastic">Năm học:</label>
-                        <select class="form-select" id="Scholastic" name="Scholastic">
-                            @foreach (var item in Helper.GetScholastics())
+                        <label for="SchoolYear">Năm học:</label>
+                        <select class="form-select" id="SchoolYear" name="SchoolYear">
+                            @foreach (var item in Model.SchoolYears)
                             {
-                                <option value="@item">@item</option>
+                                if (item.NamHoc == Model.SchoolYear)
+                                {
+                                    <option value="@item.NamHoc" selected>@item.NamHoc</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.NamHoc">@item.NamHoc</option>
+                                }
                             }
                         </select>
                     </div>
                 </div>
+                <select class="form-select" id="Module" name="moduleId">
+                    @if (Model.Module != null)
+                    {
+                        <option selected value="@Model.Module.ModuleId">@Model.Module.ModuleName</option>
+                    }
+                    else
+                    {
+                        <option selected value="">Chọn học phần</option>
+                    }
+
+                </select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" onclick="saveSemester()">Lưu</button>
+                <button type="button" class="btn btn-primary" onclick="saveModule()">Lưu</button>
             </div>
         </div>
     </div>
@@ -175,18 +217,27 @@
                 return;
             });
             $("#searchStudentBtn").on('click', function () {
-
                 searchStudents("#listStudents");
                 return;
             });
 
             $('#cancelBtn').on('click', function () {
-
                 cancelCreation(testId);
             });
             $("#saveBtn").on('click', function () {
-
-                saveSelection(testId, getSelectedStudentIds());
+                var moduleId = $('#Module').val();
+                var semester = $('#Semester').val();
+                var schoolYear = $('#SchoolYear').val();
+                saveSelection(testId, getStudentSelection(), schoolYear + '.' + semester, moduleId);
+                console.log(testId);
+            });
+            $('#Semester').on('change', function () {
+                console.log('a');
+                selectSemester();
+            });
+            $('#SchoolYear').on('change', function () {
+                console.log('a');
+                selectSemester();
             });
             $('#Course').on('change', function () {
                 selectCourse(getSelectedStudentIds());
@@ -243,6 +294,16 @@
             });
             return selectedStudentIds;
         }
+        function getStudentSelection() {
+            var selectedStudents = [];
+            $('#selectedStudents .student-checkbox').each(function () {
+                var studentId = $(this).val();
+                console.log(studentId);
+                var studentName = $(this).closest('tr').find('td:nth-child(3)').text();
+                selectedStudents.push({ studentId: studentId, studentName: studentName });
+            });
+            return selectedStudents;
+        }
 
         function getStudents(type, courseId) {
             var url = '@Url.Action("GetStudents", "Test")';
@@ -295,16 +356,16 @@
         function selectCourse(selectedStudentIds) {
             var courseId = $('#Course').val();
             getStudents('Quiz', courseId);
-            var studentCount = $('#Course').find(':selected').attr('data');
+            var studentCount = $('#Course').find(':selected').data('student-count');
             $('#studentCount').text(studentCount);
             checkSelectedStudents(selectedStudentIds);
         }
-        function saveSelection(testId, studentIds) {
+        function saveSelection(testId, students, semester, moduleId) {
             var url = '@Url.Action("Save", "Test")';
             $.ajax({
                 url: url,
                 type: 'POST',
-                data: { testId: testId, selectedStudentIds: studentIds },
+                data: { testId: testId, students: students, semester: semester, moduleId: moduleId },
                 success: function (response) {
                     if (response.success)
                         window.location.href = '@Url.Action("Index", "Test")';
@@ -371,11 +432,60 @@
             var selectedStudentCount = $('#selectedStudents .student-checkbox').length;
             $('#selectedStudentCount').text("(" + selectedStudentCount + ")");
         }
-        function saveSemester() {
+        function selectSemester() {
             var semester = $('#Semester').val();
-            var scholastic = $('#Scholastic').val();
-            $('#selectSemester').text('Học kỳ: ' + semester + ', Năm học: ' + scholastic);
+            var schoolYear = $('#SchoolYear').val();
+            getModules(schoolYear + '.' + semester);
+        }
+        function saveModule() {
+            var moduleId = $('#Module').val();
+            var semester = $('#Semester').val();
+            var schoolYear = $('#SchoolYear').val();
+            $('#selectSemester').text('Học kỳ: ' + semester + ', Năm học: ' + schoolYear);
             $('#selectSemesterModal').modal('hide');
+            getCourses(schoolYear + '.' + semester, moduleId);
+        }
+        function getModules(semester) {
+            var url = '@Url.Action("GetModules", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { semester: semester },
+                success: function (response) {
+                    // Assuming response is a list of courses
+                    var modules = response;
+                    var moduleSelect = $('#Module');
+                    moduleSelect.empty();
+                    moduleSelect.append('<option selected value="">Chọn học phần</option>');
+                    $.each(modules, function (index, module) {
+                        moduleSelect.append('<option value="' + module.moduleId + '">' + module.moduleName + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+        function getCourses(semester, moduleId) {
+            var url = '@Url.Action("GetCourses", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { semester: semester, moduleId: moduleId },
+                success: function (response) {
+                    // Assuming response is a list of courses
+                    var courses = response;
+                    var courseSelect = $('#Course');
+                    courseSelect.empty();
+                    courseSelect.append('<option selected value="">Chọn lớp học phần</option>');
+                    $.each(courses, function (index, course) {
+                        courseSelect.append('<option value="' + course.courseId + '" data-student-count="(' + course.studentCount + ')">' + course.courseName + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
         }
     </script>
 }

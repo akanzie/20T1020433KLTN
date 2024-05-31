@@ -15,7 +15,8 @@ namespace KLTN20T1020433.Application.Queries
 {
     public class GetProfileByTokenQuery : IRequest<GetProfileResponse>
     {
-        public GetTokenResponse GetTokenResponse { get; set; }
+        public string Token { get; set; }
+        public string Signature { get; set; }
     }
     public class GetProfileByTokenQueryHandler : IRequestHandler<GetProfileByTokenQuery, GetProfileResponse>
     {
@@ -30,10 +31,11 @@ namespace KLTN20T1020433.Application.Queries
             try
             {
                 string endpoint = "account/v1/profile";
-                string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
+                string jsonResponse = await _apiService.SendAsync(endpoint, request.Token, request.Signature);
                 if (jsonResponse != null)
                 {
                     var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                    
                     GetProfileResponse profile = JsonConvert.DeserializeObject<GetProfileResponse>(responseData.Data.ToString())!;
                     return profile;
                 }

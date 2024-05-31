@@ -37,6 +37,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     parameters.Add("@LastUpdateTime", data.LastUpdateTime);
                     parameters.Add("@TestType", data.TestType.ToString());
                     parameters.Add("@TeacherId", data.TeacherId);
+                    
                     parameters.Add("@TestId", dbType: DbType.Int32, direction: ParameterDirection.Output);
                     await connection.ExecuteAsync(
                        "AddTest", parameters, commandType: CommandType.StoredProcedure);
@@ -117,7 +118,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         TestType = testType.ToString() ?? "",
                         TestStatus = testStatus.ToString() ?? "",
                         FromTime = fromTime,
-                        ToTime = toTime 
+                        ToTime = toTime
                     };
                     count = await connection.ExecuteScalarAsync<int>(
                         "CountTestsOfTeacher", parameters, commandType: CommandType.StoredProcedure);
@@ -323,7 +324,10 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                         LastUpdateTime = data.LastUpdateTime,
                         TestType = data.TestType.ToString(),
                         TeacherId = data.TeacherId,
-                        TestId = data.TestId
+                        TestId = data.TestId,
+                        Semester = data.Semester,
+                        ModuleId = data.ModuleId
+
                     };
 
                     result = await connection.ExecuteAsync(

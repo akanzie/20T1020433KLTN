@@ -11,6 +11,8 @@ namespace KLTN20T1020433.Web.AppCodes
         public string? ClientIP { get; set; }
         public string? SessionId { get; set; }
         public string? Role { get; set; }
+        public string? Token { get; set; } 
+        public string? Signature { get; set; } 
 
         /// <summary>
         /// Thông tin người dùng dưới dạng danh sách các Claim
@@ -28,6 +30,8 @@ namespace KLTN20T1020433.Web.AppCodes
                     new Claim(nameof(ClientIP), ClientIP ?? ""),
                     new Claim(nameof(SessionId), SessionId ?? ""),
                     new Claim(nameof(Role), Role ?? ""),
+                     new Claim(nameof(Token), Token ?? ""),
+                    new Claim(nameof(Signature), Signature ?? ""),
                 };
                 return claims;
             }
@@ -69,6 +73,9 @@ namespace KLTN20T1020433.Web.AppCodes
                 userData.SessionId = principal.FindFirstValue(nameof(userData.SessionId));
 
                 userData.Role = principal.FindFirstValue(nameof(userData.Role));
+                userData.Token = principal.FindFirstValue(nameof(userData.Token));
+
+                userData.Signature = principal.FindFirstValue(nameof(userData.Signature));
 
                 return userData;
             }

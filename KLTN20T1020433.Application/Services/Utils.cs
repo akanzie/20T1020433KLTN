@@ -80,7 +80,7 @@ namespace KLTN20T1020433.Application.Services
             else if (ipAddress == "")
                 return false;
             return true;
-        }        
+        }
         public static string CalculateSignature(string appId, string secretKey, string time)
         {
             string data = $"{appId}{secretKey}{time}";
@@ -96,5 +96,39 @@ namespace KLTN20T1020433.Application.Services
                 return sb.ToString();
             }
         }
+        public static (string FirstName, string LastName) ParseStudentName(string studentName)
+        {
+            if (string.IsNullOrWhiteSpace(studentName))
+            {
+                return ("Unknown", "Unknown");
+            }
+
+            var names = studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (names.Length == 1)
+            {
+                return ("Unknown", names[0]); // If there's only one name, treat it as LastName
+            }
+
+            var firstName = names[^1]; // Last element is FirstName
+            var lastName = string.Join(' ', names.Take(names.Length - 1)); // Join all but the last as LastName
+            return (firstName, lastName);
+        }
+        public static (string SchoolYear, int Semester) ParseSemester(string semesterString)
+        {
+            if (string.IsNullOrWhiteSpace(semesterString))
+            {
+                return ("", 0);
+            }
+
+            var parts = semesterString.Split('.');
+            if (parts.Length != 2 || !int.TryParse(parts[1], out int semester))
+            {
+                return ("", 0);
+            }
+
+            string schoolYear = parts[0];
+            return (schoolYear, semester);
+        }
+
     }
 }

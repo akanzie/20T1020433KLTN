@@ -43,9 +43,8 @@ namespace KLTN20T1020433.Web.Controllers
                 return View("Error");
             }
             string time = DateTime.Now.ToString("yyyyMMddHHmmss");
-            var getTokenResponse = await _mediator.Send(new GetTokenQuery { Host = host, Code = code, Time = time });
-            ApplicationContext.SetSessionData(Constants.ACCESS_TOKEN, getTokenResponse);
-            var profile = await _mediator.Send(new GetProfileByTokenQuery { GetTokenResponse = getTokenResponse });
+            var getTokenResponse = await _mediator.Send(new GetTokenQuery { Host = host, Code = code, Time = time });           
+            var profile = await _mediator.Send(new GetProfileByTokenQuery { Token = getTokenResponse.Token, Signature = getTokenResponse.Signature});
             WebUserData userData = new WebUserData()
             {
                 UserId = profile.PhanLoai == Constants.STUDENT_ROLE ? profile.MaSinhVien : profile.MaGiangVien,
@@ -53,7 +52,9 @@ namespace KLTN20T1020433.Web.Controllers
                 Email = profile.Email,
                 ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
                 SessionId = HttpContext.Session.Id,
-                Role = profile.PhanLoai
+                Role = profile.PhanLoai,
+                Signature = getTokenResponse.Signature,
+                Token = getTokenResponse.Token
             };
             await HttpContext.SignInAsync(userData.CreatePrincipal());
             return profile.PhanLoai == Constants.STUDENT_ROLE ? RedirectToAction("Index", "Home", new { area = "Student" }) : RedirectToAction("Index", "Home", new { area = "Teacher" });

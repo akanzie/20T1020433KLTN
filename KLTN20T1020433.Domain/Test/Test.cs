@@ -24,6 +24,8 @@ namespace KLTN20T1020433.Domain.Test
         public bool IsConductedAtSchool { get; set; }
         public bool CanSubmitLate { get; set; }
         public DateTime CreatedTime { get; set; }
+        
+        public string Semester { get; set; }
         public DateTime? LastUpdateTime { get; set; } = null;
         public TestStatus _status = TestStatus.Creating;
 
@@ -51,6 +53,6 @@ namespace KLTN20T1020433.Domain.Test
             }
         }        
         public string TeacherId { get; set; }
-
+        public string ModuleId { get; set; }
     }
 }

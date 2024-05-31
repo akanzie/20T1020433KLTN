@@ -75,7 +75,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
 
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> CancelCreation(int testId = 0)
         {
@@ -221,7 +221,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-        
+
         public async Task<IActionResult> Edit(int id = 0)
         {
             try
@@ -297,7 +297,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Save(string[] selectedStudentIds, int testId = 0)
+        public async Task<IActionResult> Save(List<StudentSelection> students, int testId = 0, string semester = "", string moduleId = "")
         {
             try
             {
@@ -305,7 +305,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 {
                     return Json(new { success = false, message = ErrorMessages.GeneralError });
                 }
-                if (selectedStudentIds.Count() == 0)
+                if (students.Count() == 0)
                 {
                     return Json(new { success = false, message = ErrorMessages.ListStudentsIsEmpty });
                 }
@@ -315,8 +315,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     return Json(new { success = false, message = ErrorMessages.TestNotFound });
                 var updateTest = _mapper.Map<UpdateTestCommand>(test);
                 updateTest.Status = TestStatus.InProgress;
+                updateTest.Semester = semester;
+                updateTest.ModuleId = moduleId;
                 await _mediator.Send(updateTest);
-                await _mediator.Send(new CreateSubmissionCommand { TestId = testId, StudentIds = selectedStudentIds });
+                await _mediator.Send(new CreateSubmissionCommand { TestId = testId, Students = students });
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -357,7 +359,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 Console.WriteLine($"An exception occurred: {ex.Message}");
                 return View("Error", new ErrorMessageModel { Title = "Đã xảy ra lỗi không mong muốn", Content = ErrorMessages.RequestNotCompleted });
             }
-        }        
+        }
 
         [HttpPost]
         public async Task<IActionResult> UploadTestFile(List<IFormFile> files, int? testId = 0)
@@ -417,17 +419,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                     testId = await _mediator.Send(command);
                     HttpContext.Session.SetInt32(Constants.TESTID, testId.Value);
                 }
-                var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+                var schoolYears = await _mediator.Send(new GetSchoolYearQuery { });
                 switch (type.ToLower())
                 {
                     case "quiz":
-                        var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Tạo bài kiểm tra";
-                        return View("QuizSelectStudents", new CourseModel { Courses = courses, TestId = testId.Value });
+                        return View("QuizSelectStudents", new SelectStudentModel { SchoolYears = schoolYears, TestId = testId.Value });
                     case "exam":
-                        var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Tạo kỳ thi";
-                        return View("ExamSelectStudents", new ExamModel { Exams = exams, TestId = testId.Value });
+                        return View("ExamSelectStudents", new SelectStudentModel { SchoolYears = schoolYears, TestId = testId.Value });
                     default:
                         return View("NotFound");
                 }
@@ -453,17 +453,17 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 await _mediator.Send(updateTest);
                 HttpContext.Session.Remove(Constants.TESTID);
                 var test = await _mediator.Send(new GetTestByIdQuery { Id = id, TeacherId = user.UserId });
-                var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
+                var module = await _mediator.Send(new GetModuleByIdQuery { ModuleId = test.ModuleId, Signature = user.Signature, Token = user.Token });
+                var schoolYears = await _mediator.Send(new GetSchoolYearQuery { });
+                var semester = Utils.ParseSemester(test.Semester);
                 switch (test.TestType)
                 {
                     case TestType.Quiz:
-                        var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Chỉnh sửa bài kiểm tra";
-                        return View("QuizSelectStudents", new CourseModel { Courses = courses, TestId = id });
+                        return View("QuizSelectStudents", new SelectStudentModel { Module = module, Semester = semester.Semester, SchoolYear = semester.SchoolYear, SchoolYears = schoolYears, TestId = id });
                     case TestType.Exam:
-                        var exams = await _mediator.Send(new GetExamsByTeacherIdQuery { GetTokenResponse = token, TeacherId = user.UserId });
                         ViewBag.Title = "Chỉnh sửa kỳ thi";
-                        return View("ExamSelectStudents", new ExamModel { Exams = exams, TestId = id });
+                        return View("ExamSelectStudents", new SelectStudentModel { Module = module, Semester = semester.Semester, SchoolYear = semester.SchoolYear, SchoolYears = schoolYears, TestId = id });
                     default:
                         return View("NotFound");
                 }
@@ -503,19 +503,15 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             try
             {
-                var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
-                if (token == null)
-                {
-                    token = new GetTokenResponse();
-                }
+                var user = User.GetUserData();
                 IEnumerable<GetStudentResponse> students = new List<GetStudentResponse>();
                 if (type == TestType.Quiz)
                 {
-                    students = await _mediator.Send(new GetStudentsByCourseIdQuery { CourseId = courseId, Token = token.Token, Signature = token.Signature });
+                    students = await _mediator.Send(new GetStudentsByCourseIdQuery { CourseId = courseId, Token = user.Token, Signature = user.Signature });
                 }
                 else
                 {
-                    students = await _mediator.Send(new GetStudentsByExamIdQuery { ExamId = examId, Token = token.Token, Signature = token.Signature });
+                    students = await _mediator.Send(new GetStudentsByExamIdQuery { ExamId = examId, Token = user.Token, Signature = user.Signature });
                 }
                 return View("SearchStudents", new StudentModel { Students = students });
             }
@@ -529,6 +525,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             try
             {
+
                 if (testId <= 0)
                 {
                     return Json(ErrorMessages.GeneralError);
@@ -550,10 +547,8 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
         {
             try
             {
-                var token = ApplicationContext.GetSessionData<GetTokenResponse>(Constants.ACCESS_TOKEN);
-
+                var user = User.GetUserData();
                 var students = await _mediator.Send(new GetStudentsBySearchQuery { SearchValue = searchValue });
-
 
                 return View(new StudentModel { Students = students });
             }
@@ -563,7 +558,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
-       
+
         public async Task<IActionResult> ListTestFiles(int testId = 0)
         {
             try
@@ -605,6 +600,34 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred in SelectStudents: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        public async Task<IActionResult> GetCourses(string semester, string moduleId)
+        {
+            try
+            {
+                var user = User.GetUserData();
+                var courses = await _mediator.Send(new GetCoursesByTeacherIdQuery { ModuleId = moduleId, Semester = semester, Signature = user.Signature, Token = user.Token });
+                return Json(courses);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in GetStudents: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        public async Task<IActionResult> GetModules(string semester)
+        {
+            try
+            {
+                var user = User.GetUserData();
+                var modules = await _mediator.Send(new GetModulesQuery { Semester = semester, Signature = user.Signature, Token = user.Token });
+                return Json(modules);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in GetStudents: {ex.Message}");
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
