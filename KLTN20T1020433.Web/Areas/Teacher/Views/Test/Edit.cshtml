@@ -66,7 +66,7 @@
                     </div>
 
                     <!-- Cột phải -->
-                    <div class="col-lg-4 mt-4 me-0">                        
+                    <div class="col-lg-4 mt-4 me-0">
                         <div class="col-lg card">
                             <div class="card-body">
                                 <div class="mb-3">
@@ -84,11 +84,60 @@
                                 </div>
                             </div>
                         </div>
+                        @if (@Model.TestType == KLTN20T1020433.Domain.Test.TestType.Exam)
+                        {
+                            <div class="col-lg card">
+                                <div class="card-body">
+                                    <span class="fw-semibold btn btn-outline-info me-2 mb-2" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Chọn học kỳ, năm học</span>
+                                    <div id="examSchedule">
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     </form>
+</div>
+<div class="modal fade" id="selectSemesterModal" tabindex="-1" aria-labelledby="selectSemesterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectSemesterLabel">Chọn học kỳ và năm học</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <label for="Semester">Học kỳ:</label>
+                        <select class="form-select" id="Semester" name="Semester">
+
+                            <option value="1">Học kỳ 1</option>
+                            <option value="2">Học kỳ 2</option>
+                            <option value="3">Học kỳ 3</option>
+
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="SchoolYear">Năm học:</label>
+                        <select class="form-select" id="SchoolYear" name="SchoolYear">
+                            <option value="">Chọn năm học</option>
+                        </select>
+                    </div>
+                </div>
+                <select class="form-select" id="Module" name="moduleId">
+                    <option selected value="">Chọn học phần</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveSemester()">Lưu</button>
+            </div>
+        </div>
+    </div>
 </div>
 @section Scripts {
     <script>
@@ -110,6 +159,7 @@
         function initialize() {
             var testId = @Model.TestId;
             getFiles(testId);
+            getSchoolYears();
             bindEvents(testId);
         }
         $(document).ready(function () {
@@ -132,6 +182,14 @@
                 var fileId = $(this).data('fileid');
                 removeFile(fileId, testId);
             });
+            $('#Semester').on('change', function () {
+                console.log('a');
+                selectSemester();
+            });
+            $('#SchoolYear').on('change', function () {
+                console.log('a');
+                selectSemester();
+            });
             $('.class-btn').click(function () {
                 $('.class-btn').removeClass('selected');
                 $(this).addClass('selected');
@@ -142,6 +200,40 @@
                 });
             });
 
+        }
+        function selectSemester() {
+            var semester = $('#Semester').val();
+            var schoolYear = $('#SchoolYear').val();
+            getModules(schoolYear + '.' + semester);
+        }
+        function saveSemester() {
+            var semester = $('#Semester').val();
+            var schoolYear = $('#SchoolYear').val();
+            var moduleId = $('#Module').val();
+            $('#selectSemester').text('Học kỳ: ' + semester + ', Năm học: ' + schoolYear);
+            $('#selectSemesterModal').modal('hide');
+            getExamSchedules(schoolYear + '.' + semester, moduleId);
+        }
+        function getModules(semester) {
+            var url = '@Url.Action("GetModules", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { semester: semester },
+                success: function (response) {
+                    // Assuming response is a list of courses
+                    var modules = response;
+                    var moduleSelect = $('#Module');
+                    moduleSelect.empty();
+                    moduleSelect.append('<option selected value="">Chọn học phần</option>');
+                    $.each(modules, function (index, module) {
+                        moduleSelect.append('<option value="' + module.moduleId + '">' + module.moduleName + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
         }
         function uploadFiles(testId) {
             var formData = new FormData();
@@ -230,7 +322,42 @@
                     alert("Your request is not valid!");
                 }
             });
-        }        
+        }
+        function getExamSchedules(semester, moduleId) {
+            var url = '@Url.Action("GetExamSchedules", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { semester: semester, moduleId: moduleId },
+                success: function (response) {
+                    $("#examSchedule").html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+        function getSchoolYears() {
+            var url = '@Url.Action("GetSchoolYears", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (response) {
+                    var select = $('#SchoolYear');
+                    select.empty(); // Clear existing options
+                    select.append('<option value="">Chọn năm học</option>'); // Default option
+
+                    // Assuming response is an array of school years
+                    response.forEach(function (schoolYear) {
+                        var option = `<option value="${schoolYear.namHoc}">${schoolYear.namHoc}</option>`;
+                        select.append(option);
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
     </script>
 
 }

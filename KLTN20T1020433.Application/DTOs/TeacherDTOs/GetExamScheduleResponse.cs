@@ -8,7 +8,8 @@ namespace KLTN20T1020433.Application.DTOs.TeacherDTOs
 {
     public class GetExamScheduleResponse
     {
-        public string ExamId { get; set; }
-        public string ExamName { get; set; }
+        public string CourseName { get; set; }
+        public string ExamDate { get; set; }
+        public int ExamDuration { get; set; }
     }
 }

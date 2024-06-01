@@ -424,10 +424,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 {
                     case "quiz":
                         ViewBag.Title = "Tạo bài kiểm tra";
-                        return View("QuizSelectStudents", new SelectStudentModel { SchoolYears = schoolYears, TestId = testId.Value });
+                        return View("SelectStudents", new SelectStudentModel { SchoolYears = schoolYears, TestId = testId.Value, TestType = TestType.Quiz });
                     case "exam":
                         ViewBag.Title = "Tạo kỳ thi";
-                        return View("ExamSelectStudents", new SelectStudentModel { SchoolYears = schoolYears, TestId = testId.Value });
+                        return View("SelectStudents", new SelectStudentModel { SchoolYears = schoolYears, TestId = testId.Value, TestType = TestType.Exam });
                     default:
                         return View("NotFound");
                 }
@@ -460,10 +460,10 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 {
                     case TestType.Quiz:
                         ViewBag.Title = "Chỉnh sửa bài kiểm tra";
-                        return View("QuizSelectStudents", new SelectStudentModel { Module = module, Semester = semester.Semester, SchoolYear = semester.SchoolYear, SchoolYears = schoolYears, TestId = id });
+                        return View("SelectStudents", new SelectStudentModel { Module = module, Semester = semester.Semester, SchoolYear = semester.SchoolYear, SchoolYears = schoolYears, TestId = id, TestType = TestType.Quiz });
                     case TestType.Exam:
                         ViewBag.Title = "Chỉnh sửa kỳ thi";
-                        return View("ExamSelectStudents", new SelectStudentModel { Module = module, Semester = semester.Semester, SchoolYear = semester.SchoolYear, SchoolYears = schoolYears, TestId = id });
+                        return View("SelectStudents", new SelectStudentModel { Module = module, Semester = semester.Semester, SchoolYear = semester.SchoolYear, SchoolYears = schoolYears, TestId = id , TestType = TestType.Exam});
                     default:
                         return View("NotFound");
                 }
@@ -628,6 +628,34 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred in GetStudents: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
+        }
+        public async Task<IActionResult> GetExamSchedules(string semester, string moduleId)
+        {
+            try
+            {
+                var user = User.GetUserData();                
+                var examSchedules = await _mediator.Send(new GetExamScheduleQuery { Semester = semester, ModuleId = moduleId, Signature = user.Signature, Token = user.Token });
+                return View(examSchedules);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in GetStudents: {ex.Message}");
+                return Json(ErrorMessages.RequestNotCompleted);
+            }
+
+        }
+        public async Task<IActionResult> GetSchoolYears()
+        {
+            try
+            {
+                var schoolYears = await _mediator.Send(new GetSchoolYearQuery { });
+                return Json(schoolYears);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred in GetSchoolYears: {ex.Message}");
                 return Json(ErrorMessages.RequestNotCompleted);
             }
         }
