@@ -176,7 +176,7 @@
                     </div>
                 </div>
                 <select class="form-select" id="Module" name="moduleId">
-                    @if (Model.Module != null)
+                    @if (Model.Module != null && Model.Module.ModuleName != "")
                     {
                         <option selected value="@Model.Module.ModuleId">@Model.Module.ModuleName</option>
                     }
@@ -200,6 +200,7 @@
             var testId = @Model.TestId;
             bindEvents(testId);
             getSelectedStudents(testId);
+            saveModule();
             countSubmission("#selectedStudentCount", testId);
             checkSelectedStudents(getSelectedStudentIds());
         }
@@ -255,143 +256,6 @@
                 checkSelectedStudents(getSelectedStudentIds());
             });
         }
-        function searchStudents(resultContainer) {
-            var searchValue = $(resultContainer).closest('.mb-4').find('.search-input').val().toLowerCase();
-
-            $(resultContainer + " tbody tr").each(function () {
-                var studentId = $(this).find("td:nth-child(2)").text().toLowerCase();
-                var studentName = $(this).find("td:nth-child(3)").text().toLowerCase();
-                if (studentName.includes(searchValue) || studentId.includes(searchValue)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
-
-        function countSubmission(item, testId) {
-            var url = '@Url.Action("CountSubmission", "Submission")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: { testId: testId },
-                success: function (response) {
-                    if (response.success)
-                        $(item).text("(" + response.count + ")");
-                    else
-                        $(item).text(0);
-                },
-                error: function (xhr, status, error) {
-                    handleAjaxError(xhr);
-                }
-            });
-        }
-        function getSelectedStudentIds() {
-            var selectedStudentIds = [];
-            $('#selectedStudents .student-checkbox').each(function () {
-                var studentId = $(this).val();
-                selectedStudentIds.push(studentId);
-            });
-            return selectedStudentIds;
-        }
-        function getStudentSelection() {
-            var selectedStudents = [];
-            $('#selectedStudents .student-checkbox').each(function () {
-                var studentId = $(this).val();
-                console.log(studentId);
-                var studentName = $(this).closest('tr').find('td:nth-child(3)').text();
-                selectedStudents.push({ studentId: studentId, studentName: studentName });
-            });
-            return selectedStudents;
-        }
-
-        function getStudents(type, courseId) {
-            var url = '@Url.Action("GetStudents", "Test")';
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: {
-                    courseId: courseId,
-                    type: type
-                },
-                success: function (response) {
-                    $("#listStudents").html(response);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        }
-
-        function getSelectedStudents(testId) {
-            var url = '@Url.Action("GetSelectedStudents", "Test")';
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: { testId: testId },
-                success: function (response) {
-                    $("#selectedStudents").html(response);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        }
-        function doSearchStudents(formSearchInput) {
-            var url = "@Url.Action("SearchStudents", "Test")";
-            var container = $(formSearchInput).data('container');
-            var postData = $(formSearchInput).serializeArray();
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: postData,
-                success: function (response) {
-                    $(container).html(response);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        }
-        function selectCourse(selectedStudentIds) {
-            var courseId = $('#Course').val();
-            getStudents('Quiz', courseId);
-            var studentCount = $('#Course').find(':selected').data('student-count');
-            $('#studentCount').text(studentCount);
-            checkSelectedStudents(selectedStudentIds);
-        }
-        function saveSelection(testId, students, semester, moduleId) {
-            var url = '@Url.Action("Save", "Test")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: { testId: testId, students: students, semester: semester, moduleId: moduleId },
-                success: function (response) {
-                    if (response.success)
-                        window.location.href = '@Url.Action("Index", "Test")';
-                    else {
-                        showToast(response.message);
-                    }
-                },
-                error: function (error) {
-                    alert("Your request is not valid!");
-                }
-            });
-        }
-        function cancelCreation(testId) {
-            var url = '@Url.Action("CancelCreation", "Test")';
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: { testId: testId },
-                success: function (result) {
-                    window.location.href = '@Url.Action("Index", "Test")';
-                },
-                error: function (error) {
-                    alert("Your request is not valid!");
-                }
-            });
-        }
         function selectStudents(listStudent) {
             var students = [];
             $(listStudent + ' .student-checkbox:checked').each(function () {
@@ -445,6 +309,150 @@
             $('#selectSemesterModal').modal('hide');
             getCourses(schoolYear + '.' + semester, moduleId);
         }
+        function searchStudents(resultContainer) {
+            var searchValue = $(resultContainer).closest('.mb-4').find('.search-input').val().toLowerCase();
+
+            $(resultContainer + " tbody tr").each(function () {
+                var studentId = $(this).find("td:nth-child(2)").text().toLowerCase();
+                var studentName = $(this).find("td:nth-child(3)").text().toLowerCase();
+                if (studentName.includes(searchValue) || studentId.includes(searchValue)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+        function selectCourse(selectedStudentIds) {
+            var courseId = $('#Course').val();
+            getStudents('Quiz', courseId);
+            var studentCount = $('#Course').find(':selected').data('student-count');
+            $('#studentCount').text(studentCount);
+            checkSelectedStudents(selectedStudentIds);
+        }
+        function getSelectedStudentIds() {
+            var selectedStudentIds = [];
+            $('#selectedStudents .student-checkbox').each(function () {
+                var studentId = $(this).val();
+                selectedStudentIds.push(studentId);
+            });
+            return selectedStudentIds;
+        }
+        function getStudentSelection() {
+            var selectedStudents = [];
+            $('#selectedStudents .student-checkbox').each(function () {
+                var studentId = $(this).val();
+                console.log(studentId);
+                var studentName = $(this).closest('tr').find('td:nth-child(3)').text();
+                selectedStudents.push({ studentId: studentId, studentName: studentName });
+            });
+            return selectedStudents;
+        }
+        function countSubmission(item, testId) {
+            var url = '@Url.Action("CountSubmission", "Submission")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (response) {
+                    if (response.success)
+                        $(item).text("(" + response.count + ")");
+                    else
+                        $(item).text(0);
+                },
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr);
+                }
+            });
+        }
+
+        function getStudents(type, courseId) {
+            var url = '@Url.Action("GetStudents", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {
+                    courseId: courseId,
+                    type: type
+                },
+                success: function (response) {
+                    $("#listStudents").html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function getSelectedStudents(testId) {
+            var url = '@Url.Action("GetSelectedStudents", "Test")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { testId: testId },
+                success: function (response) {
+                    $("#selectedStudents").html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+        function doSearchStudents(formSearchInput) {
+            var url = "@Url.Action("SearchStudents", "Test")";
+            var moduleId = $('#Module').val();
+            var semester = $('#Semester').val();
+            var schoolYear = $('#SchoolYear').val();
+            var searchTerm = schoolYear + '.' + semester;
+            var container = $(formSearchInput).data('container');
+            var postData = $(formSearchInput).serializeArray();
+            postData.push({ name: 'Semester', value: searchTerm });
+            postData.push({ name: 'moduleId', value: moduleId });
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: postData,
+                success: function (response) {
+                    $(container).html(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function saveSelection(testId, students, semester, moduleId) {
+            var url = '@Url.Action("Save", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId, students: students, semester: semester, moduleId: moduleId },
+                success: function (response) {
+                    if (response.success)
+                        window.location.href = '@Url.Action("Index", "Test")';
+                    else {
+                        showToast(response.message);
+                    }
+                },
+                error: function (error) {
+                    alert("Your request is not valid!");
+                }
+            });
+        }
+        function cancelCreation(testId) {
+            var url = '@Url.Action("CancelCreation", "Test")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { testId: testId },
+                success: function (result) {
+                    window.location.href = '@Url.Action("Index", "Test")';
+                },
+                error: function (error) {
+                    alert("Your request is not valid!");
+                }
+            });
+        }
+
         function getModules(semester) {
             var url = '@Url.Action("GetModules", "Test")';
             $.ajax({

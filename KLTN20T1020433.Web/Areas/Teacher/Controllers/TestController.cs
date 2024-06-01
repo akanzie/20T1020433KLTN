@@ -543,13 +543,13 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                 return BadRequest(ErrorMessages.RequestNotCompleted);
             }
         }
-        public async Task<IActionResult> SearchStudents(string searchValue = "")
+        public async Task<IActionResult> SearchStudents(string moduleId = "", string semester = "", string searchValue = "")
         {
             try
             {
                 var user = User.GetUserData();
-                var students = await _mediator.Send(new GetStudentsBySearchQuery { SearchValue = searchValue });
-
+                var courses = await _mediator.Send(new GetCoursesInSemesterQuery { ModuleId = moduleId, Semester = semester, Signature = user.Signature, Token = user.Token });
+                var students = await _mediator.Send(new GetStudentsBySearchQuery { SearchValue = searchValue, Courses = courses });
                 return View(new StudentModel { Students = students });
             }
             catch (Exception ex)

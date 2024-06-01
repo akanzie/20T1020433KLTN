@@ -12,6 +12,8 @@
                 <div class="d-flex justify-content-between align-items-center me-9 flex-wrap">
                     <h2 class="fw-semibold align-items-center">@ViewBag.Title</h2>
                     <input type="hidden" name="TestId" value="@Model.TestId" />
+                    <input type="hidden" name="Semester" value="@Model.Semester" />
+                    <input type="hidden" name="ModuleId" value="@Model.ModuleId" />
                     <div class="d-flex justify-content-end">
                         @if (ViewBag.IsEdit)
                         {

@@ -2,6 +2,7 @@
 using KLTN20T1020433.Application.DTOs.TeacherDTOs;
 using KLTN20T1020433.Application.Services;
 using MediatR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,9 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
 {
     public class GetStudentsBySearchQuery : PaginationSearchInput, IRequest<IEnumerable<GetStudentResponse>>
     {
-        public GetTokenResponse GetTokenResponse { get; set; }
+        public string Token { get; set; }
+        public string Signature { get; set; }
+        public IEnumerable<GetCourseResponse> Courses { get; set; }
     }
     public class GetStudentsBySearchQueryHandler : IRequestHandler<GetStudentsBySearchQuery, IEnumerable<GetStudentResponse>>
     {
@@ -24,36 +27,34 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
         }
         public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsBySearchQuery request, CancellationToken cancellationToken)
         {
-            var students = new List<GetStudentResponse>();
-            int j = 0;
-            for (int i = 0; i < 100; i++)
+            try
             {
-                var student = new GetStudentResponse
+                List<GetStudentResponse> studentSearchings = new List<GetStudentResponse>();
+                foreach (var item in request.Courses)
                 {
-                    StudentId = $"20T102000{j}",
-                    FirstName = $"Kiệt{j}",
-                    LastName = $"Châu Anh",
-                };
-                j++;
-                if (student.FirstName.Contains(request.SearchValue) || student.LastName.Contains(request.SearchValue) || student.StudentId.Contains(request.SearchValue))
-                {
-                    students.Add(student);
+                    string endpoint = $"undergraduate-services/v1/course/get-students?courseId={item.CourseId}";
+                    string jsonResponse = await _apiService.SendAsync(endpoint, request.Token, request.Signature);
+                    if (jsonResponse != null)
+                    {
+                        var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                        IEnumerable<GetStudentResponse> students = JsonConvert.DeserializeObject<IEnumerable<GetStudentResponse>>(responseData.Data.ToString());
+                        foreach (var student in students)
+                        {
+                            if (student.FirstName.Contains(request.SearchValue, StringComparison.OrdinalIgnoreCase) || student.LastName.Contains(request.SearchValue, StringComparison.OrdinalIgnoreCase))
+                            {
+                                studentSearchings.Add(student);
+                            }
+                        }
+                    }
                 }
+                return studentSearchings;
             }
-            return students;
-        }
-
-        /*public async Task<IEnumerable<GetStudentResponse>> Handle(GetStudentsByCourseIdQuery request, CancellationToken cancellationToken)
-        {
-            string endpoint = " $"api/v1/student/course/{request.CourseId}";
-            string jsonResponse = await _apiService.SendAsync(endpoint, request.GetTokenResponse);
-            if (jsonResponse != null)
+            catch (Exception ex)
             {
-                var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                IEnumerable<GetStudentResponse> students = JsonConvert.DeserializeObject<GetStudentResponse>(responseData.Data.ToString())!;
-                return students;
+
+                Console.WriteLine($"Đã xảy ra ngoại lệ khi tìm kiếm sinh viên có đăng ký học phần: {ex.Message}");
+                throw;
             }
-            return new List<GetStudentResponse>();
-        }*/
+        }
     }
 }

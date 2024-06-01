@@ -33,8 +33,9 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 if (jsonResponse != null)
                 {
                     var responseData = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-                    var module = JsonConvert.DeserializeObject<Module>(responseData.Data.ToString())!;
-                    return module;
+                    var module = JsonConvert.DeserializeObject<HocPhan>(responseData.Data.ToString())!;
+
+                    return new Module { ModuleId = module.MaHocPhan, ModuleName = module.TenHocPhan };
                 }
                 return new Module();
             }
@@ -45,5 +46,10 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 throw;
             }
         }
+    }
+    public class HocPhan
+    {
+        public string MaHocPhan { get; set; }
+        public string TenHocPhan { get; set; }
     }
 }
