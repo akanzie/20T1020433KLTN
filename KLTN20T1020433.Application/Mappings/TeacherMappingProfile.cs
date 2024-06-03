@@ -26,7 +26,8 @@ namespace KLTN20T1020433.Application.Mappings
             CreateMap<Comment, GetCommentResponse>().ForMember(dest => dest.CommentedTime, opt => opt.MapFrom(src => src.CommentedTime.ToString(Converter.TimeWithDateAndMonth)));
             CreateMap<Submission, GetSubmissionResponse>();
             CreateMap<Test, GetTestDetailResponse>();
-            CreateMap<Submission, GetSubmissionBySearchResponse>().ForMember(dest => dest.SubmittedTime, opt => opt.MapFrom(src => src.SubmittedTime.HasValue ? src.SubmittedTime.Value.ToString(Converter.TimeWithDateAndMonth) : ""));
+            CreateMap<Submission, GetSubmissionBySearchResponse>().ForMember(dest => dest.SubmitTime, opt => opt.MapFrom(src => src.SubmitTime.HasValue ? src.SubmitTime.Value.ToString(Converter.TimeWithDateAndMonth) : ""));
+            CreateMap<SubmissionHistory, GetSubmissionHistoryResponse>().ForMember(dest => dest.SubmitTime, opt => opt.MapFrom(src => src.SubmitTime.HasValue ? src.SubmitTime.Value.ToString(Converter.TimeWithDateAndMonth) : ""));
             CreateMap<SubmissionFile, GetFileResponse>();
             CreateMap<TestFile, GetFileResponse>();
             CreateMap<Student, GetStudentResponse>();

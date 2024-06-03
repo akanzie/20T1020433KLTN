@@ -18,6 +18,6 @@ namespace KLTN20T1020433.Domain.Submission
         Task<IEnumerable<Submission>> GetSubmissionsBySearch(int page = 1, int pageSize = 0, 
             int testId = 0, string searchValue = "", string statuses = "");
         Task<int> CountSubmissions(int testId = 0, string searchValue = "", string statuses = "");
-        Task<bool> CheckIPAddressExists(string iPAddress, int testId);
+
     }
 }

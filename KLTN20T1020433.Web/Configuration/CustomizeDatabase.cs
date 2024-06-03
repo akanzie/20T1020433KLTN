@@ -43,6 +43,10 @@ namespace KLTN20T1020433.Web.Configuration
             {
                 return new StudentRepository(connectionString);
             });
+            services.AddSingleton<ISubmissionHistoryRepository>(provider =>
+            {
+                return new SubmissionHistoryRepository(connectionString);
+            });
         }        
     }
 }

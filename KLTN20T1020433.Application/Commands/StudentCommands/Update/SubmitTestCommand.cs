@@ -12,16 +12,18 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
         public DateTime? TestStartTime { get; set; } = null;
         public DateTime? TestEndTime { get; set; } = null;
         public string IPAddress { get; set; }
-        public DateTime SubmittedTime { get; set; }
+        public DateTime SubmitTime { get; set; }
     }
     public class SubmitTestCommandHandler : IRequestHandler<SubmitTestCommand, string>
     {
         private readonly ISubmissionRepository _submissionDB;
+        private readonly ISubmissionHistoryRepository _submissionHistoryDB;
         private readonly ISubmissionFileRepository _submissionFileDB;
-        public SubmitTestCommandHandler(ISubmissionRepository submissionDB, ISubmissionFileRepository submissionFileDB)
+        public SubmitTestCommandHandler(ISubmissionRepository submissionDB, ISubmissionFileRepository submissionFileDB, ISubmissionHistoryRepository submissionHistoryDB)
         {
             _submissionDB = submissionDB;
             _submissionFileDB = submissionFileDB;
+            _submissionHistoryDB = submissionHistoryDB;
         }
         public async Task<string> Handle(SubmitTestCommand request, CancellationToken cancellationToken)
         {
@@ -46,17 +48,17 @@ namespace KLTN20T1020433.Application.Commands.StudentCommands.Update
                     return ErrorMessages.CannotSubmitWithoutUpload;
                 }
 
-                if (request.SubmittedTime > request.TestEndTime)
+                if (request.SubmitTime > request.TestEndTime)
                     submission.Status = SubmissionStatus.LateSubmission;
                 else
                     submission.Status = SubmissionStatus.Submitted;
-                if (request.IsCheckIP && await _submissionDB.CheckIPAddressExists(request.IPAddress, submission.TestId))
+                if (request.IsCheckIP && await _submissionHistoryDB.CheckIPAddressExists(request.IPAddress, request.SubmissionId, submission.TestId))
                 {
                     submission.Status = SubmissionStatus.PendingProcessing;
                 }
-                submission.SubmittedTime = request.SubmittedTime;
-                submission.IPAddress = request.IPAddress;
+                submission.SubmitTime = request.SubmitTime;
                 await _submissionDB.Update(submission);
+                await _submissionHistoryDB.Add(new SubmissionHistory { SubmissionId = request.SubmissionId, IPAddress = request.IPAddress, SubmitTime = request.SubmitTime });
                 return SuccessMessages.SubmitSuccess;
             }
             catch (Exception ex)

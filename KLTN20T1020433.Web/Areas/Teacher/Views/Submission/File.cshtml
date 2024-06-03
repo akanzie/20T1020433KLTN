@@ -11,7 +11,7 @@
     </div>
     @if (Model.IsImage)
     {
-        <div class="d-flex h-100 align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center">
             <img src="@Url.Action("DownloadFile", "Submission", new { id = Model.FileId, submissionId = Model.SubmissionId})" alt="Image" />
         </div>
     }

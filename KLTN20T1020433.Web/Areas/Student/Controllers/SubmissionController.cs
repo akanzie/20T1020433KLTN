@@ -171,7 +171,7 @@ namespace KLTN20T1020433.Web.Areas.Student.Controllers
                     SubmissionId = submission.SubmissionId,
                     IPAddress = user.ClientIP!,
                     IsCheckIP = test.IsCheckIP,
-                    SubmittedTime = DateTime.Now,
+                    SubmitTime = DateTime.Now,
                     TestEndTime = test.EndTime,
                     CanSubmitLate = test.CanSubmitLate
                 });

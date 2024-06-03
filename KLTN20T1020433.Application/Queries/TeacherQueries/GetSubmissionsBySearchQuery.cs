@@ -36,7 +36,7 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                 var submissions = await _submissionDB.GetSubmissionsBySearch(request.Page, request.PageSize, request.TestId, request.SearchValue, request.Statuses);
                 if (submissions != null && submissions.Any())
                 {
-                    List<GetSubmissionBySearchResponse> testResponse = new List<GetSubmissionBySearchResponse>();
+                    List<GetSubmissionBySearchResponse> submission = new List<GetSubmissionBySearchResponse>();
                     foreach (var item in submissions)
                     {
                         var getSubmissionResponse = _mapper.Map<GetSubmissionBySearchResponse>(item);
@@ -45,9 +45,9 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                         getSubmissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(item.Status);
                         int filesCount = await _submissionFileDB.CountFilesBySubmissionId(item.SubmissionId);
                         getSubmissionResponse.FilesCount = filesCount;
-                        testResponse.Add(getSubmissionResponse);
+                        submission.Add(getSubmissionResponse);
                     }
-                    return testResponse;
+                    return submission;
                 }
                 return new List<GetSubmissionBySearchResponse>();
             }

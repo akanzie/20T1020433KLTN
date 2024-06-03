@@ -21,13 +21,15 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
     {
         private readonly ISubmissionRepository _submissionDB;
         private readonly IStudentRepository _studentDB;
+        private readonly ISubmissionHistoryRepository _submissionHistoryDB;
         private readonly IMapper _mapper;
 
-        public GetSubmissionByIdQueryHandler(ISubmissionRepository submissionDB, IStudentRepository studentDB, IMapper mapper)
+        public GetSubmissionByIdQueryHandler(ISubmissionRepository submissionDB, IStudentRepository studentDB, IMapper mapper, ISubmissionHistoryRepository submissionHistoryDB)
         {
             _submissionDB = submissionDB;
             _studentDB = studentDB;
             _mapper = mapper;
+            _submissionHistoryDB = submissionHistoryDB;
         }
 
         public async Task<GetSubmissionResponse?> Handle(GetSubmissionByIdQuery request, CancellationToken cancellationToken)
@@ -41,8 +43,9 @@ namespace KLTN20T1020433.Application.Queries.TeacherQueries
                     var student = await _studentDB.GetStudentById(submission.StudentId);
                     submissionResponse.StudentName = $"{student.LastName} {student.FirstName}";
                     submissionResponse.StatusDisplayName = Utils.GetSubmissionStatusDisplayName(submission.Status);
+                    var submissionHistories = await _submissionHistoryDB.GetHistorysBySubmissionId(request.Id);
+                    submissionResponse.SubmissionHistories = _mapper.Map<IEnumerable<GetSubmissionHistoryResponse>>(submissionHistories);                    
                     return submissionResponse;
-
                 }
                 return null;
             }

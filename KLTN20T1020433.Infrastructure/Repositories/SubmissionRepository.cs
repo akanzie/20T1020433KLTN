@@ -22,8 +22,6 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     var parameters = new DynamicParameters();
                     parameters.Add("@StudentId", data.StudentId);
                     parameters.Add("@TestId", data.TestId);
-
-
                     parameters.Add("@SubmissionId", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                     await connection.ExecuteAsync(
@@ -41,32 +39,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 Console.WriteLine("Đã xảy ra lỗi khi thêm bài nộp: " + ex.Message);
                 throw;
             }
-        }
-
-        public async Task<bool> CheckIPAddressExists(string iPAddress, int testId)
-        {
-            try
-            {
-                bool exists = false;
-                using (var connection = await OpenConnectionAsync())
-                {
-                    var parameters = new
-                    {
-                        TestId = testId, 
-                        IPAddress = iPAddress,
-                    };                    
-                    exists = await connection.ExecuteScalarAsync<bool>(
-                   "CheckIPAddressExists", parameters, commandType: CommandType.StoredProcedure);
-                   
-                }
-                return exists;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Đã xảy ra lỗi khi kiểm tra địa chỉ IP tồn tại: " + ex.Message);
-                throw;
-            }
-        }
+        }        
 
         public async Task<int> CountSubmissions(int testId = 0, string searchValue = "", string statuses = "")
         {
@@ -239,9 +212,8 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                 {
                     var parameters = new
                     {
-                        SubmissionId = data.SubmissionId,
-                        SubmittedTime = data.SubmittedTime,
-                        IPAddress = data.IPAddress,
+                        SubmissionId = data.SubmissionId,  
+                        SubmitTime = data.SubmitTime,
                         Status = data.Status.ToString()
                     };
                     result = await connection.ExecuteAsync(

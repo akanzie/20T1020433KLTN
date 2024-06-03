@@ -12,7 +12,6 @@
                     <th scope="col" class="d-none d-md-table-cell" >STT</th>
                     <th scope="col">Tên sinh viên</th>
                     <th scope="col" class="d-none d-sm-table-cell">Giờ nộp</th>
-                    <th scope="col">Địa chỉ IP</th>
                     <th scope="col">Trạng thái</th>
                     <th scope="col" class="d-none d-md-table-cell">Số tệp đính kèm</th>
                     <th scope="col">Xem</th>
@@ -26,8 +25,7 @@
                         <tr>
                             <td class="d-none d-md-table-cell" >@(++i)</td>
                             <td>@item.StudentName</td>
-                            <td class="d-none d-sm-table-cell">@item.SubmittedTime</td>
-                            <td>@item.IpAddress</td>
+                            <td class="d-none d-sm-table-cell">@item.SubmitTime</td>
                             <td>
                                 @switch (item.Status)
                                 {
