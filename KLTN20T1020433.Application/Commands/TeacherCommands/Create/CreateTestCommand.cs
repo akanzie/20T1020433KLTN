@@ -38,17 +38,18 @@ namespace KLTN20T1020433.Application.Commands.TeacherCommands.Create
             {
                 Test test = _mapper.Map<Test>(request);
                 test.CreatedTime = DateTime.Now;
-                int testId = await _testDB.Add(test);
                 if (await _teacherDB.GetTeacherById(request.TeacherId) == null)
                 {
                     Teacher teacher = new Teacher
                     {
                         TeacherId = request.TeacherId,
-                        TeacherName = request.TeacherName,
-                        Email = request.Email
+                        TeacherName = request.TeacherName
+                        
                     };
                     await _teacherDB.Add(teacher);
                 }
+                int testId = await _testDB.Add(test);
+
                 return testId;
             }
             catch (Exception ex)

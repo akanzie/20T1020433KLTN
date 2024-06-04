@@ -24,8 +24,7 @@ namespace KLTN20T1020433.Infrastructure.Repositories
                     var parameters = new
                     {
                         TeacherId = teacher.TeacherId,
-                        TeacherName = teacher.TeacherName,
-                        Email = teacher.Email
+                        TeacherName = teacher.TeacherName
                     };
 
                     await connection.ExecuteAsync(

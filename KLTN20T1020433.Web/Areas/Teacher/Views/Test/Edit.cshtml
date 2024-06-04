@@ -67,6 +67,16 @@
 
                     <!-- Cột phải -->
                     <div class="col-lg-4 mt-4 me-0">
+                        @if (@Model.TestType == KLTN20T1020433.Domain.Test.TestType.Exam)
+                        {
+                            <div class="col-lg card">
+                                <div class="card-body">
+                                    <span class="fw-semibold btn btn-outline-info me-2 mb-2" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Chọn học kỳ, năm học</span>
+                                    <div id="examSchedule">
+                                    </div>
+                                </div>
+                            </div>
+                        }
                         <div class="col-lg card">
                             <div class="card-body">
                                 <div class="mb-3">
@@ -84,17 +94,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if (@Model.TestType == KLTN20T1020433.Domain.Test.TestType.Exam)
-                        {
-                            <div class="col-lg card">
-                                <div class="card-body">
-                                    <span class="fw-semibold btn btn-outline-info me-2 mb-2" id="selectSemester" data-bs-toggle="modal" data-bs-target="#selectSemesterModal">Chọn học kỳ, năm học</span>
-                                    <div id="examSchedule">
-
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                        
                     </div>
                 </div>
             </div>

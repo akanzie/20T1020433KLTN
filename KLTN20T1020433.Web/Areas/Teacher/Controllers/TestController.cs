@@ -376,7 +376,7 @@ namespace KLTN20T1020433.Web.Controllers.Teacher
                         testId = ApplicationContext.GetDataInt32(Constants.TESTID);
                         if (testId == null || testId.Value == 0)
                         {
-                            testId = await _mediator.Send(new CreateTestCommand { TeacherId = user.UserId, TestStatus = TestStatus.Creating });
+                            testId = await _mediator.Send(new CreateTestCommand { TeacherId = user.UserId, TestStatus = TestStatus.Creating, TeacherName = user.DisplayName });
                             ApplicationContext.SetInt32(Constants.TESTID, testId.Value);
                         }
                     }

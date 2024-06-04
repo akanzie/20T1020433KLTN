@@ -10,7 +10,6 @@ namespace KLTN20T1020433.Domain.Teacher
     {
         public string TeacherId { get; set; }
         public string TeacherName { get; set; }
-        public string Email { get; set; }
 
     }
 }
